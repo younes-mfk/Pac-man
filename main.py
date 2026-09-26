@@ -5,6 +5,7 @@ import pygame
 cell_height = 20
 cell_width = 20
 
+
 class Cell:
     def __init__(self):
         self.upper_wall = 0
@@ -12,18 +13,22 @@ class Cell:
         self.lower_wall = 0
         self.left_wall = 0
 
+    def __repr__(self):
+        return f"upper {self.upper_wall}, right {self.right_wall}, lower {self.lower_wall}, left{self.left_wall}"
+
 
 def get_walls(number: int):
     cell = Cell()
-    if number & 1:
+    if number & 0B00000001:
         cell.upper_wall = 1
-    if number & 2:
+    if number & 0B00000010:
         cell.right_wall = 1
-    if number & 3:
+    if number & 0B00000100:
         cell.lower_wall = 1
-    if number & 4:
+    if number & 0B00001000:
         cell.left_wall = 1
     return cell
+
 
 
 def draw_maze(maze: list, poses_start):
@@ -32,7 +37,7 @@ def draw_maze(maze: list, poses_start):
         for j, node in enumerate(list_a, start=1):
             cell = get_walls(node)
             # if i == 15 and j == 15:
-            # pygame.draw.line(screen, (255, 0, 0), (x_start, y_start), (x_start, y_start), 4)
+            pygame.draw.line(screen, (255, 0, 0), (x_start, y_start), (x_start, y_start), 4)
 
             if cell.upper_wall:
                 pygame.draw.line(screen, (255, 0, 0), (x_start, y_start), (x_start + cell_width, y_start), 3)
@@ -70,6 +75,7 @@ screen = pygame.display.set_mode((1200, 1200))
 pygame.display.set_caption("Pac-Man")
 print(maze)
 while run:
+
     pygame.time.delay(100)
     draw_maze(maze, start_pos)
     for event in pygame.event.get():
@@ -79,3 +85,11 @@ while run:
     pygame.display.update()
 
     screen.fill((0, 0, 0))
+
+
+if __name__ == "__main__":
+    l = [i for i in range(1, 16)]
+    for i in l:
+        print(i, end=" ")
+        o = get_walls(i)
+        print(o.__repr__())
