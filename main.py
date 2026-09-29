@@ -18,13 +18,17 @@ class Adapter:
                                     (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
         self.player_position = (self.start_drawing_point[0] + self.maze_dimentions[0] // 2,
                                 self.start_drawing_point[1] + self.maze_dimentions[1] // 2)
-        self.gums_positions, self.map_to_grad = self.get_gums_positions(maze)
+        # self.player_position = (self.start_drawing_point[0] + self.maze[] * 80,
+        #                         self.start_drawing_point[1] + self.maze_dimentions[1] // 2)
+
+        self.gums_positions, self.map_to_grad, self.super_gums_positions = self.get_gums_positions(maze)
 
     def get_gums_positions(self, maze):
+        positions_super_gums = []
         positions_gums = []
         map_to_grad = {}
         for y in range(len(maze)):
-            for x in range(len(maze)):
+            for x in range(len(maze[0])):
                 node = maze[y][x]
                 # in this line i transfor the position in greed to position in window
                 # like node in greed (1, 1) => will be one (740, 440)
@@ -33,10 +37,10 @@ class Adapter:
                 positions_gums.append(((self.start_drawing_point[0] + (self.cell_dimontions.width * (x)) + 40),
                                       (self.start_drawing_point[1] + (self.cell_dimontions.height * (y)) + 40)))
                 map_to_grad[positions_gums[-1]] = (x, y)
+                if (y == 0 or y == len(maze) - 1) and (x == 0 or x == len(maze[0]) - 1):
+                    positions_super_gums.append((x, y))
 
-        # print(map_to_grad)
-
-        return positions_gums, map_to_grad
+        return positions_gums, map_to_grad, positions_super_gums
 
 
 class Cell:
@@ -105,7 +109,8 @@ class Drawing:
             node = adapter.maze[y][x]
             if node == 15:
                 pass
-            elif (x == 0 or x == 14) and (y == 0 or y == 14):
+
+            elif (x, y) in adapter.super_gums_positions:
                 pygame.draw.circle(screen, (255, 255, 45), (i, j), 7)
             else:
                 pygame.draw.circle(screen, (255, 255, 255), (i, j), 3)
@@ -157,7 +162,7 @@ class Drawing:
 if __name__ == "__main__":
 
     cell_dimention = CellDimention()
-    # maze_engine = MazeGenerator(size=(11,15))
+    # maze_engine = MazeGenerator(size=(15, 15))
     maze_engine = MazeGenerator()
     maze = maze_engine.maze
     adapter = Adapter(maze, (2600, 2000))
