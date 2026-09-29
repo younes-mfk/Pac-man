@@ -199,18 +199,26 @@ if __name__ == "__main__":
                 if event.key == pygame.K_RIGHT:
                     if drawing.cheeck_colistion((player_pos_x + cell_dimention.width, player_pos_y), prev_pos, 'r'):
                         directions = 'r'
+                    else:
+                        directions = ''
 
                 elif event.key == pygame.K_LEFT:
                     if drawing.cheeck_colistion((player_pos_x - cell_dimention.width, player_pos_y), prev_pos, 'l'):
                         directions = 'l'
+                    else:
+                        directions = ''
 
                 elif event.key == pygame.K_UP:
                     if drawing.cheeck_colistion((player_pos_x, player_pos_y - cell_dimention.height), prev_pos, 'u'):
                         directions = 'u'
+                    else:
+                        directions = ''
 
                 elif event.key == pygame.K_DOWN:
                     if drawing.cheeck_colistion((player_pos_x, player_pos_y + cell_dimention.height), prev_pos, 'd'):
                         directions = 'd'
+                    else:
+                        directions = ''
 
                 # break
 
