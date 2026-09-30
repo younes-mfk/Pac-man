@@ -13,13 +13,24 @@ class Adapter:
         self.maze = maze
         self.cell_dimontions = CellDimention
         self.window_dimentions = window_dimentions
-        self.maze_dimentions = ((len(maze[0]) * self.cell_dimontions.width), (len(maze[1]) * self.cell_dimontions.height))
+        self.maze_dimentions = ((len(maze[0]) * self.cell_dimontions.width), (len(maze) * self.cell_dimontions.height))
         self.start_drawing_point = ((self.window_dimentions[0] // 2) - (self.maze_dimentions[0]//2),
                                     (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
-        self.player_position = (self.start_drawing_point[0] + self.maze_dimentions[0] // 2,
-                                self.start_drawing_point[1] + self.maze_dimentions[1] // 2)
-        # self.player_position = (self.start_drawing_point[0] + self.maze[] * 80,
-        #                         self.start_drawing_point[1] + self.maze_dimentions[1] // 2)
+        if len(maze[0]) % 2 == 0:
+            self.player_position_x = (self.start_drawing_point[0] + (self.maze_dimentions[0] // 2) - 40)
+
+        else:
+            self.player_position_x = (self.start_drawing_point[0] + self.maze_dimentions[0] // 2)
+
+        if len(maze) % 2 == 0:
+            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2) - 40)
+
+        else:
+            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2))
+
+        self.player_position = (self.player_position_x, self.player_position_y)
+        print(self.start_drawing_point)
+        print(self.player_position)
 
         self.gums_positions, self.map_to_grad, self.super_gums_positions = self.get_gums_positions(maze)
 
@@ -162,7 +173,8 @@ class Drawing:
 if __name__ == "__main__":
 
     cell_dimention = CellDimention()
-    # maze_engine = MazeGenerator(size=(15, 15))
+    # maze_engine = MazeGenerator(size=(14, 10))  # min logo
+    # maze_engine = MazeGenerator(size=(10, 10))
     maze_engine = MazeGenerator()
     maze = maze_engine.maze
     adapter = Adapter(maze, (2600, 2000))
