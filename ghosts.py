@@ -103,7 +103,7 @@ class Ghost:
         else:
             current_distance = self.bfs(maze, starting_point, goal_point)
             valid_ones = [road for road in roads
-                          if road[1] >= current_distance or
+                          if road[1] >= current_distance and
                           road[0] not in self.visited_cells]
             if valid_ones:
                 to_cell = random.choice(valid_ones)

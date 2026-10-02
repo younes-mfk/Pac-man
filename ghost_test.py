@@ -9,7 +9,7 @@ CELL_WIDTH = 80
 player_image = pygame.image.load("ghosts_images/player.png")
 ghost_image = pygame.image.load("ghosts_images/ghost.png")
 
-ghost = Ghost((1, 2), ghost_image, "randow")
+ghost = Ghost((1, 1), ghost_image, "randow")
 
 x = 0
 y = 0
