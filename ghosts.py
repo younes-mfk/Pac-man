@@ -92,8 +92,6 @@ class Ghost:
         return float('inf')
 
     def next_cell(self, starting_point, goal_point,  edible=False):
-        print(starting_point)
-        print(goal_point)
         neighbors = self.get_valid_neighbors(starting_point[0], starting_point[1])
         unvisited_neighbors = [neighbor for neighbor in neighbors
                                if neighbor != self.previous_cell]

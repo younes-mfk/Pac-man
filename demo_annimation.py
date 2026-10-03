@@ -209,7 +209,7 @@ class Drawing:
 
         ghost.current_coords = ghost.next_cell(ghost.current_coords, ghost.player_pos)
 
-        pygame.time.delay(150)
+        return (draw_pos, grid_tomap[ghost.current_coords])
 
 
 if __name__ == "__main__":
@@ -244,6 +244,7 @@ if __name__ == "__main__":
     move = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y))
     times = 1
     open_mouth = 0
+    # start_pos_ghost = (0, 0)
     while run:
 
         if times % 20 == 0:
@@ -329,8 +330,10 @@ if __name__ == "__main__":
 
         drawing.draw_player(player_position, move.image)
         # print(player_position)
-        drawing.draw_ghost(ghost, grid_tomap,
-                           adapter.map_to_grad.get(player_position, None))
+        prev_pos, next_pos = drawing.draw_ghost(ghost, grid_tomap,
+                                               adapter.map_to_grad.get(
+                                                   player_position, None))
+        print(prev_pos, next_pos)
 
         pygame.display.flip()
         screen.fill((0, 0, 0))
