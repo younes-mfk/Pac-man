@@ -1,4 +1,5 @@
 from mazegenerator.mazegenerator import MazeGenerator
+from ghosts import Ghost
 import pygame
 
 
@@ -76,7 +77,7 @@ class Adapter:
             for x in range(len(maze[0])):
                 node = maze[y][x]
                 # in this line i transfor the position in greed to position in window
-                # like node in greed (1, 1) => will be one (740, 440)
+                # like node in grid (1, 1) => will be one (740, 440)
                 # THE +40 to drawing gums inside the cell which is (80, 80) a bit static im gonna fix it by
                 # change 40 by self.cell_dimontions.width // 2
                 positions_gums.append(((self.start_drawing_point[0] + (self.cell_dimontions.width * (x)) + self.cell_dimontions.width // 2),
@@ -198,6 +199,18 @@ class Drawing:
             adapter.gums_positions.remove(pos_player)
         return pos_player
 
+    def draw_ghost(self, ghost, grid_tomap, player_pos):
+        draw_pos = grid_tomap[ghost.current_coords]
+
+        screen.blit(ghost.image, (draw_pos[0] - 20, draw_pos[1] - 20))
+
+        if player_pos:
+            ghost.player_pos = player_pos
+
+        ghost.current_coords = ghost.next_cell(ghost.current_coords, ghost.player_pos)
+
+        pygame.time.delay(150)
+
 
 if __name__ == "__main__":
 
@@ -216,6 +229,13 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((width_window, height_window))
     pygame.display.set_caption("Pac-Man")
     run = True
+
+    grid_tomap = {value: key for key, value in adapter.map_to_grad.items()}
+
+    ghost = Ghost((0, 0),
+                  pygame.image.load("ghosts_images/ghost.png"),
+                  "normal", maze, adapter.player_position)
+
 
     clock = pygame.time.Clock()
 
@@ -304,10 +324,13 @@ if __name__ == "__main__":
 
         player_position = (round(move.current_frame_x), round(move.current_frame_y))
 
-        print(player_position, end="--->")
-        print(move.direction)
+        # print(player_position, end="--->")
+        # print(move.direction)
 
         drawing.draw_player(player_position, move.image)
+        # print(player_position)
+        drawing.draw_ghost(ghost, grid_tomap,
+                           adapter.map_to_grad.get(player_position, None))
 
         pygame.display.flip()
         screen.fill((0, 0, 0))

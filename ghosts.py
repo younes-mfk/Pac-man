@@ -5,15 +5,17 @@ import random
 
 class Ghost:
 
-    def __init__(self, spawn_point, image, type) -> None:
+    def __init__(self, spawn_point, image, type, maze, player_pos) -> None:
         self.spawn_point = spawn_point
         self.image = image
         self.current_coords = spawn_point
         self.previous_cell = spawn_point
         self.type = type
+        self.maze = maze
+        self.player_pos = player_pos
         self.visited_cells = set()
 
-    def check_wall(self, direction, maze, starting_cell, next_cell):
+    def check_wall(self, direction, starting_cell, next_cell):
         from_cell = starting_cell
         to_cell = next_cell
         if direction == "right":
@@ -30,30 +32,40 @@ class Ghost:
                 return 0
         return 1
 
-    def get_valid_neighbors(self, maze, x, y):
+    def get_valid_neighbors(self, x, y):
         neighbors = []
-        current_cell = maze[x][y]
 
-        if x > 0 and self.check_wall("up", maze, current_cell, maze[x - 1][y]):
-            neighbors.append((x - 1, y))
+        # what changed:
+        # coordinates are (x, y)
+        # maze is accessed using [y][x]
+        current_cell = self.maze[y][x]
 
-        if y > 0 and self.check_wall("left", maze, current_cell,
-                                     maze[x][y - 1]):
-            neighbors.append((x, y - 1))
+        if y > 0:
+            next_cell = self.maze[y - 1][x]
 
-        if y < len(maze[0]) - 1 and self.check_wall("right", maze,
-                                                    current_cell,
-                                                    maze[x][y + 1]):
-            neighbors.append((x, y + 1))
+            if self.check_wall("up", current_cell, next_cell):
+                neighbors.append((x, y - 1))
 
-        if x < len(maze) - 1 and self.check_wall(
-            "down", maze, current_cell, maze[x + 1][y]
-        ):
-            neighbors.append((x + 1, y))
+        if x > 0:
+            next_cell = self.maze[y][x - 1]
+
+            if self.check_wall("left", current_cell, next_cell):
+                neighbors.append((x - 1, y))
+
+        if x < len(self.maze[0]) - 1:
+            next_cell = self.maze[y][x + 1]
+            if self.check_wall("right", current_cell, next_cell):
+                neighbors.append((x + 1, y))
+
+        if y < len(self.maze) - 1:
+            next_cell = self.maze[y + 1][x]
+
+            if self.check_wall("down", current_cell, next_cell):
+                neighbors.append((x, y + 1))
 
         return neighbors
 
-    def bfs(self, maze, starting_point, target_point):
+    def bfs(self, starting_point, target_point):
         goal_x, goal_y = target_point
         queue = deque([starting_point])
         visited = [starting_point]
@@ -70,7 +82,7 @@ class Ghost:
 
                 return len(path)
 
-            neighbors = self.get_valid_neighbors(maze, cell_x, cell_y)
+            neighbors = self.get_valid_neighbors(cell_x, cell_y)
             for neighbor in neighbors:
                 if neighbor not in visited:
                     queue.append(neighbor)
@@ -79,15 +91,18 @@ class Ghost:
 
         return float('inf')
 
-    def next_cell(self, maze, starting_point, goal_point,  edible=True):
-        neighbors = self.get_valid_neighbors(maze, starting_point[0], starting_point[1])
+    def next_cell(self, starting_point, goal_point,  edible=False):
+        print(starting_point)
+        print(goal_point)
+        neighbors = self.get_valid_neighbors(starting_point[0], starting_point[1])
         unvisited_neighbors = [neighbor for neighbor in neighbors
                                if neighbor != self.previous_cell]
 
         if not unvisited_neighbors:
             unvisited_neighbors = neighbors
 
-        roads = [(neighbor, self.bfs(maze, neighbor, goal_point)) for neighbor in unvisited_neighbors]
+        roads = [(neighbor, self.bfs(neighbor, goal_point))
+                 for neighbor in unvisited_neighbors]
 
         if not roads:
             return starting_point
@@ -101,7 +116,7 @@ class Ghost:
                 to_cell = random.choice(roads)
 
         else:
-            current_distance = self.bfs(maze, starting_point, goal_point)
+            current_distance = self.bfs(starting_point, goal_point)
             valid_ones = [road for road in roads
                           if road[1] >= current_distance and
                           road[0] not in self.visited_cells]
