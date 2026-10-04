@@ -147,6 +147,37 @@ class Drawing:
         dy = pacman[1] - ghost[1]
         return math.sqrt(dx * dx + dy * dy) < threshold
 
+    def update_pacman_move(self, move):
+        if move.direction == "r":
+            new = (move.current_pos[0] + cell_dimention.width, move.current_pos[1])
+            if drawing.cheeck_colistion(new, move.current_pos, 'r'):
+                move.target = (new[0], new[1])
+                move.current_pos = new
+                move.axis = "x"
+
+        if move.direction == "l":
+            new = (move.current_pos[0] - cell_dimention.width, move.current_pos[1])
+            if drawing.cheeck_colistion(new, move.current_pos, 'l'):
+                move.target = (new[0], new[1])
+                move.current_pos = new
+                move.axis = "x"
+
+        if move.direction == "u":
+            new = (move.current_pos[0], move.current_pos[1] - cell_dimention.height)
+            if drawing.cheeck_colistion(new, move.current_pos, 'u'):
+                move.target = (new[0], new[1])
+                move.current_pos = new
+                move.axis = "y"
+
+        if move.direction == "d":
+            new = (move.current_pos[0], move.current_pos[1] + cell_dimention.height)
+            if drawing.cheeck_colistion(new, move.current_pos, 'd'):
+                move.target = (new[0], new[1])
+                move.current_pos = new
+                move.axis = "y"
+
+        move.image = Move.images[move.direction][open_mouth]
+
 
 if __name__ == "__main__":
 
@@ -170,9 +201,8 @@ if __name__ == "__main__":
     speed = 470  # pixels per second
     move = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y))
 
-    ####################################################################################################################
     ghosts = []
-    for i, pos in enumerate(adapter.spawn_corners): # create ghosts 2 random , and two will chase you
+    for i, pos in enumerate(adapter.spawn_corners):  # create ghosts 2 random ,and two will chase you
         if i % 2 == 0:
             ghosts.append(Ghost(pos,  pygame.image.load("ghosts_images/ghost.png"), "random", maze, adapter.player_position))
         else:
@@ -183,7 +213,6 @@ if __name__ == "__main__":
 
     ghosts_poses = []
 
-    ####################################################################################################################
     menu = Menu(screen, pygame.image.load("menu_images/menu.png"),
                 [pygame.image.load("menu_images/startgame.png"),
                  pygame.image.load("menu_images/instruction.png"),
@@ -219,36 +248,9 @@ if __name__ == "__main__":
                     move.direction = diction_direction[event.key]
 
         if move.current_frame_x == move.target[0] and move.current_frame_y == move.target[1]:
-
-            if move.direction == "r":
-                new = (move.current_pos[0] + cell_dimention.width, move.current_pos[1])
-                if drawing.cheeck_colistion(new, move.current_pos, 'r'):
-                    move.target = (new[0], new[1])
-                    move.current_pos = new
-                    move.axis = "x"
-
-            if move.direction == "l":
-                new = (move.current_pos[0] - cell_dimention.width, move.current_pos[1])
-                if drawing.cheeck_colistion(new, move.current_pos, 'l'):
-                    move.target = (new[0], new[1])
-                    move.current_pos = new
-                    move.axis = "x"
-
-            if move.direction == "u":
-                new = (move.current_pos[0], move.current_pos[1] - cell_dimention.height)
-                if drawing.cheeck_colistion(new, move.current_pos, 'u'):
-                    move.target = (new[0], new[1])
-                    move.current_pos = new
-                    move.axis = "y"
-
-            if move.direction == "d":
-                new = (move.current_pos[0], move.current_pos[1] + cell_dimention.height)
-                if drawing.cheeck_colistion(new, move.current_pos, 'd'):
-                    move.target = (new[0], new[1])
-                    move.current_pos = new
-                    move.axis = "y"
-
-            move.image = Move.images[move.direction][open_mouth]
+            # this if means pacman is reach his destination and ready for another move
+            # if you dont do this condition the pac man gonna have a big freedome in the map like going throught 42 logo (L7ama9)
+            drawing.update_pacman_move(move)
 
         # get frames to draw
         move.current_frame_x = drawing.next_frame(move.current_frame_x, move.target[0], speed, dt)
@@ -280,7 +282,6 @@ if __name__ == "__main__":
                 ghosts[i] = Ghost(pos, pygame.image.load("ghosts_images/ghost.png"), ghosts[i].type, maze, adapter.player_position)
 
             ghosts_poses = []
-
 
         pygame.display.flip()
         screen.fill((0, 0, 0))
