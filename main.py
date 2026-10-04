@@ -1,98 +1,15 @@
 from mazegenerator.mazegenerator import MazeGenerator
 from ghosts import Ghost
 import pygame
+from moves import Move
+from cell import Cell, CellDimention
+from adapter import Adapter
 
 diction_direction = {
         pygame.K_RIGHT: "r",
         pygame.K_LEFT: "l",
         pygame.K_UP: "u",
         pygame.K_DOWN: "d"}
-
-
-class Move:
-    pacman = [pygame.image.load("images/pacman_player_right_open.png"),
-              pygame.image.load("images/pacman_player_left_open.png"),
-              pygame.image.load("images/pacman_player_down_open.png"),
-              pygame.image.load("images/pacman_player_up_open.png"),
-              pygame.image.load("images/pacman_closed_right_close.png"),
-              pygame.image.load("images/pacman_closed_left_close.png"),
-              pygame.image.load("images/pacman_closed_down_close.png"),
-              pygame.image.load("images/pacman_closed_up_close.png")
-              ]
-
-    images = {
-        "r": [pacman[0], pacman[4]],
-        "l": [pacman[1], pacman[5]],
-        "d": [pacman[2], pacman[6]],
-        "u": [pacman[3], pacman[7]],
-        "": [pacman[3], pacman[7]],
-    }
-
-    def __init__(self, current_pos, next_pos, current_frame_pos_x, current_frame_pos_y):
-        self.current_pos = current_pos
-        self.target = next_pos
-        self.current_frame_x = current_frame_pos_x
-        self.current_frame_y = current_frame_pos_y
-        self.direction = ""
-        self.axis = ""
-        self.image = pygame.image.load("images/pacman_closed_up_close.png")
-        self.image_ghost = pygame.image.load("ghosts_images/ghost.png")
-
-
-class CellDimention:
-    width = 80
-    height = 80
-
-
-class Adapter:
-    #  this class to make calculs dynamic and varie with the variation of maze and window dimentions you put
-    def __init__(self, maze, window_dimention = (2600, 2000)):
-        self.maze = maze
-        self.cell_dimontions = CellDimention
-        self.window_dimentions = window_dimention
-        self.maze_dimentions = ((len(maze[0]) * self.cell_dimontions.width), (len(maze) * self.cell_dimontions.height))
-        self.start_drawing_point = ((self.window_dimentions[0] // 2) - (self.maze_dimentions[0]//2),
-                                    (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
-        if len(maze[0]) % 2 == 0:
-            self.player_position_x = (self.start_drawing_point[0] + (self.maze_dimentions[0] // 2) - self.cell_dimention.width // 2)
-
-        else:
-            self.player_position_x = (self.start_drawing_point[0] + self.maze_dimentions[0] // 2)
-
-        if len(maze) % 2 == 0:
-            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2) - self.cell_dimention.height // 2)
-
-        else:
-            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2))
-
-        self.player_position = (self.player_position_x, self.player_position_y)
-
-        self.gums_positions, self.window_to_grad, self.super_gums_positions = self.get_gums_positions(maze)
-        self.grad_to_window = {value: key for key, value in self.window_to_grad.items()}
-
-    def get_gums_positions(self, maze):
-        positions_super_gums = []
-        positions_gums = []
-        window_to_grad = {}
-        for y in range(len(maze)):
-            for x in range(len(maze[0])):
-                # node = maze[y][x]
-                positions_gums.append(((self.start_drawing_point[0] + (self.cell_dimontions.width * (x)) + self.cell_dimontions.width // 2),
-                                      (self.start_drawing_point[1] + (self.cell_dimontions.height * (y)) + self.cell_dimontions.height // 2)))
-                window_to_grad[positions_gums[-1]] = (x, y)
-                # window_to_grad ====> center of cell postion to grid[y][x]
-                if (y == 0 or y == len(maze) - 1) and (x == 0 or x == len(maze[0]) - 1):
-                    positions_super_gums.append((x, y))
-
-        return positions_gums, window_to_grad, positions_super_gums
-
-
-class Cell:
-    def __init__(self):
-        self.upper_wall = 0
-        self.right_wall = 0
-        self.lower_wall = 0
-        self.left_wall = 0
 
 
 class Drawing:
@@ -208,12 +125,29 @@ class Drawing:
         return ghostp, adapter.grad_to_window[ghost.current_coords]
 
 
+    def next_frame(self, current_z, target_z, speed, dt):
+        returned = current_z
+
+        if current_z < target_z:
+            returned += speed * dt
+            if returned > target_z:
+                returned = target_z
+
+        elif current_z > target_z:
+            returned -= speed * dt
+            if returned < target_z:
+                returned = target_z
+
+        return returned
+
+
 if __name__ == "__main__":
 
     cell_dimention = CellDimention()
-    maze_engine = MazeGenerator()
+    maze_engine = MazeGenerator(size=(25, 21))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
     maze = maze_engine.maze
     adapter = Adapter(maze, (2600, 2000))
+    # adapter = Adapter(maze, (3600, 2000))
     drawing = Drawing(adapter)
 
     width_window, height_window = adapter.window_dimentions
@@ -234,7 +168,6 @@ if __name__ == "__main__":
     ghost_pos = adapter.grad_to_window[(0, 0)]
     ghost_target = ghost_pos
     ghost_move = Move(ghost_pos, ghost_target, float(ghost_pos[0]), float(ghost_pos[1]))
-
 
     times = 1
     open_mouth = 0
@@ -262,7 +195,7 @@ if __name__ == "__main__":
                 elif event.key in [pygame.K_DOWN, pygame.K_UP, pygame.K_LEFT, pygame.K_RIGHT]:
                     move.direction = diction_direction[event.key]
 
-        if move.current_frame_x == move.target[0] and move.current_frame_y == move.target[1] :
+        if move.current_frame_x == move.target[0] and move.current_frame_y == move.target[1]:
 
             if move.direction == "r":
                 new = (move.current_pos[0] + cell_dimention.width, move.current_pos[1])
@@ -294,47 +227,11 @@ if __name__ == "__main__":
 
             move.image = Move.images[move.direction][open_mouth]
 
-        if ghost_move.current_frame_x < ghost_move.target[0]:
-            ghost_move.current_frame_x += speed * dt
-            if ghost_move.current_frame_x > ghost_move.target[0]:
-                ghost_move.current_frame_x = ghost_move.target[0]
-
-        elif ghost_move.current_frame_x > ghost_move.target[0]:
-            ghost_move.current_frame_x -= speed * dt
-            if ghost_move.current_frame_x < ghost_move.target[0]:
-                ghost_move.current_frame_x = ghost_move.target[0]
-
-        if ghost_move.current_frame_y < ghost_move.target[1]:
-            ghost_move.current_frame_y += speed * dt
-            if ghost_move.current_frame_y > ghost_move.target[1]:
-                ghost_move.current_frame_y = ghost_move.target[1]
-
-        elif ghost_move.current_frame_y > ghost_move.target[1]:
-            ghost_move.current_frame_y -= speed * dt
-            if ghost_move.current_frame_y < ghost_move.target[1]:
-                ghost_move.current_frame_y = ghost_move.target[1]
-
-        if move.axis == "x":
-            if move.current_frame_x < move.target[0]:
-                move.current_frame_x += speed * dt
-                if move.current_frame_x > move.target[0]:
-                    move.current_frame_x = move.target[0]
-
-            elif move.current_frame_x > move.target[0]:
-                move.current_frame_x -= speed * dt
-                if move.current_frame_x < move.target[0]:
-                    move.current_frame_x = move.target[0]
-
-        elif move.axis == "y":
-            if move.current_frame_y < move.target[1]:
-                move.current_frame_y += speed * dt
-                if move.current_frame_y > move.target[1]:
-                    move.current_frame_y = move.target[1]
-
-            elif move.current_frame_y > move.target[1]:
-                move.current_frame_y -= speed * dt
-                if move.current_frame_y < move.target[1]:
-                    move.current_frame_y = move.target[1]
+        # get frames to draw
+        ghost_move.current_frame_x = drawing.next_frame(ghost_move.current_frame_x, ghost_move.target[0], speed, dt)
+        ghost_move.current_frame_y = drawing.next_frame(ghost_move.current_frame_y, ghost_move.target[1], speed, dt)
+        move.current_frame_x = drawing.next_frame(move.current_frame_x, move.target[0], speed, dt)
+        move.current_frame_y = drawing.next_frame(move.current_frame_y, move.target[1], speed, dt)
 
         player_position = (round(move.current_frame_x), round(move.current_frame_y))
         ghost_position = (round(ghost_move.current_frame_x), round(ghost_move.current_frame_y))
