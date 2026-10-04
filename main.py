@@ -127,7 +127,6 @@ class Drawing:
 
         return ghostp, adapter.grad_to_window[ghost.current_coords]
 
-
     def next_frame(self, current_z, target_z, speed, dt):
         returned = current_z
 
@@ -148,10 +147,11 @@ class Drawing:
         dy = pacman[1] - ghost[1]
         return math.sqrt(dx * dx + dy * dy) < threshold
 
+
 if __name__ == "__main__":
 
     cell_dimention = CellDimention()
-    maze_engine = MazeGenerator(size=(25, 21))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
+    maze_engine = MazeGenerator(size=(20, 20))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
     maze = maze_engine.maze
     adapter = Adapter(maze, (2600, 2000))
     # adapter = Adapter(maze, (3600, 2000))
@@ -171,30 +171,16 @@ if __name__ == "__main__":
     move = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y))
 
     ####################################################################################################################
-    ghost = Ghost((0, 0), pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position)
-    ghost2 = Ghost((14, 14), pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position)
-    ghost3 = Ghost((14, 0), pygame.image.load("ghosts_images/ghost.png"), "random", maze, adapter.player_position)
-    ghost4 = Ghost((0, 14), pygame.image.load("ghosts_images/ghost.png"), "random", maze, adapter.player_position)
+    ghosts = []
+    for i, pos in enumerate(adapter.spawn_corners): # create ghosts 2 random , and two will chase you
+        if i % 2 == 0:
+            ghosts.append(Ghost(pos,  pygame.image.load("ghosts_images/ghost.png"), "random", maze, adapter.player_position))
+        else:
+            ghosts.append(Ghost(pos,  pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position))
 
-    ghosts = [ghost, ghost2, ghost3, ghost4]
+    # create there move class obj
+    moved_ghosts = [Move(adapter.grad_to_window[pos], adapter.grad_to_window[pos], float(adapter.grad_to_window[pos][0]), float(adapter.grad_to_window[pos][1])) for pos in adapter.spawn_corners]
 
-    ghost_pos = adapter.grad_to_window[(0, 0)]
-    ghost_target = ghost_pos
-    ghost_move = Move(ghost_pos, ghost_target, float(ghost_pos[0]), float(ghost_pos[1]))
-
-    ghost_pos2 = adapter.grad_to_window[(14, 14)]
-    ghost_target2 = ghost_pos2
-    ghost_move2 = Move(ghost_pos2, ghost_target2, float(ghost_pos2[0]), float(ghost_pos2[1]))
-
-    ghost_pos3 = adapter.grad_to_window[(14, 0)]
-    ghost_target3 = ghost_pos3
-    ghost_move3 = Move(ghost_pos3, ghost_target3, float(ghost_pos3[0]), float(ghost_pos3[1]))
-
-    ghost_pos4 = adapter.grad_to_window[(0, 14)]
-    ghost_target4 = ghost_pos4
-    ghost_move4 = Move(ghost_pos4, ghost_target4, float(ghost_pos4[0]), float(ghost_pos4[1]))
-
-    moved_ghosts = [ghost_move, ghost_move2, ghost_move3, ghost_move4]
     ghosts_poses = []
 
     ####################################################################################################################
@@ -203,7 +189,7 @@ if __name__ == "__main__":
                  pygame.image.load("menu_images/instruction.png"),
                  pygame.image.load("menu_images/high_scores.png")])
 
-    menu.test()
+    # menu.test()
 
     times = 1
     open_mouth = 0
@@ -271,14 +257,14 @@ if __name__ == "__main__":
 
         for i, ghost in enumerate(moved_ghosts):
             if i == 0:
-                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 70, dt)
-                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 70, dt)
+                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 100, dt)
+                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 100, dt)
             elif i == 1:
-                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 80, dt)
-                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 80, dt)
+                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 120, dt)
+                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 120, dt)
             else:
-                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 60, dt)
-                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 60, dt)
+                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 40, dt)
+                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 40, dt)
 
             ghosts_poses.append((round(ghost.current_frame_x), round(ghost.current_frame_y)))
 
@@ -287,24 +273,11 @@ if __name__ == "__main__":
         for i, ghost_position in enumerate(ghosts_poses):
             moved_ghosts[i].current_pos, moved_ghosts[i].target = drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(player_position, None), ghost_position)
 
-            # if move.current_pos == moved_ghosts[i].current_pos or move.current_pos == moved_ghosts[i].target:
             if drawing.is_colliding((move.current_frame_x, move.current_frame_y),(moved_ghosts[i].current_frame_x,moved_ghosts[i].current_frame_y)):
-                drawing.draw_player(player_position, move.image)
-
                 move = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y))
-                if i:
-                    moved_ghosts[i] = Move(ghost_pos, ghost_target, float(ghost_pos[0]), float(ghost_pos[1]))
-                    ghosts[i] = Ghost((0, 0), pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position)
-                elif i == 1:
-                    moved_ghosts[i] = Move(ghost_pos2, ghost_target2, float(ghost_pos2[0]), float(ghost_pos2[1]))
-                    ghosts[i] = Ghost((14, 14), pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position)
-                elif i == 2:
-                    moved_ghosts[i] = Move(ghost_pos3, ghost_target3, float(ghost_pos3[0]), float(ghost_pos3[1]))
-                    ghosts[i] = Ghost((0, 14), pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position)
-                elif i == 4:
-                    moved_ghosts[i] = Move(ghost_pos4, ghost_target4, float(ghost_pos4[0]), float(ghost_pos4[1]))
-                    ghosts[i] = Ghost((14, 0), pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position)
-
+                pos = adapter.spawn_corners[i]
+                moved_ghosts[i] = Move(adapter.grad_to_window[pos], adapter.grad_to_window[pos], float(adapter.grad_to_window[pos][0]), float(adapter.grad_to_window[pos][1]))
+                ghosts[i] = Ghost(pos, pygame.image.load("ghosts_images/ghost.png"), ghosts[i].type, maze, adapter.player_position)
 
             ghosts_poses = []
 

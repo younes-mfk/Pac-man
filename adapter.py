@@ -12,13 +12,13 @@ class Adapter:
         self.start_drawing_point = ((self.window_dimentions[0] // 2) - (self.maze_dimentions[0]//2),
                                     (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
         if len(maze[0]) % 2 == 0:
-            self.player_position_x = (self.start_drawing_point[0] + (self.maze_dimentions[0] // 2) - self.cell_dimention.width // 2)
+            self.player_position_x = (self.start_drawing_point[0] + (self.maze_dimentions[0] // 2) - self.cell_dimontions.width // 2)
 
         else:
             self.player_position_x = (self.start_drawing_point[0] + self.maze_dimentions[0] // 2)
 
         if len(maze) % 2 == 0:
-            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2) - self.cell_dimention.height // 2)
+            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2) - self.cell_dimontions.height // 2)
 
         else:
             self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2))
@@ -27,6 +27,9 @@ class Adapter:
 
         self.gums_positions, self.window_to_grad, self.super_gums_positions = self.get_gums_positions(maze)
         self.grad_to_window = {value: key for key, value in self.window_to_grad.items()}
+        # self.spawn_corners = [self.grad_to_window[pos] for pos in self.super_gums_positions]
+        self.spawn_corners = self.super_gums_positions
+
 
     def get_gums_positions(self, maze):
         positions_super_gums = []
