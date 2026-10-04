@@ -1,5 +1,42 @@
 from mazegenerator.mazegenerator import MazeGenerator
+from ghosts import Ghost
 import pygame
+
+diction_direction = {
+        pygame.K_RIGHT: "r",
+        pygame.K_LEFT: "l",
+        pygame.K_UP: "u",
+        pygame.K_DOWN: "d"}
+
+
+class Move:
+    pacman = [pygame.image.load("images/pacman_player_right_open.png"),
+              pygame.image.load("images/pacman_player_left_open.png"),
+              pygame.image.load("images/pacman_player_down_open.png"),
+              pygame.image.load("images/pacman_player_up_open.png"),
+              pygame.image.load("images/pacman_closed_right_close.png"),
+              pygame.image.load("images/pacman_closed_left_close.png"),
+              pygame.image.load("images/pacman_closed_down_close.png"),
+              pygame.image.load("images/pacman_closed_up_close.png")
+              ]
+
+    images = {
+        "r": [pacman[0], pacman[4]],
+        "l": [pacman[1], pacman[5]],
+        "d": [pacman[2], pacman[6]],
+        "u": [pacman[3], pacman[7]],
+        "": [pacman[3], pacman[7]],
+    }
+
+    def __init__(self, current_pos, next_pos, current_frame_pos_x, current_frame_pos_y):
+        self.current_pos = current_pos
+        self.target = next_pos
+        self.current_frame_x = current_frame_pos_x
+        self.current_frame_y = current_frame_pos_y
+        self.direction = ""
+        self.axis = ""
+        self.image = pygame.image.load("images/pacman_closed_up_close.png")
+        self.image_ghost = pygame.image.load("ghosts_images/ghost.png")
 
 
 class CellDimention:
@@ -9,49 +46,45 @@ class CellDimention:
 
 class Adapter:
     #  this class to make calculs dynamic and varie with the variation of maze and window dimentions you put
-    def __init__(self, maze, window_dimentions):
+    def __init__(self, maze, window_dimention = (2600, 2000)):
         self.maze = maze
         self.cell_dimontions = CellDimention
-        self.window_dimentions = window_dimentions
+        self.window_dimentions = window_dimention
         self.maze_dimentions = ((len(maze[0]) * self.cell_dimontions.width), (len(maze) * self.cell_dimontions.height))
         self.start_drawing_point = ((self.window_dimentions[0] // 2) - (self.maze_dimentions[0]//2),
                                     (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
         if len(maze[0]) % 2 == 0:
-            self.player_position_x = (self.start_drawing_point[0] + (self.maze_dimentions[0] // 2) - 40)
+            self.player_position_x = (self.start_drawing_point[0] + (self.maze_dimentions[0] // 2) - self.cell_dimention.width // 2)
 
         else:
             self.player_position_x = (self.start_drawing_point[0] + self.maze_dimentions[0] // 2)
 
         if len(maze) % 2 == 0:
-            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2) - 40)
+            self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2) - self.cell_dimention.height // 2)
 
         else:
             self.player_position_y = (self.start_drawing_point[1] + (self.maze_dimentions[1] // 2))
 
         self.player_position = (self.player_position_x, self.player_position_y)
-        print(self.start_drawing_point)
-        print(self.player_position)
 
-        self.gums_positions, self.map_to_grad, self.super_gums_positions = self.get_gums_positions(maze)
+        self.gums_positions, self.window_to_grad, self.super_gums_positions = self.get_gums_positions(maze)
+        self.grad_to_window = {value: key for key, value in self.window_to_grad.items()}
 
     def get_gums_positions(self, maze):
         positions_super_gums = []
         positions_gums = []
-        map_to_grad = {}
+        window_to_grad = {}
         for y in range(len(maze)):
             for x in range(len(maze[0])):
-                node = maze[y][x]
-                # in this line i transfor the position in greed to position in window
-                # like node in greed (1, 1) => will be one (740, 440)
-                # THE +40 to drawing gums inside the cell which is (80, 80) a bit static im gonna fix it by
-                # change 40 by self.cell_dimontions.width // 2
-                positions_gums.append(((self.start_drawing_point[0] + (self.cell_dimontions.width * (x)) + 40),
-                                      (self.start_drawing_point[1] + (self.cell_dimontions.height * (y)) + 40)))
-                map_to_grad[positions_gums[-1]] = (x, y)
+                # node = maze[y][x]
+                positions_gums.append(((self.start_drawing_point[0] + (self.cell_dimontions.width * (x)) + self.cell_dimontions.width // 2),
+                                      (self.start_drawing_point[1] + (self.cell_dimontions.height * (y)) + self.cell_dimontions.height // 2)))
+                window_to_grad[positions_gums[-1]] = (x, y)
+                # window_to_grad ====> center of cell postion to grid[y][x]
                 if (y == 0 or y == len(maze) - 1) and (x == 0 or x == len(maze[0]) - 1):
                     positions_super_gums.append((x, y))
 
-        return positions_gums, map_to_grad, positions_super_gums
+        return positions_gums, window_to_grad, positions_super_gums
 
 
 class Cell:
@@ -92,7 +125,6 @@ class Drawing:
 
                 cell = Drawing.get_walls(node)
 
-                pygame.draw.line(screen, (0, 0, 255), (x_start, y_start), (x_start, y_start), 7)
                 if node == 15:
                     pygame.draw.rect(screen, (255, 255, 255), (x_start, y_start, adapter.cell_dimontions.width, adapter.cell_dimontions.height))
                 if cell.upper_wall:
@@ -116,7 +148,7 @@ class Drawing:
 
     def draw_gums(self, gum_poses):
         for i, j in gum_poses:
-            x, y = adapter.map_to_grad[(i, j)]
+            x, y = adapter.window_to_grad[(i, j)]
             node = adapter.maze[y][x]
             if node == 15:
                 pass
@@ -126,16 +158,15 @@ class Drawing:
             else:
                 pygame.draw.circle(screen, (255, 255, 255), (i, j), 3)
 
-    # @classmethod
-    def cheeck_colistion(self, pos_player, prev_pos, dr):
-        position_grad_current = adapter.map_to_grad.get(pos_player, None)
-        position_grad_old = adapter.map_to_grad.get(prev_pos, None)
+    def cheeck_colistion(self, current_pos, prev_pos, dr):
+        current_position_in_grad_ = adapter.window_to_grad.get(current_pos, None)
+        old_position_grad_old = adapter.window_to_grad.get(prev_pos, None)
 
-        if not position_grad_current or not position_grad_old:
+        if not current_position_in_grad_ or not old_position_grad_old:
             return 0
 
-        node_to = adapter.maze[position_grad_current[1]][position_grad_current[0]]
-        node_from = adapter.maze[position_grad_old[1]][position_grad_old[0]]
+        node_to = adapter.maze[current_position_in_grad_[1]][current_position_in_grad_[0]]
+        node_from = adapter.maze[old_position_grad_old[1]][old_position_grad_old[0]]
         cell_to = Drawing.get_walls(node_to)
         cell_from = Drawing.get_walls(node_from)
 
@@ -156,29 +187,33 @@ class Drawing:
 
         return 1
 
-    def draw_player(self, pos_player, prev_pos, dr):
+    def draw_player(self, pos_player, image):
 
-        if dr and not self.cheeck_colistion(pos_player, prev_pos, dr):
-            pygame.draw.circle(screen, (255, 0, 0), prev_pos, 5)
-            return prev_pos
+        screen.blit(image, (player_position[0] - 25, player_position[1] - 25))
 
-        else:
-            pygame.draw.circle(screen, (255, 0, 0), pos_player, 5)
+        if pos_player in adapter.gums_positions:
+            adapter.gums_positions.remove(pos_player)
+        return pos_player
 
-            if pos_player in adapter.gums_positions:
-                adapter.gums_positions.remove(pos_player)
-            return pos_player
+    def draw_ghost(self, ghost, player_pos, ghostp):
+
+        screen.blit(ghost.image, (ghostp[0] - 20, ghostp[1] - 20))
+
+        if player_pos:
+            ghost.player_pos = player_pos
+
+        if adapter.window_to_grad.get(ghostp, None):
+            ghost.current_coords = ghost.next_cell(ghost.current_coords, ghost.player_pos)
+
+        return ghostp, adapter.grad_to_window[ghost.current_coords]
 
 
 if __name__ == "__main__":
 
     cell_dimention = CellDimention()
-    # maze_engine = MazeGenerator(size=(14, 10))  # min logo
-    # maze_engine = MazeGenerator(size=(10, 10))
     maze_engine = MazeGenerator()
     maze = maze_engine.maze
     adapter = Adapter(maze, (2600, 2000))
-
     drawing = Drawing(adapter)
 
     width_window, height_window = adapter.window_dimentions
@@ -187,72 +222,129 @@ if __name__ == "__main__":
     player_pos_x, player_pos_y = adapter.player_position
     gums_poses = adapter.gums_positions
 
-    run = True
-
     screen = pygame.display.set_mode((width_window, height_window))
     pygame.display.set_caption("Pac-Man")
+    run = True
+    ghost = Ghost((0, 0), pygame.image.load("ghosts_images/ghost.png"), "normal", maze, adapter.player_position)
     clock = pygame.time.Clock()
+    speed = 470  # pixels per second
 
-    prev_pos = adapter.player_position
-    directions = ""
+    move = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y))
+
+    ghost_pos = adapter.grad_to_window[(0, 0)]
+    ghost_target = ghost_pos
+    ghost_move = Move(ghost_pos, ghost_target, float(ghost_pos[0]), float(ghost_pos[1]))
+
+
+    times = 1
+    open_mouth = 0
     while run:
-        r = clock.tick(5)
-        # dt = r / 1000
-        pygame.time.delay(100)
+
+        if times % 20 == 0:
+            if open_mouth:
+                open_mouth = 0
+            else:
+                open_mouth = 1
+            times = 1
+
+        r = clock.tick(100)
+        dt = r / 1000
 
         drawing.draw_maze(maze)
         drawing.draw_gums(adapter.gums_positions)
 
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 run = False
-
             if event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_q:
                     run = False
+                elif event.key in [pygame.K_DOWN, pygame.K_UP, pygame.K_LEFT, pygame.K_RIGHT]:
+                    move.direction = diction_direction[event.key]
 
-                if event.key == pygame.K_RIGHT:
-                    if drawing.cheeck_colistion((player_pos_x + cell_dimention.width, player_pos_y), prev_pos, 'r'):
-                        directions = 'r'
-                    else:
-                        directions = ''
+        if move.current_frame_x == move.target[0] and move.current_frame_y == move.target[1] :
 
-                elif event.key == pygame.K_LEFT:
-                    if drawing.cheeck_colistion((player_pos_x - cell_dimention.width, player_pos_y), prev_pos, 'l'):
-                        directions = 'l'
-                    else:
-                        directions = ''
+            if move.direction == "r":
+                new = (move.current_pos[0] + cell_dimention.width, move.current_pos[1])
+                if drawing.cheeck_colistion(new, move.current_pos, 'r'):
+                    move.target = (new[0], new[1])
+                    move.current_pos = new
+                    move.axis = "x"
 
-                elif event.key == pygame.K_UP:
-                    if drawing.cheeck_colistion((player_pos_x, player_pos_y - cell_dimention.height), prev_pos, 'u'):
-                        directions = 'u'
-                    else:
-                        directions = ''
+            if move.direction == "l":
+                new = (move.current_pos[0] - cell_dimention.width, move.current_pos[1])
+                if drawing.cheeck_colistion(new, move.current_pos, 'l'):
+                    move.target = (new[0], new[1])
+                    move.current_pos = new
+                    move.axis = "x"
 
-                elif event.key == pygame.K_DOWN:
-                    if drawing.cheeck_colistion((player_pos_x, player_pos_y + cell_dimention.height), prev_pos, 'd'):
-                        directions = 'd'
-                    else:
-                        directions = ''
+            if move.direction == "u":
+                new = (move.current_pos[0], move.current_pos[1] - cell_dimention.height)
+                if drawing.cheeck_colistion(new, move.current_pos, 'u'):
+                    move.target = (new[0], new[1])
+                    move.current_pos = new
+                    move.axis = "y"
 
-                # break
+            if move.direction == "d":
+                new = (move.current_pos[0], move.current_pos[1] + cell_dimention.height)
+                if drawing.cheeck_colistion(new, move.current_pos, 'd'):
+                    move.target = (new[0], new[1])
+                    move.current_pos = new
+                    move.axis = "y"
 
-        if directions == 'r':
-            player_pos_x += cell_dimention.width
+            move.image = Move.images[move.direction][open_mouth]
 
-        elif directions == 'l':
-            player_pos_x -= cell_dimention.width
+        if ghost_move.current_frame_x < ghost_move.target[0]:
+            ghost_move.current_frame_x += speed * dt
+            if ghost_move.current_frame_x > ghost_move.target[0]:
+                ghost_move.current_frame_x = ghost_move.target[0]
 
-        elif directions == 'u':
-            player_pos_y -= cell_dimention.height
+        elif ghost_move.current_frame_x > ghost_move.target[0]:
+            ghost_move.current_frame_x -= speed * dt
+            if ghost_move.current_frame_x < ghost_move.target[0]:
+                ghost_move.current_frame_x = ghost_move.target[0]
 
-        elif directions == 'd':
-            player_pos_y += cell_dimention.height
+        if ghost_move.current_frame_y < ghost_move.target[1]:
+            ghost_move.current_frame_y += speed * dt
+            if ghost_move.current_frame_y > ghost_move.target[1]:
+                ghost_move.current_frame_y = ghost_move.target[1]
 
-        player_pos_x, player_pos_y = drawing.draw_player((player_pos_x, player_pos_y), prev_pos, directions)
-        prev_pos = (player_pos_x, player_pos_y)
-        pygame.display.update()
+        elif ghost_move.current_frame_y > ghost_move.target[1]:
+            ghost_move.current_frame_y -= speed * dt
+            if ghost_move.current_frame_y < ghost_move.target[1]:
+                ghost_move.current_frame_y = ghost_move.target[1]
 
+        if move.axis == "x":
+            if move.current_frame_x < move.target[0]:
+                move.current_frame_x += speed * dt
+                if move.current_frame_x > move.target[0]:
+                    move.current_frame_x = move.target[0]
+
+            elif move.current_frame_x > move.target[0]:
+                move.current_frame_x -= speed * dt
+                if move.current_frame_x < move.target[0]:
+                    move.current_frame_x = move.target[0]
+
+        elif move.axis == "y":
+            if move.current_frame_y < move.target[1]:
+                move.current_frame_y += speed * dt
+                if move.current_frame_y > move.target[1]:
+                    move.current_frame_y = move.target[1]
+
+            elif move.current_frame_y > move.target[1]:
+                move.current_frame_y -= speed * dt
+                if move.current_frame_y < move.target[1]:
+                    move.current_frame_y = move.target[1]
+
+        player_position = (round(move.current_frame_x), round(move.current_frame_y))
+        ghost_position = (round(ghost_move.current_frame_x), round(ghost_move.current_frame_y))
+
+        drawing.draw_player(player_position, move.image)
+        ghost_move.current_pos, ghost_move.target = drawing.draw_ghost(ghost, adapter.window_to_grad.get(player_position, None), ghost_position)
+        if move.current_pos == ghost_move.current_pos or move.current_pos == ghost_move.target:
+            move = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y))
+
+        pygame.display.flip()
         screen.fill((0, 0, 0))
+
+        times += 1
