@@ -5,13 +5,14 @@ pygame.init()
 class Menu:
 
     def __init__(self, window, menu_img, images,
-                 selected_images=None) -> None:
+                 selected_images) -> None:
         self.window = window
         self.menu_img = menu_img
         self.images = images
         self.selected_images = selected_images
 
     def test(self):
+        i = 0
         menu_x = (2600 - 900) // 2
         menu_y = (2000 - 1350) // 2
         BUTTON_WIDTH = 550
@@ -34,13 +35,20 @@ class Menu:
             BORDER_WIDTH
         )
         in_menu = True
+        image = self.images[0]
         while in_menu:
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
-            self.window.blit(self.images[0], ((buttons_x, menu_y + 390)))
+            self.window.blit(image, ((buttons_x, menu_y + 390)))
             self.window.blit(self.images[1], ((buttons_x, menu_y + 550)))
             self.window.blit(self.images[2], ((buttons_x, menu_y + 710)))
             self.window.blit(self.images[3], ((buttons_x, menu_y + 870)))
             pygame.display.flip()
-            pygame.time.delay(8000)
-            in_menu = False
+            pygame.time.delay(1000)
+            # in_menu = False
+            if i:
+                image = self.images[0]
+                i = 0
+            else:
+                image = self.selected_images[0]
+                i = 1

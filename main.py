@@ -40,9 +40,10 @@ if __name__ == "__main__":
                 [pygame.image.load("menu_images/startgame.png"),
                  pygame.image.load("menu_images/high_scores.png"),
                  pygame.image.load("menu_images/instruction.png"),
-                 pygame.image.load("menu_images/exit.png")])
+                 pygame.image.load("menu_images/exit.png")],
+                [pygame.image.load("menu_images/selected_startgame.png")])
 
-    # menu.test()
+    menu.test()
 
     while run:
 
