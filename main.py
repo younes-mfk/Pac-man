@@ -1,5 +1,6 @@
 from mazegenerator.mazegenerator import MazeGenerator
 from ghosts import Ghost
+from menu import Menu
 import pygame
 from moves import Move
 from cell import Cell, CellDimention
@@ -197,6 +198,11 @@ if __name__ == "__main__":
     ghosts_poses = []
 
     ####################################################################################################################
+    menu = Menu(screen, pygame.image.load("menu_images/menu.png"),
+                [pygame.image.load("menu_images/startgame.png"),
+                 pygame.image.load("menu_images/instruction.png"),
+                 pygame.image.load("menu_images/high_scores.png")])
+
 
     times = 1
     open_mouth = 0
