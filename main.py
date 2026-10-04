@@ -203,6 +203,7 @@ if __name__ == "__main__":
                  pygame.image.load("menu_images/instruction.png"),
                  pygame.image.load("menu_images/high_scores.png")])
 
+    menu.test()
 
     times = 1
     open_mouth = 0
