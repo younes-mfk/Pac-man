@@ -151,7 +151,7 @@ class Drawing:
 if __name__ == "__main__":
 
     cell_dimention = CellDimention()
-    maze_engine = MazeGenerator()  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
+    maze_engine = MazeGenerator(size=(25, 21))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
     maze = maze_engine.maze
     adapter = Adapter(maze, (2600, 2000))
     # adapter = Adapter(maze, (3600, 2000))
@@ -271,8 +271,8 @@ if __name__ == "__main__":
 
         for i, ghost in enumerate(moved_ghosts):
             if i == 0:
-                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 40, dt)
-                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 40, dt)
+                ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 70, dt)
+                ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 70, dt)
             elif i == 1:
                 ghost.current_frame_x = drawing.next_frame(ghost.current_frame_x, ghost.target[0], speed - 80, dt)
                 ghost.current_frame_y = drawing.next_frame(ghost.current_frame_y, ghost.target[1], speed - 80, dt)

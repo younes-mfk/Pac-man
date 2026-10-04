@@ -13,6 +13,7 @@ class Ghost:
         self.type = type
         self.maze = maze
         self.player_pos = player_pos
+        self.edible = False
         self.visited_cells = set()
 
     def check_wall(self, direction, starting_cell, next_cell):
@@ -91,7 +92,7 @@ class Ghost:
 
         return float('inf')
 
-    def next_cell(self, starting_point, goal_point,  edible=False):
+    def next_cell(self, starting_point, goal_point):
         neighbors = self.get_valid_neighbors(starting_point[0],
                                              starting_point[1])
         unvisited_neighbors = [neighbor for neighbor in neighbors
@@ -106,7 +107,7 @@ class Ghost:
         if not roads:
             return starting_point
 
-        if not edible:
+        if not self.edible:
 
             if self.type == "normal":
                 to_cell = min(roads, key=lambda x: x[1])
