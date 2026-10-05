@@ -1,5 +1,7 @@
 from mazegenerator.mazegenerator import MazeGenerator
 from menu import Menu
+from ghosts import Ghost
+from UI import Menu
 import pygame
 from moves import Move
 from cell import CellDimention
@@ -41,9 +43,12 @@ if __name__ == "__main__":
                  pygame.image.load("menu_images/high_scores.png"),
                  pygame.image.load("menu_images/instruction.png"),
                  pygame.image.load("menu_images/exit.png")],
-                [pygame.image.load("menu_images/selected_startgame.png")])
+                [pygame.image.load("menu_images/selected_startgame.png"),
+                 pygame.image.load("menu_images/selected_high_scores.png"),
+                 pygame.image.load("menu_images/selected_instructions.png"),
+                 pygame.image.load("menu_images/selected_exit.png")])
 
-    menu.test()
+    menu.run()
 
     while run:
 
