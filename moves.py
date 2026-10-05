@@ -20,12 +20,33 @@ class Move:
         "": [pacman[3], pacman[7]],
     }
 
-    def __init__(self, current_pos, next_pos, current_frame_pos_x, current_frame_pos_y):
+    def __init__(self, current_pos, next_pos, current_frame_pos_x, current_frame_pos_y, frame):
         self.current_pos = current_pos
         self.target = next_pos
         self.current_frame_x = current_frame_pos_x
         self.current_frame_y = current_frame_pos_y
         self.direction = ""
         self.axis = ""
-        self.image = pygame.image.load("images/pacman_closed_up_close.png")
-        self.image_ghost = pygame.image.load("ghosts_images/ghost.png")
+        self.frame = frame
+
+    def next_frame(self, current_z, target_z, speed, dt):
+        returned = current_z
+
+        if current_z < target_z:
+            returned += speed * dt
+            if returned > target_z:
+                returned = target_z
+
+        elif current_z > target_z:
+            returned -= speed * dt
+            if returned < target_z:
+                returned = target_z
+
+        return returned
+
+    def next_frame_x_y(self, move, speed, dt):
+        move.current_frame_x = self.next_frame(move.current_frame_x, move.target[0], speed, dt)
+        move.current_frame_y = self.next_frame(move.current_frame_y, move.target[1], speed, dt)
+        player_position = (round(move.current_frame_x), round(move.current_frame_y))
+        move.frame = player_position
+        return player_position

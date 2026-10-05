@@ -5,7 +5,7 @@ import random
 
 class Ghost:
 
-    def __init__(self, spawn_point, image, type, maze, player_pos) -> None:
+    def __init__(self, spawn_point, image, type, maze, player_pos, speed) -> None:
         self.spawn_point = spawn_point
         self.image = image
         self.current_coords = spawn_point
@@ -15,6 +15,7 @@ class Ghost:
         self.player_pos = player_pos
         self.edible = False
         self.visited_cells = set()
+        self.speed = speed
 
     def check_wall(self, direction, starting_cell, next_cell):
         from_cell = starting_cell
