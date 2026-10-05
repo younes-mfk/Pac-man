@@ -1,6 +1,7 @@
 from mazegenerator.mazegenerator import MazeGenerator
 # from menu import Menu
 # from ghosts import Ghost
+from ghosts import Ghost
 from UI import Menu
 import pygame
 from moves import Move
@@ -56,10 +57,13 @@ if __name__ == "__main__":
                  pygame.image.load("menu_images/selected_high_scores.png"),
                  pygame.image.load("menu_images/selected_instructions.png"),
                  pygame.image.load("menu_images/selected_exit.png")])
-
-    menu.run()
-
+    state = "menu"
     while run:
 
-        run = G.run_the_gam(drawing, maze, adapter, ghosts, moved_ghosts,
-                            move_player, screen, diction_direction)
+        if state == "menu":
+            state = menu.run()
+
+        if state == "gameplay":
+            state = run = run = G.run_the_gam(drawing, maze, adapter, ghosts,
+                                              moved_ghosts, move_player,
+                                              screen, diction_direction)

@@ -1,11 +1,19 @@
 import pygame
 from moves import Move
+from UI import Pausemenu
 
 
 class GamePlay:
 
     def run_the_gam(self, drawing, maze, adapter, ghosts, moved_ghosts,
                     move_player, screen, diction_direction):
+        pause_menu = Pausemenu(
+            screen,
+            pygame.image.load("menu_images/pause_menu.png"),
+            [pygame.image.load("menu_images/resume_game.png"),
+             pygame.image.load("menu_images/return_menu.png")],
+            [pygame.image.load("menu_images/selected_resume_game.png"),
+             pygame.image.load("menu_images/selected_return_menu.png")])
         run = True
         clock = pygame.time.Clock()
         ghosts_poses = []
@@ -30,6 +38,10 @@ class GamePlay:
                     elif event.key in [pygame.K_DOWN, pygame.K_UP,
                                        pygame.K_LEFT, pygame.K_RIGHT]:
                         move_player.direction = diction_direction[event.key]
+                    elif event.key == pygame.K_p:
+                        state = pause_menu.run()
+                        if state == "menu":
+                            return state
 
             # ######################### animate the player  ##################
 

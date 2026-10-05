@@ -166,15 +166,80 @@ class Menu:
             else:
                 self.window.blit(self.selected_images[3], ((buttons_x, menu_y + 870)))
 
-            font = pygame.font.Font(None, 40)
+            # font = pygame.font.Font(None, 40)
 
-            text = font.render(
-                "YOUNES 24500",
-                True,
-                (255, 255, 0)
-            )
+            # text = font.render(
+            #     "YOUNES 24500",
+            #     True,
+            #     (255, 255, 0)
+            # )
 
-            self.window.blit(text, (500, 300))
+            # self.window.blit(text, (500, 300))
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+
+class Pausemenu:
+
+    def __init__(self, window, menu_img, images,
+                 selected_images) -> None:
+        self.window = window
+        self.menu_img = menu_img
+        self.images = images
+        self.selected_images = selected_images
+
+    def run(self):
+        menu_x = (2600 - 900) // 2
+        menu_y = (2000 - 1350) // 2
+        BUTTON_WIDTH = 550
+        buttons_x = menu_x + (menu_x - BUTTON_WIDTH) // 2
+
+        BLUE = (0, 100, 255)
+
+        BORDER_MARGIN = 50
+        BORDER_WIDTH = 12
+
+        pygame.draw.rect(
+            self.window,
+            BLUE,
+            (
+                BORDER_MARGIN,
+                BORDER_MARGIN,
+                2600 - BORDER_MARGIN * 2,
+                2000 - BORDER_MARGIN * 2
+            ),
+            BORDER_WIDTH
+        )
+        in_menu = True
+        selected = 0
+        while in_menu:
+            self.window.fill((0, 0, 0))
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        selected = (selected + 1) % 2
+                    elif event.key == pygame.K_UP:
+                        selected = (selected - 1) % 2
+                    elif event.key == pygame.K_RETURN:
+                        if not selected:
+                            return "gameplay"
+                        if selected == 1:
+                            return "menu"
+
+            self.window.blit(self.menu_img, (menu_x, menu_y))
+
+            if selected:
+                self.window.blit(self.images[0], ((buttons_x, menu_y + 550)))
+            else:
+                self.window.blit(self.selected_images[0], ((buttons_x, menu_y + 550)))
+
+            if selected != 1:
+                self.window.blit(self.images[1], ((buttons_x, menu_y + 710)))
+
+            else:
+                self.window.blit(self.selected_images[1], ((buttons_x, menu_y + 710)))
 
             pygame.display.flip()
             pygame.time.delay(10)
