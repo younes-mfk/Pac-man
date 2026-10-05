@@ -24,12 +24,12 @@ class Drawing:
             cell.left_wall = 1
         return cell
 
-
     def draw_maze(self, maze: list):
         x_start_orig, y_start_orig = self.adapter.start_drawing_point
         x_start, y_start = self.adapter.start_drawing_point
 
-        cell_width, cell_height = Drawing.cell_dimentions.width, Drawing.cell_dimentions.height
+        (cell_width, cell_height) = (Drawing.cell_dimentions.width,
+                                     Drawing.cell_dimentions.height)
 
         for y, list_a in enumerate(maze, start=1):
             for x, node in enumerate(list_a, start=1):
@@ -37,20 +37,34 @@ class Drawing:
                 cell = Drawing.get_walls(node)
 
                 if node == 15:
-                    pygame.draw.rect(self.screen, (255, 255, 255), (x_start, y_start, self.adapter.cell_dimontions.width, self.adapter.cell_dimontions.height))
+                    pygame.draw.rect(self.screen, (255, 255, 255), (x_start,
+                                     y_start,
+                                     self.adapter.cell_dimontions.width,
+                                     self.adapter.cell_dimontions.height))
+
                 if cell.upper_wall:
-                    pygame.draw.line(self.screen, (0, 0, 255), (x_start, y_start), (x_start + cell_width, y_start), 8)
+                    pygame.draw.line(self.screen, (0, 0, 255),
+                                     (x_start, y_start),
+                                     (x_start + cell_width, y_start), 8)
 
                 if cell.left_wall:
-                    pygame.draw.line(self.screen, (0, 0, 255), (x_start, y_start), (x_start, y_start + cell_height), 8)
+                    pygame.draw.line(self.screen, (0, 0, 255),
+                                     (x_start, y_start),
+                                     (x_start, y_start + cell_height), 8)
 
                 if x == len(list_a):
                     if cell.right_wall:
-                        pygame.draw.line(self.screen, (0, 0, 255), (x_start + cell_width, y_start), (x_start + cell_width, y_start + cell_height), 8)
+                        pygame.draw.line(self.screen, (0, 0, 255),
+                                         (x_start + cell_width, y_start),
+                                         (x_start + cell_width, y_start +
+                                          cell_height), 8)
 
                 if y == len(maze):
                     if cell.lower_wall:
-                        pygame.draw.line(self.screen, (0, 0, 255), (x_start, y_start + cell_height), (x_start + cell_width, y_start + cell_height), 8)
+                        pygame.draw.line(self.screen, (0, 0, 255),
+                                         (x_start, y_start + cell_height),
+                                         (x_start + cell_width, y_start +
+                                          cell_height), 8)
 
                 x_start += cell_width
 
@@ -118,39 +132,52 @@ class Drawing:
             ghost.player_pos = player_pos
 
         if self.adapter.window_to_grad.get(ghostp, None):
-            ghost.current_coords = ghost.next_cell(ghost.current_coords, ghost.player_pos)
+            ghost.current_coords = ghost.next_cell(ghost.current_coords,
+                                                   ghost.player_pos)
 
         return ghostp, self.adapter.grad_to_window[ghost.current_coords]
 
-    def is_colliding(self, pacman, ghost, threshold=40):
+    def collusion(self, pacman, ghost, threshold=40):
         dx = pacman[0] - ghost[0]
         dy = pacman[1] - ghost[1]
         return math.sqrt(dx * dx + dy * dy) < threshold
 
     def update_pacman_move(self, move, open_mouth):
         if move.direction == "r":
-            new = (move.current_pos[0] + self.cell_dimentions.width, move.current_pos[1])
+
+            new = (move.current_pos[0] + self.cell_dimentions.width,
+                   move.current_pos[1])
+
             if self.cheeck_colistion(new, move.current_pos, 'r'):
                 move.target = (new[0], new[1])
                 move.current_pos = new
                 move.axis = "x"
 
         if move.direction == "l":
-            new = (move.current_pos[0] - self.cell_dimentions.width, move.current_pos[1])
+
+            new = (move.current_pos[0] - self.cell_dimentions.width,
+                   move.current_pos[1])
+
             if self.cheeck_colistion(new, move.current_pos, 'l'):
                 move.target = (new[0], new[1])
                 move.current_pos = new
                 move.axis = "x"
 
         if move.direction == "u":
-            new = (move.current_pos[0], move.current_pos[1] - self.cell_dimentions.height)
+
+            new = (move.current_pos[0],
+                   move.current_pos[1] - self.cell_dimentions.height)
+
             if self.cheeck_colistion(new, move.current_pos, 'u'):
                 move.target = (new[0], new[1])
                 move.current_pos = new
                 move.axis = "y"
 
         if move.direction == "d":
-            new = (move.current_pos[0], move.current_pos[1] + self.cell_dimentions.height)
+
+            new = (move.current_pos[0],
+                   move.current_pos[1] + self.cell_dimentions.height)
+
             if self.cheeck_colistion(new, move.current_pos, 'd'):
                 move.target = (new[0], new[1])
                 move.current_pos = new

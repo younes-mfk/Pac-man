@@ -1,6 +1,6 @@
 from mazegenerator.mazegenerator import MazeGenerator
-from menu import Menu
-from ghosts import Ghost
+# from menu import Menu
+# from ghosts import Ghost
 from UI import Menu
 import pygame
 from moves import Move
@@ -25,7 +25,12 @@ if __name__ == "__main__":
     maze = maze_engine.maze
     screen = pygame.display.set_mode((2600, 2000))
     adapter = Adapter(maze, (2600, 2000))
-    move_player = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y), adapter.player_position)
+
+    move_player = Move(adapter.player_position, adapter.player_position,
+                       float(adapter.player_position_x),
+                       float(adapter.player_position_y),
+                       adapter.player_position)
+
     drawing = Drawing(adapter, screen)
     clock = pygame.time.Clock()
     pygame.display.set_caption("Pac-Man")
@@ -33,8 +38,12 @@ if __name__ == "__main__":
     ghoste_creater = GhostsMaker()
     # speed = 470
 
-    ghosts = ghoste_creater.create_ghosts_obj(adapter.spawn_corners, maze, adapter.player_position, [320, 200, 130, 130])
-    moved_ghosts = ghoste_creater.create_ghosts_moves(adapter.grad_to_window, adapter.spawn_corners)
+    ghosts = ghoste_creater.create_ghosts_obj(adapter.spawn_corners, maze,
+                                              adapter.player_position,
+                                              [320, 200, 130, 130])
+
+    moved_ghosts = ghoste_creater.create_ghosts_moves(adapter.grad_to_window,
+                                                      adapter.spawn_corners)
 
     run = True
 
@@ -52,4 +61,5 @@ if __name__ == "__main__":
 
     while run:
 
-        run = G.run_the_gam(drawing, maze, adapter, ghosts, moved_ghosts, move_player, screen, diction_direction)
+        run = G.run_the_gam(drawing, maze, adapter, ghosts, moved_ghosts,
+                            move_player, screen, diction_direction)

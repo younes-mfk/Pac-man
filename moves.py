@@ -20,7 +20,9 @@ class Move:
         "": [pacman[3], pacman[7]],
     }
 
-    def __init__(self, current_pos, next_pos, current_frame_pos_x, current_frame_pos_y, frame):
+    def __init__(self, current_pos, next_pos, current_frame_pos_x,
+                 current_frame_pos_y, frame):
+
         self.current_pos = current_pos
         self.target = next_pos
         self.current_frame_x = current_frame_pos_x
@@ -45,8 +47,14 @@ class Move:
         return returned
 
     def next_frame_x_y(self, move, speed, dt):
-        move.current_frame_x = self.next_frame(move.current_frame_x, move.target[0], speed, dt)
-        move.current_frame_y = self.next_frame(move.current_frame_y, move.target[1], speed, dt)
-        player_position = (round(move.current_frame_x), round(move.current_frame_y))
+
+        move.current_frame_x = self.next_frame(move.current_frame_x,
+                                               move.target[0], speed, dt)
+
+        move.current_frame_y = self.next_frame(move.current_frame_y,
+                                               move.target[1], speed, dt)
+
+        player_position = (round(move.current_frame_x),
+                           round(move.current_frame_y))
         move.frame = player_position
         return player_position

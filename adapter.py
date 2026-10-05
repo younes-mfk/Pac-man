@@ -5,12 +5,20 @@ class Adapter:
     #  this class to make calculs dynamic and varie
     #  with the variation of maze and window dimentions you put
     def __init__(self, maze, window_dimention=(2600, 2000)):
+
         self.maze = maze
+
         self.cell_dimontions = CellDimention
+
         self.window_dimentions = window_dimention
-        self.maze_dimentions = ((len(maze[0]) * self.cell_dimontions.width), (len(maze) * self.cell_dimontions.height))
-        self.start_drawing_point = ((self.window_dimentions[0] // 2) - (self.maze_dimentions[0]//2),
-                                    (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
+
+        self.maze_dimentions = ((len(maze[0]) * self.cell_dimontions.width),
+                                (len(maze) * self.cell_dimontions.height))
+
+        self.start_drawing_point = (
+            (self.window_dimentions[0] // 2) - (self.maze_dimentions[0]//2),
+            (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
+
         self.speed = 470
         if len(maze[0]) % 2 == 0:
             self.player_position_x = (self.start_drawing_point[0] +
