@@ -182,4 +182,7 @@ class Drawing:
                 move.target = (new[0], new[1])
                 move.current_pos = new
                 move.axis = "y"
-        move.image = move.images[move.direction][open_mouth]
+        if move.koller is False:
+            move.image = move.respawn_images[move.direction][open_mouth]
+        else:
+            move.image = move.images[move.direction][open_mouth]

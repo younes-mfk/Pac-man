@@ -6,11 +6,30 @@ class Move:
               pygame.image.load("images/pacman_player_left_open.png"),
               pygame.image.load("images/pacman_player_down_open.png"),
               pygame.image.load("images/pacman_player_up_open.png"),
+
               pygame.image.load("images/pacman_closed_right_close.png"),
               pygame.image.load("images/pacman_closed_left_close.png"),
               pygame.image.load("images/pacman_closed_down_close.png"),
-              pygame.image.load("images/pacman_closed_up_close.png")
+              pygame.image.load("images/pacman_closed_up_close.png"),
+
+              pygame.image.load("images/pacman_open_right_transparent.png"),
+              pygame.image.load("images/pacman_open_left_transparent.png"),
+              pygame.image.load("images/pacman_open_down_transparent.png"),
+              pygame.image.load("images/pacman_open_up_transparent.png"),
+
+              pygame.image.load("images/pacman_closed_right_transparent.png"),
+              pygame.image.load("images/pacman_closed_left_transparent.png"),
+              pygame.image.load("images/pacman_closed_down_transparent.png"),
+              pygame.image.load("images/pacman_closed_up_transparent.png")
               ]
+
+    respawn_images = {
+        "r": [pacman[8], pacman[12]],
+        "l": [pacman[9], pacman[13]],
+        "d": [pacman[10], pacman[14]],
+        "u": [pacman[11], pacman[15]],
+        "": [pacman[11], pacman[15]]
+    }
 
     images = {
         "r": [pacman[0], pacman[4]],
@@ -30,6 +49,7 @@ class Move:
         self.direction = ""
         self.axis = ""
         self.frame = frame
+        self.koller = True
 
     def next_frame(self, current_z, target_z, speed, dt):
         returned = current_z
