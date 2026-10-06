@@ -32,11 +32,10 @@ class GamePlay:
             # ########################## take orders #########################
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
+                    return "exit"
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
-                        run = False
-                        return False
+                        return "exit"
                     elif event.key in [pygame.K_DOWN, pygame.K_UP,
                                        pygame.K_LEFT, pygame.K_RIGHT]:
                         pacman.move.direction = diction_direction[event.key]

@@ -57,6 +57,8 @@ if __name__ == "__main__":
             state = menu.run()
 
         if state == "gameplay":
-            state = run = run = G.run_the_gam(drawing, maze, adapter, ghosts,
-                                              screen, diction_direction,
-                                              pacman)
+            state = G.run_the_gam(drawing, maze, adapter, ghosts,
+                                  screen, diction_direction,
+                                  pacman)
+        if state == "exit":
+            run = False
