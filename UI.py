@@ -84,12 +84,19 @@ class Scoreboard:
 
 class Menu:
 
-    def __init__(self, window, menu_img, images,
-                 selected_images) -> None:
+    def __init__(self, window) -> None:
         self.window = window
-        self.menu_img = menu_img
-        self.images = images
-        self.selected_images = selected_images
+        self.menu_img = pygame.image.load("menu_images/menu.png")
+        self.images = [pygame.image.load("menu_images/startgame.png"),
+                       pygame.image.load("menu_images/high_scores.png"),
+                       pygame.image.load("menu_images/instruction.png"),
+                       pygame.image.load("menu_images/exit.png")]
+        self.selected_images = [
+            pygame.image.load("menu_images/selected_startgame.png"),
+            pygame.image.load("menu_images/selected_high_scores.png"),
+            pygame.image.load("menu_images/selected_instructions.png"),
+            pygame.image.load("menu_images/selected_exit.png")]
+
         self.instructions = Instructions(
                                         window,
                                         pygame.image.load(
@@ -169,7 +176,7 @@ class Menu:
             # font = pygame.font.Font(None, 40)
 
             # text = font.render(
-            #     "YOUNES 24500",
+            #     "YOUNES 24500",    # chehad l9lawi hhh
             #     True,
             #     (255, 255, 0)
             # )
@@ -182,12 +189,14 @@ class Menu:
 
 class Pausemenu:
 
-    def __init__(self, window, menu_img, images,
-                 selected_images) -> None:
+    def __init__(self, window) -> None:
         self.window = window
-        self.menu_img = menu_img
-        self.images = images
-        self.selected_images = selected_images
+        self.menu_img = pygame.image.load("menu_images/pause_menu.png")
+        self.images = [pygame.image.load("menu_images/resume_game.png"),
+                       pygame.image.load("menu_images/return_menu.png")]
+        self.selected_images = [
+                    pygame.image.load("menu_images/selected_resume_game.png"),
+                    pygame.image.load("menu_images/selected_return_menu.png")]
 
     def run(self):
         menu_x = (2600 - 900) // 2

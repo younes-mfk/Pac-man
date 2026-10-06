@@ -6,19 +6,14 @@ class GamePlay:
 
     def run_the_gam(self, drawing, maze, adapter, ghosts,
                     screen, diction_direction, pacman):
-        pause_menu = Pausemenu(
-            screen,
-            pygame.image.load("menu_images/pause_menu.png"),
-            [pygame.image.load("menu_images/resume_game.png"),
-             pygame.image.load("menu_images/return_menu.png")],
-            [pygame.image.load("menu_images/selected_resume_game.png"),
-             pygame.image.load("menu_images/selected_return_menu.png")])
+        pause_menu = Pausemenu(screen)
 
         run = True
         clock = pygame.time.Clock()
         ghosts_poses = []
         start_time = None
-        start_time_super = None
+        # start_time_super = None
+
         while run:
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
@@ -49,6 +44,8 @@ class GamePlay:
             if pacman.move.frame == pacman.move.target:
                 drawing.update_pacman_move(pacman, open_mouth)
 
+            # ######################### take next frame to draw  ############
+
             pacman.current_frame = pacman.move.next_frame_x_y(pacman.move,
                                                               pacman.speed, dt)
 
@@ -68,7 +65,6 @@ class GamePlay:
 
                     for ghost in ghosts:
                         ghost.image = pygame.image.load("ghosts_images/ghost.png")
-
                         ghost.edible = False
 
             # ######################### animate the ghosts  ##################

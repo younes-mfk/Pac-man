@@ -14,46 +14,47 @@ diction_direction = {
         pygame.K_DOWN: "d"}
 
 
+class Main():
+    maze_engine = MazeGenerator()  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
+
+    def main(self):
+        # ############# screen initialization ###########
+        screen = pygame.display.set_mode((2600, 2000))
+        pygame.display.set_caption("Pac-Man")
+
+        # ############# maze initialization ###########
+        maze = self.maze_engine.maze
+
+        # ############# helpers ###########
+        adapter = Adapter(maze, (2600, 2000))
+        drawing = Drawing(adapter, screen)
+        ghoste_creater = GhostsMaker()
+        G = GamePlay()
+        menu = Menu(screen)
+
+        run = True
+        state = "menu"
+
+        while run:
+
+            if state == "menu":
+                pacman = PacMan(adapter.player_position)
+                ghosts = ghoste_creater.create_ghosts(adapter.spawn_corners,
+                                                      maze,
+                                                      adapter.player_position,
+                                                      [320, 200, 130, 130],
+                                                      adapter.grad_to_window)
+                state = menu.run()
+
+            if state == "gameplay":
+                state = G.run_the_gam(drawing, maze, adapter, ghosts,
+                                      screen, diction_direction,
+                                      pacman)
+
+            if state == "exit":
+                run = False
+
+
 if __name__ == "__main__":
-
-    maze_engine = MazeGenerator(size=(15, 15))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
-    maze = maze_engine.maze
-    screen = pygame.display.set_mode((2600, 2000))
-    adapter = Adapter(maze, (2600, 2000))
-    pacman = PacMan(adapter.player_position)
-
-    drawing = Drawing(adapter, screen)
-    clock = pygame.time.Clock()
-    pygame.display.set_caption("Pac-Man")
-    G = GamePlay()
-
-    ghoste_creater = GhostsMaker()
-
-    ghosts = ghoste_creater.create_ghosts_obj(adapter.spawn_corners, maze,
-                                              adapter.player_position,
-                                              [320, 200, 130, 130],
-                                              adapter.grad_to_window)
-
-    run = True
-
-    menu = Menu(screen, pygame.image.load("menu_images/menu.png"),
-                [pygame.image.load("menu_images/startgame.png"),
-                 pygame.image.load("menu_images/high_scores.png"),
-                 pygame.image.load("menu_images/instruction.png"),
-                 pygame.image.load("menu_images/exit.png")],
-                [pygame.image.load("menu_images/selected_startgame.png"),
-                 pygame.image.load("menu_images/selected_high_scores.png"),
-                 pygame.image.load("menu_images/selected_instructions.png"),
-                 pygame.image.load("menu_images/selected_exit.png")])
-    state = "menu"
-    while run:
-
-        if state == "menu":
-            state = menu.run()
-
-        if state == "gameplay":
-            state = G.run_the_gam(drawing, maze, adapter, ghosts,
-                                  screen, diction_direction,
-                                  pacman)
-        if state == "exit":
-            run = False
+    main = Main()
+    main.main()

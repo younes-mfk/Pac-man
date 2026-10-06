@@ -6,8 +6,8 @@ from moves import Move
 class GhostsMaker:
     image = pygame.image.load("ghosts_images/ghost.png")
 
-    def create_ghosts_obj(self, spawn_corners: int, maze, player_position,
-                          speed, grad_to_window):
+    def create_ghosts(self, spawn_corners: int, maze, player_position,
+                      speed, grad_to_window):
 
         ghosts = []
 
