@@ -1,5 +1,6 @@
 from moves import Move
 from parse_config import GameData
+import sys
 
 
 class PacMan:
@@ -24,3 +25,23 @@ class PacMan:
                            pacman.start_pos)
 
         pacman.current_frame = pacman.start_pos
+
+    def pacman_is_alive(self, passed_time_game):
+        if self.data_of_game.hearts == 0:
+            print("WA METYY SIR TAWA")
+            print("modifie rules from the file parse_config.py")
+            sys.exit()
+
+        if passed_time_game / 1000 > self.data_of_game.level_time:
+            print("SALA LW9T SIR TAWA")
+            print("modifie rules from the file parse_config.py")
+            sys.exit()
+
+        print(" score : ", end=" ")
+        print(self.data_of_game.current_score, end=" | ")
+        print(" hearts : ", end=" ")
+        print(self.data_of_game.hearts, end=" | ")
+        print(" level : ", end=" ")
+        print(self.data_of_game.level, end=" | ")
+        print(" time passed : ", end=" ")
+        print(round(self.data_of_game.level_time - passed_time_game/1000))
