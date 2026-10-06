@@ -1,6 +1,7 @@
 import pygame
 from UI import Pausemenu
 from ghost_maker import GhostsMaker
+import sys
 
 class GamePlay:
 
@@ -13,8 +14,29 @@ class GamePlay:
         ghosts_poses = []
         start_time = None
         # start_time_super = None
-
+        timer = pygame.time.get_ticks()
         while run:
+
+            if pacman.data_of_game.hearts == 0:
+                print("WA METYY SIR TAWA")
+                print("modifie rules from the file parse_config.py")
+
+                sys.exit()
+
+            passed_time_game = pygame.time.get_ticks() - timer
+            if passed_time_game / 1000 > pacman.data_of_game.level_time:
+                print("SALA LW9T SIR TAWA")
+                print("modifie rules from the file parse_config.py")
+                sys.exit()
+
+            print(" score : ", end=" ")
+            print(pacman.data_of_game.current_score, end=" | ")
+            print(" hearts : ", end=" ")
+            print(pacman.data_of_game.hearts, end=" | ")
+            print(" level : ", end=" ")
+            print(pacman.data_of_game.level, end=" | ")
+            print(" time passed : ", end=" ")
+            print(round(pacman.data_of_game.level_time - passed_time_game/1000))
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
             r = clock.tick(100)
@@ -76,7 +98,7 @@ class GamePlay:
 
             # ######################### drawing player  #################
 
-            drawing.draw_player(pacman.current_frame, pacman.move.image)
+            drawing.draw_player(pacman.current_frame, pacman.move.image, pacman)
 
             # ######################### drawing and respawn  #################
 
@@ -90,7 +112,9 @@ class GamePlay:
                         if passed_time / 1000 >= 2:  # if 2 seconds are passed
                             if pacman.super and ghosts[i].edible:
                                 ghosts[i] = GhostsMaker.restart_ghost(ghosts[i], adapter.grad_to_window, pacman.current_frame)
+                                pacman.data_of_game.ate_ghost()
                             else:
+                                pacman.data_of_game.hearts -= 1
                                 pacman.restart_move(pacman)
                                 pacman.mortal = False
                                 start_time = pygame.time.get_ticks()
@@ -98,8 +122,10 @@ class GamePlay:
                     else:  # the first time no condition for time because you respawned normal mode
                         if pacman.super and ghosts[i].edible:
                             ghosts[i] = GhostsMaker.restart_ghost(ghosts[i], adapter.grad_to_window, pacman.current_frame)
+                            pacman.data_of_game.ate_ghost()
 
                         else:
+                            pacman.data_of_game.hearts -= 1
                             pacman.restart_move(pacman)
                             pacman.mortal = False
                             start_time = pygame.time.get_ticks()

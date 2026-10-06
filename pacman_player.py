@@ -1,4 +1,5 @@
 from moves import Move
+from parse_config import GameData
 
 
 class PacMan:
@@ -13,6 +14,7 @@ class PacMan:
                          float(start_pos[1]),
                          start_pos)
         self.super = False
+        self.data_of_game = GameData()
 
     def restart_move(self, pacman):
         pacman.move = Move(pacman.start_pos,

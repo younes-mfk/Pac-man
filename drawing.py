@@ -116,7 +116,7 @@ class Drawing:
 
         return 1
 
-    def draw_player(self, pos_player, image):
+    def draw_player(self, pos_player, image, pacman):
 
         self.screen.blit(image, (pos_player[0] - 25, pos_player[1] - 25))
 
@@ -124,6 +124,9 @@ class Drawing:
             self.adapter.gums_positions.remove(pos_player)
             if self.adapter.window_to_grad[pos_player] in self.adapter.super_gums_positions:
                 self.adapter.super_gums_positions.remove(self.adapter.window_to_grad[pos_player])
+                pacman.data_of_game.ate_supergum()
+            else:
+                pacman.data_of_game.ate_gum()
 
         return pos_player
 

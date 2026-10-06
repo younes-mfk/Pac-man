@@ -6,6 +6,8 @@ from drawing import Drawing
 from ghost_maker import GhostsMaker
 from game_play import GamePlay
 from pacman_player import PacMan
+# from parse_config import GameData
+
 
 diction_direction = {
         pygame.K_RIGHT: "r",
@@ -38,6 +40,8 @@ class Main():
         while run:
 
             if state == "menu":
+                # data_of_game = GameData()
+
                 pacman = PacMan(adapter.player_position)
                 ghosts = ghoste_creater.create_ghosts(adapter.spawn_corners,
                                                       maze,
