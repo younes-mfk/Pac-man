@@ -6,7 +6,7 @@ from UI import Pausemenu
 class GamePlay:
 
     def run_the_gam(self, drawing, maze, adapter, ghosts, moved_ghosts,
-                    move_player, screen, diction_direction):
+                    screen, diction_direction, pacman):
         pause_menu = Pausemenu(
             screen,
             pygame.image.load("menu_images/pause_menu.png"),
@@ -14,9 +14,11 @@ class GamePlay:
              pygame.image.load("menu_images/return_menu.png")],
             [pygame.image.load("menu_images/selected_resume_game.png"),
              pygame.image.load("menu_images/selected_return_menu.png")])
+
         run = True
         clock = pygame.time.Clock()
         ghosts_poses = []
+        start_time = None
         while run:
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
@@ -37,7 +39,7 @@ class GamePlay:
                         return False
                     elif event.key in [pygame.K_DOWN, pygame.K_UP,
                                        pygame.K_LEFT, pygame.K_RIGHT]:
-                        move_player.direction = diction_direction[event.key]
+                        pacman.move.direction = diction_direction[event.key]
                     elif event.key == pygame.K_p:
                         state = pause_menu.run()
                         if state == "menu":
@@ -45,11 +47,11 @@ class GamePlay:
 
             # ######################### animate the player  ##################
 
-            if move_player.frame == move_player.target:
-                drawing.update_pacman_move(move_player, open_mouth)
+            if pacman.move.frame == pacman.move.target:
+                drawing.update_pacman_move(pacman, open_mouth)
 
-            player_position = move_player.next_frame_x_y(move_player,
-                                                         adapter.speed, dt)
+            pacman.current_frame = pacman.move.next_frame_x_y(pacman.move,
+                                                              pacman.speed, dt)
 
             # ######################### animate the ghosts  ##################
 
@@ -60,14 +62,29 @@ class GamePlay:
 
             # ######################### drawing and respawn  #################
 
-            drawing.draw_player(player_position, move_player.image)
+            drawing.draw_player(pacman.current_frame, pacman.move.image)
 
             for i, ghost_position in enumerate(ghosts_poses):
-                moved_ghosts[i].current_pos, moved_ghosts[i].target = drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(player_position, None), ghost_position)
+                moved_ghosts[i].current_pos, moved_ghosts[i].target = drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(pacman.current_frame, None), ghost_position)
 
-                if drawing.collusion(move_player.frame, moved_ghosts[i].frame):
-                    move_player = Move(adapter.player_position, adapter.player_position, float(adapter.player_position_x), float(adapter.player_position_y), adapter.player_position)
+                if drawing.collusion(pacman.current_frame, moved_ghosts[i].frame):
+                    if start_time:
+                        passed_time = pygame.time.get_ticks() - start_time
+                        if passed_time / 1000 >= 2:
+                            pacman.restart_move(pacman)
+                            pacman.mortal = False
+                            start_time = pygame.time.get_ticks()
+                    else:
+                        pacman.restart_move(pacman)
+                        pacman.mortal = False
+                        start_time = pygame.time.get_ticks()
+
                 ghosts_poses = []
+
+            if start_time:
+                passed_time = pygame.time.get_ticks() - start_time
+                if passed_time / 1000 >= 2:
+                    pacman.mortal = True
 
             pygame.display.flip()
             screen.fill((0, 0, 0))

@@ -49,7 +49,6 @@ class Move:
         self.direction = ""
         self.axis = ""
         self.frame = frame
-        self.koller = True
 
     def next_frame(self, current_z, target_z, speed, dt):
         returned = current_z

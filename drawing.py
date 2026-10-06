@@ -142,47 +142,48 @@ class Drawing:
         dy = pacman[1] - ghost[1]
         return math.sqrt(dx * dx + dy * dy) < threshold
 
-    def update_pacman_move(self, move, open_mouth):
-        if move.direction == "r":
+    def update_pacman_move(self, pacman, open_mouth):
+        if pacman.move.direction == "r":
 
-            new = (move.current_pos[0] + self.cell_dimentions.width,
-                   move.current_pos[1])
+            new = (pacman.move.current_pos[0] + self.cell_dimentions.width,
+                   pacman.move.current_pos[1])
 
-            if self.cheeck_colistion(new, move.current_pos, 'r'):
-                move.target = (new[0], new[1])
-                move.current_pos = new
-                move.axis = "x"
+            if self.cheeck_colistion(new, pacman.move.current_pos, 'r'):
+                pacman.move.target = (new[0], new[1])
+                pacman.move.current_pos = new
+                pacman.move.axis = "x"
 
-        if move.direction == "l":
+        if pacman.move.direction == "l":
 
-            new = (move.current_pos[0] - self.cell_dimentions.width,
-                   move.current_pos[1])
+            new = (pacman.move.current_pos[0] - self.cell_dimentions.width,
+                   pacman.move.current_pos[1])
 
-            if self.cheeck_colistion(new, move.current_pos, 'l'):
-                move.target = (new[0], new[1])
-                move.current_pos = new
-                move.axis = "x"
+            if self.cheeck_colistion(new, pacman.move.current_pos, 'l'):
+                pacman.move.target = (new[0], new[1])
+                pacman.move.current_pos = new
+                pacman.move.axis = "x"
 
-        if move.direction == "u":
+        if pacman.move.direction == "u":
 
-            new = (move.current_pos[0],
-                   move.current_pos[1] - self.cell_dimentions.height)
+            new = (pacman.move.current_pos[0],
+                   pacman.move.current_pos[1] - self.cell_dimentions.height)
 
-            if self.cheeck_colistion(new, move.current_pos, 'u'):
-                move.target = (new[0], new[1])
-                move.current_pos = new
-                move.axis = "y"
+            if self.cheeck_colistion(new, pacman.move.current_pos, 'u'):
+                pacman.move.target = (new[0], new[1])
+                pacman.move.current_pos = new
+                pacman.move.axis = "y"
 
-        if move.direction == "d":
+        if pacman.move.direction == "d":
 
-            new = (move.current_pos[0],
-                   move.current_pos[1] + self.cell_dimentions.height)
+            new = (pacman.move.current_pos[0],
+                   pacman.move.current_pos[1] + self.cell_dimentions.height)
 
-            if self.cheeck_colistion(new, move.current_pos, 'd'):
-                move.target = (new[0], new[1])
-                move.current_pos = new
-                move.axis = "y"
-        if move.koller is False:
-            move.image = move.respawn_images[move.direction][open_mouth]
+            if self.cheeck_colistion(new, pacman.move.current_pos, 'd'):
+                pacman.move.target = (new[0], new[1])
+                pacman.move.current_pos = new
+                pacman.move.axis = "y"
+
+        if pacman.mortal is False:
+            pacman.move.image = pacman.move.respawn_images[pacman.move.direction][open_mouth]
         else:
-            move.image = move.images[move.direction][open_mouth]
+            pacman.move.image = pacman.move.images[pacman.move.direction][open_mouth]

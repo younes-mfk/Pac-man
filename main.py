@@ -10,7 +10,7 @@ from adapter import Adapter
 from drawing import Drawing
 from ghost_maker import GhostsMaker
 from game_play import GamePlay
-
+from pacman_player import PacMan
 
 diction_direction = {
         pygame.K_RIGHT: "r",
@@ -21,24 +21,18 @@ diction_direction = {
 
 if __name__ == "__main__":
 
-    cell_dimention = CellDimention()
     maze_engine = MazeGenerator(size=(15, 15))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
     maze = maze_engine.maze
     screen = pygame.display.set_mode((2600, 2000))
     adapter = Adapter(maze, (2600, 2000))
-
-    move_player = Move(adapter.player_position, adapter.player_position,
-                       float(adapter.player_position_x),
-                       float(adapter.player_position_y),
-                       adapter.player_position)
+    pacman = PacMan(adapter.player_position)
 
     drawing = Drawing(adapter, screen)
     clock = pygame.time.Clock()
     pygame.display.set_caption("Pac-Man")
     G = GamePlay()
-    ghoste_creater = GhostsMaker()
-    # speed = 470
 
+    ghoste_creater = GhostsMaker()
     ghosts = ghoste_creater.create_ghosts_obj(adapter.spawn_corners, maze,
                                               adapter.player_position,
                                               [320, 200, 130, 130])
@@ -65,5 +59,6 @@ if __name__ == "__main__":
 
         if state == "gameplay":
             state = run = run = G.run_the_gam(drawing, maze, adapter, ghosts,
-                                              moved_ghosts, move_player,
-                                              screen, diction_direction)
+                                              moved_ghosts,
+                                              screen, diction_direction,
+                                              pacman)
