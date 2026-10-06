@@ -1,7 +1,6 @@
 import pygame
-from moves import Move
 from UI import Pausemenu
-
+from ghost_maker import GhostsMaker
 
 class GamePlay:
 
@@ -19,6 +18,7 @@ class GamePlay:
         clock = pygame.time.Clock()
         ghosts_poses = []
         start_time = None
+        start_time_super = None
         while run:
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
@@ -52,6 +52,25 @@ class GamePlay:
             pacman.current_frame = pacman.move.next_frame_x_y(pacman.move,
                                                               pacman.speed, dt)
 
+            # ##################### super mode #################
+
+            if adapter.window_to_grad.get(pacman.current_frame, None) in adapter.super_gums_positions:
+                pacman.super = True
+                for ghost in ghosts:
+                    ghost.edible = True
+                    ghost.image = pygame.image.load("ghosts_images/ghost_yellow.png")
+                start_time_super = pygame.time.get_ticks()
+
+            if pacman.super:
+                passed_time_super = pygame.time.get_ticks() - start_time_super
+                if passed_time_super / 1000 >= 5:
+                    pacman.super = False
+
+                    for ghost in ghosts:
+                        ghost.image = pygame.image.load("ghosts_images/ghost.png")
+
+                        ghost.edible = False
+
             # ######################### animate the ghosts  ##################
 
             for i, ghost in enumerate(ghosts):
@@ -59,24 +78,35 @@ class GamePlay:
                                                               ghost.speed,
                                                               dt))
 
-            # ######################### drawing and respawn  #################
+            # ######################### drawing player  #################
 
             drawing.draw_player(pacman.current_frame, pacman.move.image)
+
+            # ######################### drawing and respawn  #################
 
             for i, ghost_position in enumerate(ghosts_poses):
                 ghosts[i].move.current_pos, ghosts[i].move.target = drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(pacman.current_frame, None), ghost_position)
 
                 if drawing.collusion(pacman.current_frame, ghosts[i].move.frame):
-                    if start_time:
+                    # if collution
+                    if start_time:  # if not the first time we need to start counting for  the invisible mode duration
                         passed_time = pygame.time.get_ticks() - start_time
-                        if passed_time / 1000 >= 2:
+                        if passed_time / 1000 >= 2:  # if 2 seconds are passed
+                            if pacman.super and ghosts[i].edible:
+                                ghosts[i] = GhostsMaker.restart_ghost(ghosts[i], adapter.grad_to_window, pacman.current_frame)
+                            else:
+                                pacman.restart_move(pacman)
+                                pacman.mortal = False
+                                start_time = pygame.time.get_ticks()
+
+                    else:  # the first time no condition for time because you respawned normal mode
+                        if pacman.super and ghosts[i].edible:
+                            ghosts[i] = GhostsMaker.restart_ghost(ghosts[i], adapter.grad_to_window, pacman.current_frame)
+
+                        else:
                             pacman.restart_move(pacman)
                             pacman.mortal = False
                             start_time = pygame.time.get_ticks()
-                    else:
-                        pacman.restart_move(pacman)
-                        pacman.mortal = False
-                        start_time = pygame.time.get_ticks()
 
                 ghosts_poses = []
 

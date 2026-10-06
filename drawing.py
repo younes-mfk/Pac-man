@@ -122,6 +122,9 @@ class Drawing:
 
         if pos_player in self.adapter.gums_positions:
             self.adapter.gums_positions.remove(pos_player)
+            if self.adapter.window_to_grad[pos_player] in self.adapter.super_gums_positions:
+                self.adapter.super_gums_positions.remove(self.adapter.window_to_grad[pos_player])
+
         return pos_player
 
     def draw_ghost(self, ghost, player_pos, ghostp):
@@ -185,5 +188,6 @@ class Drawing:
 
         if pacman.mortal is False:
             pacman.move.image = pacman.move.respawn_images[pacman.move.direction][open_mouth]
+
         else:
             pacman.move.image = pacman.move.images[pacman.move.direction][open_mouth]

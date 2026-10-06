@@ -12,6 +12,7 @@ class PacMan:
                          float(start_pos[0]),
                          float(start_pos[1]),
                          start_pos)
+        self.super = False
 
     def restart_move(self, pacman):
         pacman.move = Move(pacman.start_pos,
@@ -19,4 +20,5 @@ class PacMan:
                            float(pacman.start_pos[0]),
                            float(pacman.start_pos[1]),
                            pacman.start_pos)
+
         pacman.current_frame = pacman.start_pos

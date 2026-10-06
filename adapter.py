@@ -19,7 +19,6 @@ class Adapter:
             (self.window_dimentions[0] // 2) - (self.maze_dimentions[0]//2),
             (self.window_dimentions[1] // 2) - (self.maze_dimentions[1]//2))
 
-        self.speed = 470
         if len(maze[0]) % 2 == 0:
             self.player_position_x = (self.start_drawing_point[0] +
                                       (self.maze_dimentions[0] // 2) -

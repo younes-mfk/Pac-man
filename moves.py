@@ -23,20 +23,20 @@ class Move:
               pygame.image.load("images/pacman_closed_up_transparent.png")
               ]
 
-    respawn_images = {
-        "r": [pacman[8], pacman[12]],
-        "l": [pacman[9], pacman[13]],
-        "d": [pacman[10], pacman[14]],
-        "u": [pacman[11], pacman[15]],
-        "": [pacman[11], pacman[15]]
-    }
-
     images = {
         "r": [pacman[0], pacman[4]],
         "l": [pacman[1], pacman[5]],
         "d": [pacman[2], pacman[6]],
         "u": [pacman[3], pacman[7]],
         "": [pacman[3], pacman[7]],
+    }
+
+    respawn_images = {
+        "r": [pacman[8], pacman[12]],
+        "l": [pacman[9], pacman[13]],
+        "d": [pacman[10], pacman[14]],
+        "u": [pacman[11], pacman[15]],
+        "": [pacman[11], pacman[15]]
     }
 
     def __init__(self, current_pos, next_pos, current_frame_pos_x,

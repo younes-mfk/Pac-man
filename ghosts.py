@@ -1,10 +1,9 @@
 
 from collections import deque
 import random
-from moves import Move
+
 
 class Ghost:
-
     def __init__(self, spawn_point, image, type, maze, player_pos, speed) -> None:
         self.spawn_point = spawn_point
         self.image = image

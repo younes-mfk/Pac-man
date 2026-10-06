@@ -13,10 +13,10 @@ class GhostsMaker:
 
         for i, pos in enumerate(spawn_corners):
             if i % 2 == 0:
-                ghosts.append(Ghost(pos,  GhostsMaker.image, "normal", maze,
+                ghosts.append(Ghost(pos, GhostsMaker.image, "normal", maze,
                                     player_position, speed[i]))
             else:
-                ghosts.append(Ghost(pos,  GhostsMaker.image, "random", maze,
+                ghosts.append(Ghost(pos, GhostsMaker.image, "random", maze,
                                     player_position, speed[i]))
 
         for i, ghost in enumerate(ghosts):
@@ -28,3 +28,17 @@ class GhostsMaker:
 
         return ghosts
 
+    @classmethod
+    def restart_ghost(cls, ghost, grad_to_window, pos_player):
+
+        ghost = Ghost(ghost.spawn_point,
+                      GhostsMaker.image, "normal", ghost.maze,
+                      pos_player, ghost.speed)
+
+        ghost.move = Move(grad_to_window[ghost.spawn_point],
+                          grad_to_window[ghost.spawn_point],
+                          float(grad_to_window[ghost.spawn_point][0]),
+                          float(grad_to_window[ghost.spawn_point][1]),
+                          grad_to_window[ghost.spawn_point])
+
+        return ghost

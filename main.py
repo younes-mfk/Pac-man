@@ -1,11 +1,6 @@
 from mazegenerator.mazegenerator import MazeGenerator
-# from menu import Menu
-# from ghosts import Ghost
-from ghosts import Ghost
 from UI import Menu
 import pygame
-from moves import Move
-from cell import CellDimention
 from adapter import Adapter
 from drawing import Drawing
 from ghost_maker import GhostsMaker
