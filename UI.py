@@ -82,6 +82,46 @@ class Scoreboard:
             pygame.time.delay(100)
 
 
+class GameOver:
+
+    def __init__(self, window, baord_img) -> None:
+        self.window = window
+        self.board_img = baord_img
+
+    def run(self):
+        menu_x = (2600 - 900) // 2
+        menu_y = (2000 - 1350) // 2
+
+        BLUE = (0, 100, 255)
+
+        BORDER_MARGIN = 50
+        BORDER_WIDTH = 12
+
+        pygame.draw.rect(
+            self.window,
+            BLUE,
+            (
+                BORDER_MARGIN,
+                BORDER_MARGIN,
+                2600 - BORDER_MARGIN * 2,
+                2000 - BORDER_MARGIN * 2
+            ),
+            BORDER_WIDTH
+        )
+        in_menu = True
+        while in_menu:
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return
+
+            self.window.blit(self.board_img, (menu_x, menu_y))
+
+            pygame.display.flip()
+            pygame.time.delay(100)
+
+
 class Menu:
 
     def __init__(self, window) -> None:
