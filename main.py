@@ -33,12 +33,11 @@ if __name__ == "__main__":
     G = GamePlay()
 
     ghoste_creater = GhostsMaker()
+
     ghosts = ghoste_creater.create_ghosts_obj(adapter.spawn_corners, maze,
                                               adapter.player_position,
-                                              [320, 200, 130, 130])
-
-    moved_ghosts = ghoste_creater.create_ghosts_moves(adapter.grad_to_window,
-                                                      adapter.spawn_corners)
+                                              [320, 200, 130, 130],
+                                              adapter.grad_to_window)
 
     run = True
 
@@ -59,6 +58,5 @@ if __name__ == "__main__":
 
         if state == "gameplay":
             state = run = run = G.run_the_gam(drawing, maze, adapter, ghosts,
-                                              moved_ghosts,
                                               screen, diction_direction,
                                               pacman)

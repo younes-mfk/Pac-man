@@ -1,7 +1,7 @@
 
 from collections import deque
 import random
-
+from moves import Move
 
 class Ghost:
 
@@ -16,6 +16,7 @@ class Ghost:
         self.edible = False
         self.visited_cells = set()
         self.speed = speed
+        self.move = None
 
     def check_wall(self, direction, starting_cell, next_cell):
         from_cell = starting_cell

@@ -7,7 +7,7 @@ class GhostsMaker:
     image = pygame.image.load("ghosts_images/ghost.png")
 
     def create_ghosts_obj(self, spawn_corners: int, maze, player_position,
-                          speed):
+                          speed, grad_to_window):
 
         ghosts = []
 
@@ -19,12 +19,12 @@ class GhostsMaker:
                 ghosts.append(Ghost(pos,  GhostsMaker.image, "random", maze,
                                     player_position, speed[i]))
 
+        for i, ghost in enumerate(ghosts):
+            ghost.move = Move(grad_to_window[spawn_corners[i]],
+                              grad_to_window[spawn_corners[i]],
+                              float(grad_to_window[spawn_corners[i]][0]),
+                              float(grad_to_window[spawn_corners[i]][1]),
+                              grad_to_window[spawn_corners[i]])
+
         return ghosts
 
-    def create_ghosts_moves(self, grad_to_window, spawn_corners):
-
-        moved_ghosts = [Move(grad_to_window[pos], grad_to_window[pos],
-                             float(grad_to_window[pos][0]),
-                             float(grad_to_window[pos][1]),
-                             grad_to_window[pos]) for pos in spawn_corners]
-        return moved_ghosts

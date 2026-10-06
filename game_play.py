@@ -5,7 +5,7 @@ from UI import Pausemenu
 
 class GamePlay:
 
-    def run_the_gam(self, drawing, maze, adapter, ghosts, moved_ghosts,
+    def run_the_gam(self, drawing, maze, adapter, ghosts,
                     screen, diction_direction, pacman):
         pause_menu = Pausemenu(
             screen,
@@ -55,9 +55,9 @@ class GamePlay:
 
             # ######################### animate the ghosts  ##################
 
-            for i, ghost_move in enumerate(moved_ghosts):
-                ghosts_poses.append(ghost_move.next_frame_x_y(ghost_move,
-                                                              ghosts[i].speed,
+            for i, ghost in enumerate(ghosts):
+                ghosts_poses.append(ghost.move.next_frame_x_y(ghost.move,
+                                                              ghost.speed,
                                                               dt))
 
             # ######################### drawing and respawn  #################
@@ -65,9 +65,9 @@ class GamePlay:
             drawing.draw_player(pacman.current_frame, pacman.move.image)
 
             for i, ghost_position in enumerate(ghosts_poses):
-                moved_ghosts[i].current_pos, moved_ghosts[i].target = drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(pacman.current_frame, None), ghost_position)
+                ghosts[i].move.current_pos, ghosts[i].move.target = drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(pacman.current_frame, None), ghost_position)
 
-                if drawing.collusion(pacman.current_frame, moved_ghosts[i].frame):
+                if drawing.collusion(pacman.current_frame, ghosts[i].move.frame):
                     if start_time:
                         passed_time = pygame.time.get_ticks() - start_time
                         if passed_time / 1000 >= 2:
