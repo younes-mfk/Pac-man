@@ -1,5 +1,5 @@
 from mazegenerator.mazegenerator import MazeGenerator
-from UI import Menu
+from UI import Menu, GameOver
 import pygame
 from adapter import Adapter
 from drawing import Drawing
@@ -33,6 +33,7 @@ class Main():
         ghoste_creater = GhostsMaker()
         G = GamePlay()
         menu = Menu(screen)
+        gameover = GameOver(screen)
 
         run = True
         state = "menu"
@@ -54,6 +55,7 @@ class Main():
                                       pacman)
 
             if state == "exit":
+                state = gameover.run()
                 run = False
 
 

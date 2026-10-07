@@ -84,9 +84,9 @@ class Scoreboard:
 
 class GameOver:
 
-    def __init__(self, window, baord_img) -> None:
+    def __init__(self, window) -> None:
         self.window = window
-        self.board_img = baord_img
+        self.menu_img = pygame.image.load("menu_images/game_over.png")
 
     def run(self):
         menu_x = (2600 - 900) // 2
@@ -109,14 +109,31 @@ class GameOver:
             BORDER_WIDTH
         )
         in_menu = True
+        string = ""
         while in_menu:
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         return
+                    if event.key == pygame.K_RETURN:
+                        return
+                    if event.key == pygame.K_BACKSPACE:
+                        string = string[:-1]
+                    if len(string) <= 10 and (event.unicode.isalpha() or
+                                              event.unicode == " "):
+                        string += event.unicode
+            font = pygame.font.Font(None, 60)
 
-            self.window.blit(self.board_img, (menu_x, menu_y))
+            text = font.render(
+                string, 
+                True,
+                (255, 255, 0)
+            )
+
+
+            self.window.blit(self.menu_img, (menu_x, menu_y))
+            self.window.blit(text, (menu_x + 280, menu_y + 760))
 
             pygame.display.flip()
             pygame.time.delay(100)
