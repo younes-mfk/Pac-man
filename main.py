@@ -1,5 +1,5 @@
 from mazegenerator.mazegenerator import MazeGenerator
-from UI import Menu, GameOver
+from UI import Menu, GameOver, Victory
 import pygame
 from adapter import Adapter
 from drawing import Drawing

@@ -2,24 +2,20 @@ import pygame
 pygame.init()
 
 
-class Instructions:
+BORDER_MARGIN = 50
+BORDER_WIDTH = 12
 
-    def __init__(self, window, menu_img) -> None:
-        self.window = window
-        self.menu_img = menu_img
+MENU_WIDTH = 900
+MENU_HEIGHT = 1350
 
-    def run(self):
-        menu_x = (2600 - 900) // 2
-        menu_y = (2000 - 1350) // 2
 
-        BLUE = (0, 100, 255)
+class UILayout:
 
-        BORDER_MARGIN = 50
-        BORDER_WIDTH = 12
-
+    @staticmethod
+    def draw_border(window):
         pygame.draw.rect(
-            self.window,
-            BLUE,
+            window,
+            (0, 100, 255),
             (
                 BORDER_MARGIN,
                 BORDER_MARGIN,
@@ -28,6 +24,23 @@ class Instructions:
             ),
             BORDER_WIDTH
         )
+
+    @staticmethod
+    def get_menu_position():
+        return ((2600 - 900) // 2, (2000 - 1350) // 2)
+
+
+class Instructions:
+
+    def __init__(self, window, menu_img) -> None:
+        self.window = window
+        self.menu_img = menu_img
+
+    def run(self):
+        menu_x, menu_y = UILayout.get_menu_position()
+
+        UILayout.draw_border(self.window)
+
         in_menu = True
         while in_menu:
 
@@ -49,25 +62,9 @@ class Scoreboard:
         self.board_img = baord_img
 
     def run(self):
-        menu_x = (2600 - 900) // 2
-        menu_y = (2000 - 1350) // 2
+        menu_x, menu_y = UILayout.get_menu_position()
 
-        BLUE = (0, 100, 255)
-
-        BORDER_MARGIN = 50
-        BORDER_WIDTH = 12
-
-        pygame.draw.rect(
-            self.window,
-            BLUE,
-            (
-                BORDER_MARGIN,
-                BORDER_MARGIN,
-                2600 - BORDER_MARGIN * 2,
-                2000 - BORDER_MARGIN * 2
-            ),
-            BORDER_WIDTH
-        )
+        UILayout.draw_border(self.window)
         in_menu = True
         while in_menu:
 
@@ -87,53 +84,86 @@ class GameOver:
     def __init__(self, window) -> None:
         self.window = window
         self.menu_img = pygame.image.load("menu_images/game_over.png")
+        self.err_img = pygame.image.load("menu_images/err_message.png")
+        self.font = pygame.font.Font(None, 60)
 
     def run(self):
-        menu_x = (2600 - 900) // 2
-        menu_y = (2000 - 1350) // 2
+        menu_x, menu_y = UILayout.get_menu_position()
 
-        BLUE = (0, 100, 255)
-
-        BORDER_MARGIN = 50
-        BORDER_WIDTH = 12
-
-        pygame.draw.rect(
-            self.window,
-            BLUE,
-            (
-                BORDER_MARGIN,
-                BORDER_MARGIN,
-                2600 - BORDER_MARGIN * 2,
-                2000 - BORDER_MARGIN * 2
-            ),
-            BORDER_WIDTH
-        )
+        UILayout.draw_border(self.window)
         in_menu = True
+        err = False
         string = ""
         while in_menu:
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        return
                     if event.key == pygame.K_RETURN:
-                        return
+                        if not string.strip():
+                            err = True
+                        else:
+                            return
+                    if event.key == pygame.K_BACKSPACE:
+                        string = string[:-1]
+                    if len(string) <= 10 and (event.unicode.isalnum() or
+                                              event.unicode == " "):
+                        string += event.unicode
+
+            text = self.font.render(
+                string,
+                True,
+                (255, 255, 0)
+            )
+
+            self.window.blit(self.menu_img, (menu_x, menu_y))
+            self.window.blit(text, (menu_x + 290, menu_y + 760))
+            if err:
+                self.window.blit(self.err_img, (menu_x + 140, menu_y + 940))
+
+            pygame.display.flip()
+            pygame.time.delay(100)
+
+
+class Victory:
+
+    def __init__(self, window) -> None:
+        self.window = window
+        self.menu_img = pygame.image.load("menu_images/victory_menu.png")
+        self.err_img = pygame.image.load("menu_images/err_message.png")
+        self.font = pygame.font.Font(None, 60)
+
+    def run(self):
+        menu_x, menu_y = UILayout.get_menu_position()
+
+        UILayout.draw_border(self.window)
+        in_menu = True
+        err = False
+        string = ""
+        while in_menu:
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        if not string.strip():
+                            err = True
+                        else:
+                            return
                     if event.key == pygame.K_BACKSPACE:
                         string = string[:-1]
                     if len(string) <= 10 and (event.unicode.isalpha() or
                                               event.unicode == " "):
                         string += event.unicode
-            font = pygame.font.Font(None, 60)
 
-            text = font.render(
-                string, 
+            text = self.font.render(
+                string,
                 True,
                 (255, 255, 0)
             )
 
-
             self.window.blit(self.menu_img, (menu_x, menu_y))
-            self.window.blit(text, (menu_x + 280, menu_y + 760))
+            self.window.blit(text, (menu_x + 290, menu_y + 840))
+            if err:
+                self.window.blit(self.err_img, (menu_x + 140, menu_y + 980))
 
             pygame.display.flip()
             pygame.time.delay(100)
@@ -166,27 +196,16 @@ class Menu:
                                             "score_board.png"))
 
     def run(self):
-        menu_x = (2600 - 900) // 2
-        menu_y = (2000 - 1350) // 2
+        menu_x, menu_y = UILayout.get_menu_position()
         BUTTON_WIDTH = 550
         buttons_x = menu_x + (menu_x - BUTTON_WIDTH) // 2
 
-        BLUE = (0, 100, 255)
-
-        BORDER_MARGIN = 50
-        BORDER_WIDTH = 12
-
-        pygame.draw.rect(
-            self.window,
-            BLUE,
-            (
-                BORDER_MARGIN,
-                BORDER_MARGIN,
-                2600 - BORDER_MARGIN * 2,
-                2000 - BORDER_MARGIN * 2
-            ),
-            BORDER_WIDTH
-        )
+        UILayout.draw_border(self.window)
+        buttons_y = [
+                    menu_y + 390,
+                    menu_y + 550,
+                    menu_y + 710,
+                    menu_y + 870,]
         in_menu = True
         selected = 0
         while in_menu:
@@ -194,9 +213,9 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
-                        selected = (selected + 1) % 4
+                        selected = (selected + 1) % len(self.images)
                     elif event.key == pygame.K_UP:
-                        selected = (selected - 1) % 4
+                        selected = (selected - 1) % len(self.images)
                     elif event.key == pygame.K_RETURN:
                         if not selected:
                             return "gameplay"
@@ -209,36 +228,13 @@ class Menu:
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
 
-            if selected:
-                self.window.blit(self.images[0], ((buttons_x, menu_y + 390)))
-            else:
-                self.window.blit(self.selected_images[0], ((buttons_x, menu_y + 390)))
+            for i, y in enumerate(buttons_y):
+                if i == selected:
+                    image = self.selected_images[i]
+                else:
+                    image = self.images[i]
 
-            if selected != 1:
-                self.window.blit(self.images[1], ((buttons_x, menu_y + 550)))
-
-            else:
-                self.window.blit(self.selected_images[1], ((buttons_x, menu_y + 550)))
-
-            if selected != 2:
-                self.window.blit(self.images[2], ((buttons_x, menu_y + 710)))
-            else:
-                self.window.blit(self.selected_images[2], ((buttons_x, menu_y + 710)))
-
-            if selected != 3:
-                self.window.blit(self.images[3], ((buttons_x, menu_y + 870)))
-            else:
-                self.window.blit(self.selected_images[3], ((buttons_x, menu_y + 870)))
-
-            # font = pygame.font.Font(None, 40)
-
-            # text = font.render(
-            #     "YOUNES 24500",    # chehad l9lawi hhh
-            #     True,
-            #     (255, 255, 0)
-            # )
-
-            # self.window.blit(text, (500, 300))
+                self.window.blit(image, (buttons_x, y))
 
             pygame.display.flip()
             pygame.time.delay(10)
@@ -256,27 +252,17 @@ class Pausemenu:
                     pygame.image.load("menu_images/selected_return_menu.png")]
 
     def run(self):
-        menu_x = (2600 - 900) // 2
-        menu_y = (2000 - 1350) // 2
+        menu_x, menu_y = UILayout.get_menu_position()
+
         BUTTON_WIDTH = 550
         buttons_x = menu_x + (menu_x - BUTTON_WIDTH) // 2
 
-        BLUE = (0, 100, 255)
+        buttons_y = [
+                    menu_y + 550,
+                    menu_y + 710]
 
-        BORDER_MARGIN = 50
-        BORDER_WIDTH = 12
+        UILayout.draw_border(self.window)
 
-        pygame.draw.rect(
-            self.window,
-            BLUE,
-            (
-                BORDER_MARGIN,
-                BORDER_MARGIN,
-                2600 - BORDER_MARGIN * 2,
-                2000 - BORDER_MARGIN * 2
-            ),
-            BORDER_WIDTH
-        )
         in_menu = True
         selected = 0
         while in_menu:
@@ -296,16 +282,13 @@ class Pausemenu:
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
 
-            if selected:
-                self.window.blit(self.images[0], ((buttons_x, menu_y + 550)))
-            else:
-                self.window.blit(self.selected_images[0], ((buttons_x, menu_y + 550)))
+            for i, y in enumerate(buttons_y):
+                if i == selected:
+                    image = self.selected_images[i]
+                else:
+                    image = self.images[i]
 
-            if selected != 1:
-                self.window.blit(self.images[1], ((buttons_x, menu_y + 710)))
-
-            else:
-                self.window.blit(self.selected_images[1], ((buttons_x, menu_y + 710)))
+                self.window.blit(image, (buttons_x, y))
 
             pygame.display.flip()
             pygame.time.delay(10)
