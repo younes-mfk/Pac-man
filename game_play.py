@@ -1,5 +1,5 @@
 import pygame
-from UI import Pausemenu
+from UI import Pausemenu, InGame
 from ghost_maker import GhostsMaker
 import sys
 from pacman_player import PacMan
@@ -66,6 +66,7 @@ class GamePlay:
     def run_the_gam(self, drawing, maze, adapter, ghosts,
                     screen, diction_direction, pacman):
         pause_menu = Pausemenu(screen)
+        in_game = InGame(screen, adapter)
         run = True
         clock = pygame.time.Clock()
         ghosts_poses = []
@@ -167,6 +168,8 @@ class GamePlay:
                             start_time = pygame.time.get_ticks()
 
                 ghosts_poses = []
+
+            in_game.run(pacman.data_of_game, timer)
 
             if start_time:
                 passed_time = pygame.time.get_ticks() - start_time

@@ -101,6 +101,7 @@ class GameOver:
                     if event.key == pygame.K_RETURN:
                         if not string.strip():
                             err = True
+                            string = ""
                         else:
                             return
                     if event.key == pygame.K_BACKSPACE:
@@ -146,11 +147,12 @@ class Victory:
                     if event.key == pygame.K_RETURN:
                         if not string.strip():
                             err = True
+                            string = ""
                         else:
                             return
                     if event.key == pygame.K_BACKSPACE:
                         string = string[:-1]
-                    if len(string) <= 10 and (event.unicode.isalpha() or
+                    if len(string) <= 10 and (event.unicode.isalnum() or
                                               event.unicode == " "):
                         string += event.unicode
 
@@ -292,3 +294,35 @@ class Pausemenu:
 
             pygame.display.flip()
             pygame.time.delay(10)
+
+
+class InGame:
+
+    def __init__(self, window, adapter) -> None:
+        self.window = window
+        self.adapter = adapter
+        self.font = pygame.font.Font(None, 70)
+        self.menu_img = pygame.image.load("menu_images/in_game_menu2.png")
+        self.live_img = pygame.image.load("menu_images/lives.png")
+
+    def run(self, data, timer):
+        current_time = data.level_time - (pygame.time.get_ticks() - timer) // 1000
+        lives = data.hearts
+        x, y = self.adapter.start_drawing_point
+
+        self.window.blit(self.menu_img, (x - 410, y))
+
+        text = self.font.render(str(data.current_score), True, (255, 255, 255))
+        self.window.blit(text, (x - 250, y + 300))
+
+        temp = 0
+        while lives:
+            self.window.blit(self.live_img, (x - 350 + temp, y + 700))
+            temp += 100
+            lives -= 1
+
+        text = self.font.render(str(data.level), True, (255, 255, 255))
+        self.window.blit(text, (x - 230, y + 1080))
+
+        text = self.font.render(str(current_time), True, (255, 255, 255))
+        self.window.blit(text, (x - 240, y + 1400))
