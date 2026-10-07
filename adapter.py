@@ -39,12 +39,12 @@ class Adapter:
 
         self.player_position = (self.player_position_x, self.player_position_y)
 
-        (self.gums_positions, self.window_to_grad,
-         self.super_gums_positions) = self.get_gums_positions(maze)
+        (self.gums_positions, self.super_gums_positions,
+         self.window_to_grad) = self.get_gums_positions(maze)
 
         self.grad_to_window = {value: key
                                for key, value in self.window_to_grad.items()}
-        self.spawn_corners = self.super_gums_positions
+        self.spawn_corners = self.super_gums_positions.copy()
 
     def get_gums_positions(self, maze):
         positions_super_gums = []
@@ -60,4 +60,4 @@ class Adapter:
                 if (y == 0 or y == len(maze) - 1) and (x == 0 or x == len(maze[0]) - 1):
                     positions_super_gums.append((x, y))
 
-        return positions_gums, window_to_grad, positions_super_gums
+        return positions_gums, positions_super_gums, window_to_grad

@@ -1,7 +1,8 @@
 import pygame
 from UI import Pausemenu
 from ghost_maker import GhostsMaker
-
+import sys
+from pacman_player import PacMan
 
 class GamePlay:
 
@@ -19,6 +20,48 @@ class GamePlay:
                 ghost.image = pygame.image.load("ghosts_images/ghost.png")
                 ghost.edible = False
 
+    def pacman_is_alive(self, passed_time_game, pacman):
+        if pacman.data_of_game.hearts == 0:
+            print("WA METYY SIR TAWA")
+            print("modifie rules from the file parse_config.py")
+            sys.exit()
+
+        if passed_time_game / 1000 > pacman.data_of_game.level_time:
+            print("SALA LW9T SIR TAWA")
+            print("modifie rules from the file parse_config.py")
+            sys.exit()
+
+        print(" score : ", end=" ")
+        print(pacman.data_of_game.current_score, end=" | ")
+        print(" hearts : ", end=" ")
+        print(pacman.data_of_game.hearts, end=" | ")
+        print(" level : ", end=" ")
+        print(pacman.data_of_game.level, end=" | ")
+        print(" time passed : ", end=" ")
+        print(round(pacman.data_of_game.level_time - passed_time_game/1000))
+
+    def level_completed(self, pacman, adapter, ghosts):
+
+        if len(adapter.gums_positions):
+            return ghosts, False
+
+        elif not len(adapter.gums_positions):
+            adapter.gums_positions = adapter.get_gums_positions(adapter.maze)[0]
+            adapter.super_gums_positions = adapter.spawn_corners.copy()
+
+            pacman.reset_default_mode(pacman)
+            pacman.restart_move(pacman)
+
+            pacman.data_of_game.level += 1
+            pacman.speed -= 10
+            pacman.data_of_game.hearts = 3
+
+            ghosts_2 = []
+            for ghost in ghosts:
+                ghost.speed += 20
+                ghosts_2.append(GhostsMaker.restart_ghost(ghost, adapter.grad_to_window, pacman.current_frame))
+                ghosts = ghosts_2
+            return ghosts_2, True
 
     def run_the_gam(self, drawing, maze, adapter, ghosts,
                     screen, diction_direction, pacman):
@@ -28,8 +71,13 @@ class GamePlay:
         ghosts_poses = []
         start_time = None
         timer = pygame.time.get_ticks()
+
         while run:
-            pacman.pacman_is_alive(pygame.time.get_ticks() - timer)
+
+            self.pacman_is_alive(pygame.time.get_ticks() - timer, pacman)
+            ghosts, restart_timer = self.level_completed(pacman, adapter, ghosts)
+            if restart_timer:
+                timer = pygame.time.get_ticks()
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
             r = clock.tick(100)
@@ -40,14 +88,17 @@ class GamePlay:
 
             # ########################## take orders #########################
             for event in pygame.event.get():
+
                 if event.type == pygame.QUIT:
                     return "exit"
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         return "exit"
                     elif event.key in [pygame.K_DOWN, pygame.K_UP,
                                        pygame.K_LEFT, pygame.K_RIGHT]:
                         pacman.move.direction = diction_direction[event.key]
+
                     elif event.key == pygame.K_p:
                         state = pause_menu.run()
                         if state == "menu":

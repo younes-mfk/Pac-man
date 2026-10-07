@@ -128,8 +128,6 @@ class Drawing:
             else:
                 pacman.data_of_game.ate_gum()
 
-        return pos_player
-
     def draw_ghost(self, ghost, player_pos, ghostp):
 
         self.screen.blit(ghost.image, (ghostp[0] - 20, ghostp[1] - 20))

@@ -17,7 +17,7 @@ diction_direction = {
 
 
 class Main():
-    maze_engine = MazeGenerator()  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
+    maze_engine = MazeGenerator(size=(5, 5))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
 
     def main(self):
         # ############# screen initialization ###########
@@ -40,18 +40,16 @@ class Main():
         while run:
 
             if state == "menu":
-                # data_of_game = GameData()
-
                 pacman = PacMan(adapter.player_position)
                 ghosts = ghoste_creater.create_ghosts(adapter.spawn_corners,
                                                       maze,
                                                       adapter.player_position,
-                                                      [320, 200, 130, 130],
+                                                      [100, 100, 140, 140],
                                                       adapter.grad_to_window)
                 state = menu.run()
 
             if state == "gameplay":
-                state = G.run_the_gam(drawing, maze, adapter, ghosts,
+                state = G.run_the_gam(drawing, maze, adapter, [ghosts[0]],
                                       screen, diction_direction,
                                       pacman)
 
