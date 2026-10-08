@@ -139,7 +139,8 @@ class Drawing:
             ghost.current_coords = ghost.next_cell(ghost.current_coords,
                                                    ghost.player_pos)
 
-        return ghostp, self.adapter.grad_to_window[ghost.current_coords]
+        ghost.move.current_pos = ghostp
+        ghost.move.target = self.adapter.grad_to_window[ghost.current_coords]
 
     def collusion(self, pacman, ghost, threshold=40):
         dx = pacman[0] - ghost[0]

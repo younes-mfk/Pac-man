@@ -50,7 +50,7 @@ class Main():
                 state = menu.run()
 
             if state == "gameplay":
-                state = G.run_the_gam(drawing, maze, adapter, [ghosts[0]],
+                state = G.run_the_gam(drawing, maze, adapter, ghosts,
                                       screen, diction_direction,
                                       pacman)
 
