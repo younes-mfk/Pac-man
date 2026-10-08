@@ -4,7 +4,9 @@ import random
 
 
 class Ghost:
-    def __init__(self, spawn_point, image, type, maze, player_pos, speed) -> None:
+    def __init__(self, spawn_point, image, type, maze, player_pos,
+                 speed) -> None:
+
         self.spawn_point = spawn_point
         self.image = image
         self.current_coords = spawn_point

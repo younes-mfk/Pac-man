@@ -17,7 +17,8 @@ diction_direction = {
 
 
 class Main():
-    maze_engine = MazeGenerator(size=(20, 20))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
+    # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
+    maze_engine = MazeGenerator(size=(20, 20))
     window = Window()
 
     def main(self):

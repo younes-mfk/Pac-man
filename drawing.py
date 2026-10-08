@@ -122,8 +122,12 @@ class Drawing:
 
         if pos_player in self.adapter.gums_positions:
             self.adapter.gums_positions.remove(pos_player)
-            if self.adapter.window_to_grad[pos_player] in self.adapter.super_gums_positions:
-                self.adapter.super_gums_positions.remove(self.adapter.window_to_grad[pos_player])
+            if (self.adapter.window_to_grad[pos_player] in
+                    self.adapter.super_gums_positions):
+
+                self.adapter.super_gums_positions.remove(
+                    self.adapter.window_to_grad[pos_player])
+
                 pacman.data_of_game.ate_supergum()
             else:
                 pacman.data_of_game.ate_gum()

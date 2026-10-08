@@ -306,7 +306,7 @@ class InGame:
         self.live_img = pygame.image.load("menu_images/lives.png")
 
     def run(self, data, timer):
-        current_time = data.level_time - (pygame.time.get_ticks() - timer) // 1000
+        time_now = data.level_time - (pygame.time.get_ticks() - timer) // 1000
         lives = data.hearts
         x, y = self.adapter.start_drawing_point
 
@@ -324,5 +324,5 @@ class InGame:
         text = self.font.render(str(data.level), True, (255, 255, 255))
         self.window.blit(text, (x - 230, y + 1080))
 
-        text = self.font.render(str(current_time), True, (255, 255, 255))
+        text = self.font.render(str(time_now), True, (255, 255, 255))
         self.window.blit(text, (x - 240, y + 1400))
