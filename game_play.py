@@ -41,8 +41,10 @@ class GamePlay:
 
         ghosts_2 = []
         for ghost in ghosts:
-            ghost.speed += 20
-            ghosts_2.append(GhostsMaker.restart_ghost(ghost, adapter.grad_to_window, pacman.current_frame))
+            ghost.speed += 50
+            ghosts_2.append(GhostsMaker.restart_ghost(ghost,
+                                                      adapter.grad_to_window,
+                                                      pacman.current_frame))
             ghosts = ghosts_2
         return ghosts_2, True
 
@@ -60,7 +62,8 @@ class GamePlay:
         return ghosts, restart_timer
 
     def ghost_is_die(self, pacman, ghost, adapter):
-        ghost = GhostsMaker.restart_ghost(ghost, adapter.grad_to_window, pacman.current_frame)
+        ghost = GhostsMaker.restart_ghost(ghost, adapter.grad_to_window,
+                                          pacman.current_frame)
         pacman.data_of_game.ate_ghost()
         return ghost
 
@@ -77,7 +80,7 @@ class GamePlay:
         clock = pygame.time.Clock()
         ghosts_poses = []
         time_after_respawning = None
-        timer = pygame.time.get_ticks()
+        level_timer = pygame.time.get_ticks()
 
         while run:
 
@@ -87,14 +90,16 @@ class GamePlay:
 
             if pacman.data_of_game.cheat_mode is False:
                 ghosts, restart_timer = self.check_game_stat(
-                    pacman, adapter, ghosts, pygame.time.get_ticks() - timer)
+                    pacman, adapter, ghosts,
+                    pygame.time.get_ticks() - level_timer)
                 if restart_timer:
-                    timer = pygame.time.get_ticks()
+                    level_timer = pygame.time.get_ticks()
                     continue
 
-            if pacman.data_of_game.cheat_mode is True and (pygame.time.get_ticks() - timer) / 1000 > 10:
+            if (pacman.data_of_game.cheat_mode is True and
+                    (pygame.time.get_ticks() - level_timer) / 1000 > 10):
                 ghosts, restart_timer = self.level_up(pacman, adapter, ghosts)
-                timer = pygame.time.get_ticks()
+                level_timer = pygame.time.get_ticks()
                 continue
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
@@ -132,7 +137,8 @@ class GamePlay:
 
             # ##################### super mode #################
             # this condition means im in super gum corner
-            if adapter.window_to_grad.get(pacman.current_frame, None) in adapter.super_gums_positions:
+            if (adapter.window_to_grad.get(pacman.current_frame, None) in
+                    adapter.super_gums_positions):
                 self.start_super_mode(pacman, ghosts)
                 start_time_super = pygame.time.get_ticks()
 
@@ -146,7 +152,7 @@ class GamePlay:
                                                               dt))
 
             # ######################### drawing player  #################
-            drawing.draw_player(pacman.current_frame, pacman.move.image, pacman)
+            drawing.draw_player(pacman)
 
             # ######################### drawing and respawn  #################
 
@@ -179,7 +185,7 @@ class GamePlay:
 
                 ghosts_poses = []
 
-            in_game.run(pacman.data_of_game, timer)
+            in_game.run(pacman.data_of_game, level_timer)
 
             if time_after_respawning:  # to remove the imortal mode after 2s of respawnin
                 passed_time = pygame.time.get_ticks() - time_after_respawning

@@ -116,8 +116,10 @@ class Drawing:
 
         return 1
 
-    def draw_player(self, pos_player, image, pacman):
+    def draw_player(self, pacman):
 
+        pos_player = pacman.current_frame
+        image = pacman.move.image
         self.screen.blit(image, (pos_player[0] - 25, pos_player[1] - 25))
 
         if pos_player in self.adapter.gums_positions:

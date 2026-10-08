@@ -22,15 +22,15 @@ class Main():
     window = Window()
 
     def main(self):
-        # ############# screen initialization ###########
+        # ############# screen initialization ######################
         screen = pygame.display.set_mode((self.window.width,
                                           self.window.height))
         pygame.display.set_caption("Pac-Man")
 
-        # ############# maze initialization ###########
+        # ############# maze initialization ########################
         maze = self.maze_engine.maze
 
-        # ############# helpers ###########
+        # ############# helpers ####################################
         adapter = Adapter(maze, (self.window.width,
                                  self.window.height))
         drawing = Drawing(adapter, screen)
@@ -54,7 +54,7 @@ class Main():
                 state = menu.run()
 
             if state == "gameplay":
-                state = G.run_the_gam(drawing, maze, adapter, ghosts,
+                state = G.run_the_gam(drawing, maze, adapter, [ghosts[0]],
                                       screen, diction_direction,
                                       pacman)
 
