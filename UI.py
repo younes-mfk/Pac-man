@@ -61,7 +61,7 @@ class Scoreboard:
         self.window = window
         self.board_img = baord_img
 
-    def run(self):
+    def run(self, database):
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -81,13 +81,14 @@ class Scoreboard:
 
 class GameOver:
 
-    def __init__(self, window) -> None:
+    def __init__(self, window, database) -> None:
         self.window = window
         self.menu_img = pygame.image.load("menu_images/game_over.png")
         self.err_img = pygame.image.load("menu_images/err_message.png")
         self.font = pygame.font.Font(None, 60)
+        self.database = database
 
-    def run(self):
+    def run(self, data):
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -103,7 +104,10 @@ class GameOver:
                             err = True
                             string = ""
                         else:
-                            return
+                            self.database.save_score(
+                                {"name": string,
+                                 "score": data.current_score})
+                            return "menu"
                     if event.key == pygame.K_BACKSPACE:
                         string = string[:-1]
                     if len(string) <= 10 and (event.unicode.isalnum() or
@@ -115,9 +119,15 @@ class GameOver:
                 True,
                 (255, 255, 0)
             )
+            score = self.font.render(
+                str(data.current_score),
+                True,
+                (255, 255, 0)
+            )
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
             self.window.blit(text, (menu_x + 290, menu_y + 760))
+            self.window.blit(score, (menu_x + 400, menu_y + 500))
             if err:
                 self.window.blit(self.err_img, (menu_x + 140, menu_y + 940))
 
@@ -127,13 +137,14 @@ class GameOver:
 
 class Victory:
 
-    def __init__(self, window) -> None:
+    def __init__(self, window, database) -> None:
         self.window = window
         self.menu_img = pygame.image.load("menu_images/victory_menu.png")
         self.err_img = pygame.image.load("menu_images/err_message.png")
         self.font = pygame.font.Font(None, 60)
+        self.database = database
 
-    def run(self):
+    def run(self, data):
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -149,7 +160,7 @@ class Victory:
                             err = True
                             string = ""
                         else:
-                            return
+                            return "menu"
                     if event.key == pygame.K_BACKSPACE:
                         string = string[:-1]
                     if len(string) <= 10 and (event.unicode.isalnum() or
@@ -161,11 +172,17 @@ class Victory:
                 True,
                 (255, 255, 0)
             )
+            score = self.font.render(
+                str(data.current_score),
+                True,
+                (255, 255, 0)
+            )
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
-            self.window.blit(text, (menu_x + 290, menu_y + 840))
+            self.window.blit(text, (menu_x + 290, menu_y + 760))
+            self.window.blit(score, (menu_x + 400, menu_y + 500))
             if err:
-                self.window.blit(self.err_img, (menu_x + 140, menu_y + 980))
+                self.window.blit(self.err_img, (menu_x + 140, menu_y + 940))
 
             pygame.display.flip()
             pygame.time.delay(100)
@@ -173,7 +190,7 @@ class Victory:
 
 class Menu:
 
-    def __init__(self, window) -> None:
+    def __init__(self, window, database) -> None:
         self.window = window
         self.menu_img = pygame.image.load("menu_images/menu.png")
         self.images = [pygame.image.load("menu_images/startgame.png"),
@@ -196,6 +213,7 @@ class Menu:
                                         pygame.image.load(
                                             "menu_images/"
                                             "score_board.png"))
+        self.database = database
 
     def run(self):
         menu_x, menu_y = UILayout.get_menu_position()
@@ -222,7 +240,7 @@ class Menu:
                         if not selected:
                             return "gameplay"
                         if selected == 1:
-                            self.score_board.run()
+                            self.score_board.run(self.database)
                         if selected == 2:
                             self.instructions.run()
                         if selected == 3:

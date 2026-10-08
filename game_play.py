@@ -22,14 +22,12 @@ class GamePlay:
 
     def check_pacman_is_alive(self, passed_time_game, pacman):
         if pacman.data_of_game.hearts == 0:
-            print("WA METYY SIR TAWA")
-            print("modifie rules from the file parse_config.py")
-            sys.exit()
+            return "game over"
 
         if passed_time_game / 1000 > pacman.data_of_game.level_time:
-            print("SALA LW9T SIR TAWA")
-            print("modifie rules from the file parse_config.py")
-            sys.exit()
+            return "game over"
+
+        return None
 
     def level_up(self, pacman, adapter, ghosts):
         adapter.gums_positions = adapter.get_gums_positions(adapter.maze)[0]
@@ -57,9 +55,17 @@ class GamePlay:
             return self.level_up(pacman, adapter, ghosts)
 
     def check_game_stat(self, pacman, adapter, ghosts, time_passed):
-        self.check_pacman_is_alive(time_passed, pacman)
+        state = self.check_pacman_is_alive(
+            time_passed,
+            pacman
+        )
+
+        if state:
+            return ghosts, False, state
+
         ghosts, restart_timer = self.level_completed(pacman, adapter, ghosts)
-        return ghosts, restart_timer
+
+        return ghosts, restart_timer, None
 
     def ghost_is_die(self, pacman, ghost, adapter):
         ghost = GhostsMaker.restart_ghost(ghost, adapter.grad_to_window,
@@ -86,12 +92,15 @@ class GamePlay:
 
             if pacman.data_of_game.level == 10:
                 print("YOU WIN")
-                sys.exit()
+                return "victory"
 
             if pacman.data_of_game.cheat_mode is False:
-                ghosts, restart_timer = self.check_game_stat(
-                    pacman, adapter, ghosts,
-                    pygame.time.get_ticks() - level_timer)
+                ghosts, restart_timer, state = self.check_game_stat(pacman, adapter,
+                                                                    ghosts,
+                                                                    pygame.time.get_ticks() - level_timer)
+
+                if state:
+                    return state
                 if restart_timer:
                     level_timer = pygame.time.get_ticks()
                     continue

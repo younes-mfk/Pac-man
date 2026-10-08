@@ -1,5 +1,6 @@
 from mazegenerator.mazegenerator import MazeGenerator
 from UI import Menu, GameOver, Victory
+from db import DataBase
 import pygame
 from adapter import Adapter
 from drawing import Drawing
@@ -36,8 +37,10 @@ class Main():
         drawing = Drawing(adapter, screen)
         ghoste_creater = GhostsMaker()
         G = GamePlay()
-        menu = Menu(screen)
-        # gameover = GameOver(screen)
+        database = DataBase()
+        menu = Menu(screen, database)
+        gameover = GameOver(screen, database)
+        victory = Victory(screen, database)
 
         run = True
         state = "menu"
@@ -58,10 +61,14 @@ class Main():
                                       screen, diction_direction,
                                       pacman)
 
+            if state == "game over":
+                state = gameover.run(pacman.data_of_game)
+
+            if state == "victory":
+                state = victory.run(pacman.data_of_game)
+
             if state == "exit":
                 run = False
-
-        print(adapter.maze_dimentions)
 
 
 if __name__ == "__main__":
