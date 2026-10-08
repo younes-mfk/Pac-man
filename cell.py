@@ -1,3 +1,8 @@
+class Window:
+    width = 2600
+    height = 2000
+
+
 class Cell:
     def __init__(self):
         self.upper_wall = 0

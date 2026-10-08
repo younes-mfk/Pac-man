@@ -7,7 +7,7 @@ from ghost_maker import GhostsMaker
 from game_play import GamePlay
 from pacman_player import PacMan
 # from parse_config import GameData
-
+from cell import Window
 
 diction_direction = {
         pygame.K_RIGHT: "r",
@@ -18,17 +18,20 @@ diction_direction = {
 
 class Main():
     maze_engine = MazeGenerator(size=(20, 20))  # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
+    window = Window()
 
     def main(self):
         # ############# screen initialization ###########
-        screen = pygame.display.set_mode((2600, 2000))
+        screen = pygame.display.set_mode((self.window.width,
+                                          self.window.height))
         pygame.display.set_caption("Pac-Man")
 
         # ############# maze initialization ###########
         maze = self.maze_engine.maze
 
         # ############# helpers ###########
-        adapter = Adapter(maze, (2600, 2000))
+        adapter = Adapter(maze, (self.window.width,
+                                 self.window.height))
         drawing = Drawing(adapter, screen)
         ghoste_creater = GhostsMaker()
         G = GamePlay()

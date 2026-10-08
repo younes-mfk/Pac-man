@@ -47,18 +47,24 @@ class Adapter:
                                for key, value in self.window_to_grad.items()}
         self.spawn_corners = self.super_gums_positions.copy()
 
+    def calculat_point(self, start_drawing, cell, x, y):
+        return ((start_drawing[0] + (cell.width * (x)) + cell.width // 2),
+                (start_drawing[1] + (cell.height * (y)) + cell.height // 2))
+
     def get_gums_positions(self, maze):
         positions_super_gums = []
         positions_gums = []
         window_to_grad = {}
         for y in range(len(maze)):
             for x in range(len(maze[0])):
-
-                positions_gums.append(((self.start_drawing_point[0] + (self.cell_dimontions.width * (x)) + self.cell_dimontions.width // 2),
-                                      (self.start_drawing_point[1] + (self.cell_dimontions.height * (y)) + self.cell_dimontions.height // 2)))
+                positions_gums.append(
+                    self.calculat_point(self.start_drawing_point,
+                                        self.cell_dimontions, x, y))
                 window_to_grad[positions_gums[-1]] = (x, y)
                 # window_to_grad ====> (center of cell postion) to (grid[y][x])
-                if (y == 0 or y == len(maze) - 1) and (x == 0 or x == len(maze[0]) - 1):
+                # remember (center of cell not corner of cell)
+                if ((y == 0 or y == len(maze) - 1) and
+                   (x == 0 or x == len(maze[0]) - 1)):
                     positions_super_gums.append((x, y))
 
         random.shuffle(positions_gums)
