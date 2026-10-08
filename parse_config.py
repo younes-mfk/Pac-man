@@ -7,9 +7,10 @@ class GameData:
         self.level = 1
         self.points_per_pacgum = 10
         self.points_per_superpacgum = 30
-        self.points_per_ghost = 1000
+        self.points_per_ghost = 100
         self.level_time = 40
         self.current_score = 0
+        self.cheat_mode = False
 
     def ate_gum(self):
         self.current_score += self.points_per_pacgum

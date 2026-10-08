@@ -2,7 +2,7 @@ import pygame
 from UI import Pausemenu, InGame
 from ghost_maker import GhostsMaker
 import sys
-from pacman_player import PacMan
+
 
 class GamePlay:
 
@@ -40,28 +40,33 @@ class GamePlay:
         print(" time passed : ", end=" ")
         print(round(pacman.data_of_game.level_time - passed_time_game/1000))
 
+    def level_up(self, pacman, adapter, ghosts):
+        adapter.gums_positions = adapter.get_gums_positions(adapter.maze)[0]
+        adapter.super_gums_positions = adapter.spawn_corners.copy()
+        pacman.restart_move(pacman)
+        pacman.reset_default_mode(pacman)
+        pacman.data_of_game.level += 1
+        pacman.data_of_game.hearts = 3
+
+        ghosts_2 = []
+        for ghost in ghosts:
+            ghost.speed += 20
+            ghosts_2.append(GhostsMaker.restart_ghost(ghost, adapter.grad_to_window, pacman.current_frame))
+            ghosts = ghosts_2
+        return ghosts_2, True
+
     def level_completed(self, pacman, adapter, ghosts):
 
         if len(adapter.gums_positions):
             return ghosts, False
 
         elif not len(adapter.gums_positions):
-            adapter.gums_positions = adapter.get_gums_positions(adapter.maze)[0]
-            adapter.super_gums_positions = adapter.spawn_corners.copy()
+            return self.level_up(self, pacman, adapter, ghosts)
 
-            pacman.reset_default_mode(pacman)
-            pacman.restart_move(pacman)
-
-            pacman.data_of_game.level += 1
-            pacman.speed -= 10
-            pacman.data_of_game.hearts = 3
-
-            ghosts_2 = []
-            for ghost in ghosts:
-                ghost.speed += 20
-                ghosts_2.append(GhostsMaker.restart_ghost(ghost, adapter.grad_to_window, pacman.current_frame))
-                ghosts = ghosts_2
-            return ghosts_2, True
+    def check_game(self, pacman, adapter, ghosts, time_passed):
+        self.pacman_is_alive(time_passed, pacman)
+        ghosts, restart_timer = self.level_completed(pacman, adapter, ghosts)
+        return ghosts, restart_timer
 
     def run_the_gam(self, drawing, maze, adapter, ghosts,
                     screen, diction_direction, pacman):
@@ -75,10 +80,23 @@ class GamePlay:
 
         while run:
 
-            self.pacman_is_alive(pygame.time.get_ticks() - timer, pacman)
-            ghosts, restart_timer = self.level_completed(pacman, adapter, ghosts)
-            if restart_timer:
+            if pacman.data_of_game.level == 10:
+                print("YOU WIN")
+                sys.exit()
+
+            if pacman.data_of_game.cheat_mode is False:
+                ghosts, restart_timer = self.check_game(
+                    pacman, adapter, ghosts, pygame.time.get_ticks() - timer
+                    )
+                if restart_timer:
+                    timer = pygame.time.get_ticks()
+                    continue
+
+            if pacman.data_of_game.cheat_mode is True and (pygame.time.get_ticks() - timer) / 1000 > 10:
+                ghosts, restart_timer = self.level_up(pacman, adapter, ghosts)
                 timer = pygame.time.get_ticks()
+
+                continue
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
             r = clock.tick(100)
@@ -136,7 +154,7 @@ class GamePlay:
             for i, ghost_position in enumerate(ghosts_poses):
                 ghosts[i].move.current_pos, ghosts[i].move.target = drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(pacman.current_frame, None), ghost_position)
 
-                if drawing.collusion(pacman.current_frame, ghosts[i].move.frame):
+                if pacman.data_of_game.cheat_mode is False and drawing.collusion(pacman.current_frame, ghosts[i].move.frame):
                     # if collution
 
                     if start_time:  # if not the first time we need to start counting for  the invisible mode duration
@@ -150,10 +168,11 @@ class GamePlay:
                                 pacman.data_of_game.ate_ghost()
 
                             else:
-                                pacman.data_of_game.hearts -= 1
-                                pacman.restart_move(pacman)
-                                pacman.mortal = False
-                                start_time = pygame.time.get_ticks()
+                                if pacman.data_of_game.cheat_mode is False:
+                                    pacman.data_of_game.hearts -= 1
+                                    pacman.restart_move(pacman)
+                                    pacman.mortal = False
+                                    start_time = pygame.time.get_ticks()
 
                     else:  # the first time no condition for time because you respawned normal mode
 
@@ -162,10 +181,11 @@ class GamePlay:
                             pacman.data_of_game.ate_ghost()
 
                         else:
-                            pacman.data_of_game.hearts -= 1
-                            pacman.restart_move(pacman)
-                            pacman.mortal = False
-                            start_time = pygame.time.get_ticks()
+                            if pacman.data_of_game.cheat_mode is False:
+                                pacman.data_of_game.hearts -= 1
+                                pacman.restart_move(pacman)
+                                pacman.mortal = False
+                                start_time = pygame.time.get_ticks()
 
                 ghosts_poses = []
 
