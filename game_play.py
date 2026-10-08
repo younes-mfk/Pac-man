@@ -52,7 +52,7 @@ class GamePlay:
             return ghosts, False
 
         elif not len(adapter.gums_positions):
-            return self.level_up(self, pacman, adapter, ghosts)
+            return self.level_up(pacman, adapter, ghosts)
 
     def check_game_stat(self, pacman, adapter, ghosts, time_passed):
         self.check_pacman_is_alive(time_passed, pacman)

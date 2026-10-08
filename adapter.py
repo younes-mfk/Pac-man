@@ -62,7 +62,7 @@ class Adapter:
                     positions_super_gums.append((x, y))
 
         random.shuffle(positions_gums)
-        for i in range(200):
+        for i in range(len(positions_gums)//2):
             if window_to_grad[positions_gums[i]] not in positions_super_gums:
                 positions_gums.remove(positions_gums[i])
 
