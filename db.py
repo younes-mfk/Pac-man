@@ -9,9 +9,9 @@ class DataBase:
         try:
             with open(self.file, 'r') as file:
                 return json.load(file)
-        except FileNotFoundError:
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
-        except (PermissionError, json.decoder.JSONDecodeError):
+        except PermissionError:
             raise ValueError("file mkhewer")
 
     def save_score(self, score):
