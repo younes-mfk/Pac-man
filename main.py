@@ -19,7 +19,7 @@ diction_direction = {
 
 class Main():
     # 14, 10 the min for 42 logo  (14, 10) --> (25, 21)
-    maze_engine = MazeGenerator(size=(5, 5))
+    maze_engine = MazeGenerator(size=(5, 5), seed=42)
     window = Window()
 
     def main(self):
@@ -48,6 +48,11 @@ class Main():
         while run:
 
             if state == "menu":
+                G = GamePlay()
+                adapter = Adapter(maze, (self.window.width,
+                                        self.window.height))
+                drawing = Drawing(adapter, screen)
+
                 pacman = PacMan(adapter.player_position)
                 ghosts = ghoste_creater.create_ghosts(adapter.spawn_corners,
                                                       maze,

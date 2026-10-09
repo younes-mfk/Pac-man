@@ -2,7 +2,12 @@ import pygame
 from UI import Pausemenu, InGame
 from ghost_maker import GhostsMaker
 import sys
-
+from adapter import Adapter
+from drawing import Drawing
+from mazegenerator.mazegenerator import MazeGenerator
+from ghost_maker import GhostsMaker
+from pacman_player import PacMan
+from ghost_maker import GhostsMaker
 
 class GamePlay:
 
@@ -125,8 +130,26 @@ class GamePlay:
         ghosts_poses = []
         level_timer = pygame.time.get_ticks()
         waiting_ghosts = []
+        prev = 1
+        ghoste_creater = GhostsMaker()
         while run:
+            if pacman.data_of_game.level != prev:
+                maze_engine = MazeGenerator(size=(5, 5), seed=0)
 
+                maze = maze_engine.maze
+
+                adapter = Adapter(maze)
+                                
+                drawing = Drawing(adapter, screen)
+
+                pacman = PacMan(adapter.player_position)
+                ghosts = ghoste_creater.create_ghosts(adapter.spawn_corners,
+                                                      maze,
+                                                      adapter.player_position,
+                                                      [100, 100, 140, 140],
+                                                      adapter.grad_to_window)
+
+                continue
             self.remove_waiting_ghosts_from_ghosts_list(waiting_ghosts, ghosts)
             self.respawning_died_ghosts_after_3s(waiting_ghosts, ghosts)
             if self.you_win(pacman):
