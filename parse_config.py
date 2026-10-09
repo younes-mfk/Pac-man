@@ -3,7 +3,7 @@ class GameData:
         pass
 
     def __init__(self):
-        self.hearts = 15
+        self.hearts = 3
         self.level = 1
         self.points_per_pacgum = 10
         self.points_per_superpacgum = 30

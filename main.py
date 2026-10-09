@@ -48,11 +48,10 @@ class Main():
         while run:
 
             if state == "menu":
-                G = GamePlay()
                 adapter = Adapter(maze, (self.window.width,
-                                        self.window.height))
+                                  self.window.height))
                 drawing = Drawing(adapter, screen)
-
+                # ghoste_creater = GhostsMaker()
                 pacman = PacMan(adapter.player_position)
                 ghosts = ghoste_creater.create_ghosts(adapter.spawn_corners,
                                                       maze,

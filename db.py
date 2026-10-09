@@ -11,7 +11,7 @@ class DataBase:
                 return json.load(file)
         except FileNotFoundError:
             return []
-        except PermissionError:
+        except (PermissionError, json.decoder.JSONDecodeError):
             raise ValueError("file mkhewer")
 
     def save_score(self, score):
@@ -24,4 +24,5 @@ class DataBase:
             raise ValueError("file mkhewer")
 
     def sorted_scores(self):
-        return self.load_scores().sort(key=lambda x: x["score"])
+        return sorted(self.load_scores(), key=lambda x: x["score"],
+                      reverse=True)

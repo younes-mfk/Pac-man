@@ -29,6 +29,15 @@ class UILayout:
     def get_menu_position():
         return ((2600 - 900) // 2, (2000 - 1350) // 2)
 
+    @staticmethod
+    def validate_score(score):
+        score_str = str(score)
+        if len(score_str) < 8:
+            displayed_score = score_str
+        else:
+            displayed_score = score_str[:7] + "..."
+        return displayed_score
+
 
 class Instructions:
 
@@ -60,12 +69,16 @@ class Scoreboard:
     def __init__(self, window, baord_img) -> None:
         self.window = window
         self.board_img = baord_img
+        self.font = pygame.font.Font(None, 60)
 
     def run(self, database):
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
         in_menu = True
+        scores = database.sorted_scores()
+        name_x = 310
+        score_x = 580
         while in_menu:
 
             for event in pygame.event.get():
@@ -74,6 +87,22 @@ class Scoreboard:
                         return
 
             self.window.blit(self.board_img, (menu_x, menu_y))
+            temp = 430
+            for score in scores[:10]:
+                name = self.font.render(
+                        f"{score['name']}",
+                        True,
+                        (255, 255, 0)
+                    )
+                valid_score = UILayout.validate_score(score['score'])
+                score = self.font.render(
+                        valid_score,
+                        True,
+                        (255, 255, 0)
+                    )
+                self.window.blit(name, (menu_x + name_x, menu_y + temp))
+                self.window.blit(score, (menu_x + score_x, menu_y + temp))
+                temp += 60
 
             pygame.display.flip()
             pygame.time.delay(100)
@@ -160,6 +189,9 @@ class Victory:
                             err = True
                             string = ""
                         else:
+                            self.database.save_score({"name": string,
+                                                      "score":
+                                                      data.current_score})
                             return "menu"
                     if event.key == pygame.K_BACKSPACE:
                         string = string[:-1]
@@ -179,10 +211,10 @@ class Victory:
             )
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
-            self.window.blit(text, (menu_x + 290, menu_y + 760))
-            self.window.blit(score, (menu_x + 400, menu_y + 500))
+            self.window.blit(text, (menu_x + 290, menu_y + 840))
+            self.window.blit(score, (menu_x + 410, menu_y + 610))
             if err:
-                self.window.blit(self.err_img, (menu_x + 140, menu_y + 940))
+                self.window.blit(self.err_img, (menu_x + 140, menu_y + 980))
 
             pygame.display.flip()
             pygame.time.delay(100)
@@ -330,14 +362,27 @@ class InGame:
 
         self.window.blit(self.menu_img, (x - 410, y))
 
-        text = self.font.render(str(data.current_score), True, (255, 255, 255))
-        self.window.blit(text, (x - 250, y + 300))
+        score_str = str(data.current_score)
 
-        temp = 0
-        while lives:
-            self.window.blit(self.live_img, (x - 350 + temp, y + 700))
-            temp += 100
-            lives -= 1
+        if len(score_str) < 10:
+            displayed_score = score_str
+        else:
+            displayed_score = score_str[:9] + "..."
+
+        text = self.font.render(displayed_score,
+                                True, (255, 255, 255))
+        self.window.blit(text, (x - 350, y + 300))
+
+        if lives > 3:
+            text = self.font.render(f"X {lives}", True, (255, 255, 255))
+            self.window.blit(self.live_img, (x - 350, y + 700))
+            self.window.blit(text, (x - 250, y + 710))
+        else:
+            temp = 0
+            while lives:
+                self.window.blit(self.live_img, (x - 350 + temp, y + 700))
+                temp += 100
+                lives -= 1
 
         text = self.font.render(str(data.level), True, (255, 255, 255))
         self.window.blit(text, (x - 230, y + 1080))
