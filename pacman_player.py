@@ -15,6 +15,7 @@ class PacMan:
         self.super = False
         self.mortal = True
         self.data_of_game = GameData()
+        self.time_after_respawning = None
 
     def restart_move(self, pacman):
         pacman.move = Move(pacman.start_pos,
