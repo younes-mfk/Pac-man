@@ -87,8 +87,13 @@ class GamePlay:
         ghosts_poses = []
         time_after_respawning = None
         level_timer = pygame.time.get_ticks()
-
+        waiting_ghosts = []
         while run:
+
+            if waiting_ghosts:
+                for i, ghost in enumerate(waiting_ghosts):
+                    if (pygame.time.get_ticks() - ghost.respawning_time) // 1000 > 3:
+                        ghosts.append(waiting_ghosts.pop(i))
 
             if pacman.data_of_game.level == 10:
                 print("YOU WIN")
@@ -141,8 +146,7 @@ class GamePlay:
                 drawing.update_pacman_move(pacman, open_mouth)
 
             # ######################### take next frame to draw  ############
-            pacman.current_frame = pacman.move.next_frame_x_y(pacman.move,
-                                                              pacman.speed, dt)
+            pacman.current_frame = pacman.move.next_frame_x_y(pacman, dt)
 
             # ##################### super mode #################
             # this condition means im in super gum corner
@@ -156,9 +160,7 @@ class GamePlay:
 
             # ######################### animate the ghosts  ##################
             for i, ghost in enumerate(ghosts):
-                ghosts_poses.append(ghost.move.next_frame_x_y(ghost.move,
-                                                              ghost.speed,
-                                                              dt))
+                ghosts_poses.append(ghost.move.next_frame_x_y(ghost, dt))
 
             # ######################### drawing player  #################
             drawing.draw_player(pacman)
@@ -179,6 +181,9 @@ class GamePlay:
 
                                 if pacman.super and ghosts[i].edible:  # pacman win
                                     ghosts[i] = self.ghost_is_die(pacman, ghosts[i], adapter)
+                                    ghost = ghosts.pop(i)
+                                    ghost.respawning_time = pygame.time.get_ticks()
+                                    waiting_ghosts.append(ghost)
                                 else:  # ghost win
                                     self.pacman_is_die(pacman)
                                     time_after_respawning = pygame.time.get_ticks()
@@ -187,6 +192,9 @@ class GamePlay:
 
                             if pacman.super and ghosts[i].edible:  # pacman win
                                 ghosts[i] = self.ghost_is_die(pacman, ghosts[i], adapter)
+                                ghost = ghosts.pop(i)
+                                ghost.respawning_time = pygame.time.get_ticks()
+                                waiting_ghosts.append(ghost)
 
                             else:  # ghost win
                                 self.pacman_is_die(pacman)

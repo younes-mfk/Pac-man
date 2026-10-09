@@ -65,15 +65,17 @@ class Move:
 
         return returned
 
-    def next_frame_x_y(self, move, speed, dt):
+    def next_frame_x_y(self, player, dt):
 
-        move.current_frame_x = self.next_frame(move.current_frame_x,
-                                               move.target[0], speed, dt)
+        player.move.current_frame_x = self.next_frame(
+            player.move.current_frame_x,
+            player.move.target[0], player.speed, dt)
 
-        move.current_frame_y = self.next_frame(move.current_frame_y,
-                                               move.target[1], speed, dt)
+        player.move.current_frame_y = self.next_frame(
+            player.move.current_frame_y,
+            player.move.target[1], player.speed, dt)
 
-        player_position = (round(move.current_frame_x),
-                           round(move.current_frame_y))
-        move.frame = player_position
+        player_position = (round(player.move.current_frame_x),
+                           round(player.move.current_frame_y))
+        player.move.frame = player_position
         return player_position

@@ -134,18 +134,18 @@ class Drawing:
             else:
                 pacman.data_of_game.ate_gum()
 
-    def draw_ghost(self, ghost, player_pos, ghostp):
+    def draw_ghost(self, ghost, player_pos, ghost_pos):
 
-        self.screen.blit(ghost.image, (ghostp[0] - 20, ghostp[1] - 20))
+        self.screen.blit(ghost.image, (ghost_pos[0] - 20, ghost_pos[1] - 20))
 
         if player_pos:
             ghost.player_pos = player_pos
 
-        if self.adapter.window_to_grad.get(ghostp, None):
+        if self.adapter.window_to_grad.get(ghost_pos, None):
             ghost.current_coords = ghost.next_cell(ghost.current_coords,
                                                    ghost.player_pos)
 
-        ghost.move.current_pos = ghostp
+        ghost.move.current_pos = ghost_pos
         ghost.move.target = self.adapter.grad_to_window[ghost.current_coords]
 
     def collusion(self, pacman, ghost, threshold=40):
