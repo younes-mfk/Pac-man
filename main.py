@@ -15,12 +15,8 @@ from level_class import LevelFactory
 class Main():
     window = Window()
 
-    def set_up(self, screen, speeds=[100, 100, 140, 140], flag=False, hearts=3, current_score=0):
-        if flag is True:
-            maze_engine = MazeGenerator(size=(5, 5))
-
-        else:
-            maze_engine = MazeGenerator(size=(5, 5), seed=42)
+    def set_up(self, screen, speeds=[100, 100, 140, 140]):
+        maze_engine = MazeGenerator(size=(5, 5), seed=42)
         maze = maze_engine.maze
 
         ghoste_creater = GhostsMaker()

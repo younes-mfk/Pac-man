@@ -38,14 +38,17 @@ class GamePlay:
 
         return None
 
-    def respawning_died_ghosts_after_3s(self, waiting_ghosts, ghosts, force=False):
+    def respawning_died_ghosts_after_3s(self, waiting_ghosts, ghosts,
+                                        force=False):
         if force:
             for ghost in (waiting_ghosts[:]):
                 ghosts.append(ghost)
                 waiting_ghosts.remove(ghost)
         else:
             for ghost in (waiting_ghosts[:]):
-                if (pygame.time.get_ticks() - ghost.respawning_time) // 1000 >= 3:
+                if (
+                 (pygame.time.get_ticks() - ghost.respawning_time) //
+                 1000 >= 3):
                     ghosts.append(ghost)
                     waiting_ghosts.remove(ghost)
 
@@ -93,7 +96,8 @@ class GamePlay:
 
     def remove_imortale_mode_after_2s(self, pacman):
         if pacman.time_after_respawning:
-            passed_time = pygame.time.get_ticks() - pacman.time_after_respawning
+            passed_time = (pygame.time.get_ticks() -
+                           pacman.time_after_respawning)
             if passed_time / 1000 >= 2:
                 pacman.mortal = True
 
@@ -133,7 +137,9 @@ class GamePlay:
                 return state
 
             if state == "level up":
-                maze, adapter, drawing, ghosts = self.level_up(pacman, waiting_ghosts)
+                maze, adapter, drawing, ghosts = self.level_up(pacman,
+                                                               waiting_ghosts)
+
                 in_game = InGame(screen, adapter)
                 level_timer = pygame.time.get_ticks()
                 continue
@@ -178,7 +184,8 @@ class GamePlay:
                 start_time_super = pygame.time.get_ticks()
 
             if pacman.super:
-                self.check_mode_super_time(pygame.time.get_ticks() - start_time_super, pacman, ghosts)
+                self.check_mode_super_time(
+                    pygame.time.get_ticks() - start_time_super, pacman, ghosts)
 
             # ######################### animate the ghosts  ##################
             ghosts_poses = []
@@ -191,17 +198,23 @@ class GamePlay:
             # ######################### drawing and respawn  #################
 
             for i, ghost_position in enumerate(ghosts_poses):
-                drawing.draw_ghost(ghosts[i], adapter.window_to_grad.get(pacman.current_frame, None), ghost_position)
+                drawing.draw_ghost(ghosts[i],
+                                   adapter.window_to_grad.get(
+                                       pacman.current_frame, None),
+                                   ghost_position)
 
                 if pacman.data_of_game.cheat_mode is False:
-                    if drawing.collusion(pacman.current_frame, ghosts[i].move.frame):
+                    if drawing.collusion(pacman.current_frame,
+                                         ghosts[i].move.frame):
 
                         if pacman.time_after_respawning:
-                            if (pygame.time.get_ticks() - pacman.time_after_respawning) / 1000 < 2:
+                            if (pygame.time.get_ticks() -
+                               pacman.time_after_respawning) / 1000 < 2:
                                 continue
 
                         if pacman.super and ghosts[i].edible:
-                            ghosts[i] = self.ghost_is_die(pacman, ghosts[i], adapter)
+                            ghosts[i] = self.ghost_is_die(pacman,
+                                                          ghosts[i], adapter)
                             waiting_ghosts.append(ghosts[i])
 
                         else:
