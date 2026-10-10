@@ -149,7 +149,7 @@ class GameOver:
                 (255, 255, 0)
             )
             score = self.font.render(
-                str(data.current_score),
+                UILayout.validate_score(data.current_score),
                 True,
                 (255, 255, 0)
             )
@@ -205,7 +205,7 @@ class Victory:
                 (255, 255, 0)
             )
             score = self.font.render(
-                str(data.current_score),
+                UILayout.validate_score(data.current_score),
                 True,
                 (255, 255, 0)
             )
@@ -374,7 +374,10 @@ class InGame:
         self.window.blit(text, (x - 350, y + 300))
 
         if lives > 3:
-            text = self.font.render(f"X {lives}", True, (255, 255, 255))
+            temp = str(lives)
+            if len(temp) > 4:
+                temp = temp[:4] + "..."
+            text = self.font.render(f"X {temp}", True, (255, 255, 255))
             self.window.blit(self.live_img, (x - 350, y + 700))
             self.window.blit(text, (x - 250, y + 710))
         else:
