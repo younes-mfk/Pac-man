@@ -1,15 +1,19 @@
 import pygame
 from UI import Pausemenu, InGame
 from ghost_maker import GhostsMaker
-import sys
-from adapter import Adapter
-from drawing import Drawing
-from mazegenerator.mazegenerator import MazeGenerator
-from ghost_maker import GhostsMaker
-from pacman_player import PacMan
-from ghost_maker import GhostsMaker
+
+
+diction_direction = {
+        pygame.K_RIGHT: "r",
+        pygame.K_LEFT: "l",
+        pygame.K_UP: "u",
+        pygame.K_DOWN: "d"}
+
 
 class GamePlay:
+
+    def __init__(self, level_factory):
+        self.level_factory = level_factory
 
     def start_super_mode(self, pacman, ghosts):
         pacman.super = True
@@ -34,45 +38,36 @@ class GamePlay:
 
         return None
 
-    def level_up(self, pacman, adapter, ghosts, waiting_ghosts):
-        # ghosts.extend(waiting_ghosts)
-        self.respawning_died_ghosts_after_3s(waiting_ghosts, ghosts, force=True)
-        adapter.gums_positions = adapter.get_gums_positions(adapter.maze)[0]
-        adapter.super_gums_positions = adapter.spawn_corners.copy()
-        pacman.restart_move(pacman)
-        pacman.reset_default_mode(pacman)
+    def respawning_died_ghosts_after_3s(self, waiting_ghosts, ghosts, force=False):
+        if force:
+            for ghost in (waiting_ghosts[:]):
+                ghosts.append(ghost)
+                waiting_ghosts.remove(ghost)
+        else:
+            for ghost in (waiting_ghosts[:]):
+                if (pygame.time.get_ticks() - ghost.respawning_time) // 1000 >= 3:
+                    ghosts.append(ghost)
+                    waiting_ghosts.remove(ghost)
+
+    def level_up(self, pacman, waiting_ghosts):
         pacman.data_of_game.level += 1
-        pacman.data_of_game.hearts = 3
+        level = self.level_factory.create(pacman.data_of_game.level, 0)
+        pacman.new_level(level.adapter.player_position)
+        waiting_ghosts.clear()
+        return (level.maze, level.adapter, level.drawing, level.ghosts)
 
-        ghosts_2 = []
-        for ghost in ghosts:
-            ghost.speed += 50
-            ghosts_2.append(GhostsMaker.restart_ghost(ghost,
-                                                      adapter.grad_to_window,
-                                                      pacman.current_frame))
-            ghosts = ghosts_2
-        return ghosts_2, True
+    def level_completed(self, adapter):
+        return not len(adapter.gums_positions)
 
-    def level_completed(self, pacman, adapter, ghosts, waiting_ghosts):
-
-        if len(adapter.gums_positions):
-            return ghosts, False
-
-        elif not len(adapter.gums_positions):
-            return self.level_up(pacman, adapter, ghosts, waiting_ghosts)
-
-    def check_game_stat(self, pacman, adapter, ghosts, time_passed, waiting_ghosts):
-        state = self.check_pacman_is_alive(
-            time_passed,
-            pacman
-        )
-
+    def check_game_stat(self, pacman, adapter, time_passed):
+        state = self.check_pacman_is_alive(time_passed, pacman)
         if state:
-            return ghosts, False, state
+            return state
 
-        ghosts, restart_timer = self.level_completed(pacman, adapter, ghosts, waiting_ghosts)
+        if self.level_completed(adapter):
+            return "level up"
 
-        return ghosts, restart_timer, None
+        return None
 
     def ghost_is_die(self, pacman, ghost, adapter):
         ghost = GhostsMaker.restart_ghost(ghost, adapter.grad_to_window,
@@ -88,20 +83,8 @@ class GamePlay:
         pacman.mortal = False
         pacman.time_after_respawning = pygame.time.get_ticks()
 
-
-    def respawning_died_ghosts_after_3s(self, waiting_ghosts, ghosts, force=False):
-        if force:
-            for ghost in (waiting_ghosts[:]):
-                ghosts.append(ghost)
-                waiting_ghosts.remove(ghost)
-        else:
-            for ghost in (waiting_ghosts[:]):
-                if (pygame.time.get_ticks() - ghost.respawning_time) // 1000 > 3:
-                    ghosts.append(ghost)
-                    waiting_ghosts.remove(ghost)
-
-    def died_or_win(self, ghosts, adapter, pacman, time_down_of_level, waiting_ghosts):
-        return self.check_game_stat(pacman, adapter, ghosts, time_down_of_level, waiting_ghosts)
+    def died_or_win(self, adapter, pacman, time_down_of_level):
+        return self.check_game_stat(pacman, adapter, time_down_of_level)
 
     def remove_waiting_ghosts_from_ghosts_list(self, waiting_ghosts, ghosts):
         for ghost in waiting_ghosts:
@@ -122,55 +105,36 @@ class GamePlay:
             return None
 
     def run_the_gam(self, drawing, maze, adapter, ghosts,
-                    screen, diction_direction, pacman):
+                    screen, pacman):
         pause_menu = Pausemenu(screen)
         in_game = InGame(screen, adapter)
         run = True
         clock = pygame.time.Clock()
-        ghosts_poses = []
         level_timer = pygame.time.get_ticks()
         waiting_ghosts = []
-        prev = 1
-        ghoste_creater = GhostsMaker()
+
         while run:
-            if pacman.data_of_game.level != prev:
-                maze_engine = MazeGenerator(size=(5, 5), seed=0)
-                ex_score = pacman.data_of_game.current_score
-                maze = maze_engine.maze
-
-                adapter = Adapter(maze)
-                
-                drawing = Drawing(adapter, screen)
-
-                pacman = PacMan(adapter.player_position)
-                pacman.data_of_game.current_score = ex_score
-                ghosts = ghoste_creater.create_ghosts(adapter.spawn_corners,
-                                                      maze,
-                                                      adapter.player_position,
-                                                      [100, 100, 140, 140],
-                                                      adapter.grad_to_window)
-                prev = pacman.data_of_game.level
-                continue
             self.remove_waiting_ghosts_from_ghosts_list(waiting_ghosts, ghosts)
             self.respawning_died_ghosts_after_3s(waiting_ghosts, ghosts)
             if self.you_win(pacman):
                 return "victory"
 
             # ################## you in competetive mode ###############
+            time_in_level = pygame.time.get_ticks() - level_timer
+
             if pacman.data_of_game.cheat_mode is False:
-                ghosts, restart_timer, state = self.died_or_win(
-                    ghosts, adapter, pacman,
-                    pygame.time.get_ticks() - level_timer, waiting_ghosts)
+                state = self.died_or_win(adapter, pacman, time_in_level)
+            elif time_in_level / 1000 > 10:
+                state = "level up"
+            else:
+                state = None
 
-                if state:
-                    return state
-                if restart_timer:
-                    level_timer = pygame.time.get_ticks()
-                    continue
-            # ################## you in cheat mode ###############
+            if state == "game over":
+                return state
 
-            if (pacman.data_of_game.cheat_mode is True and (pygame.time.get_ticks() - level_timer) / 1000 > 10):
-                ghosts, restart_timer = self.level_up(pacman, adapter, ghosts, waiting_ghosts)
+            if state == "level up":
+                maze, adapter, drawing, ghosts = self.level_up(pacman, waiting_ghosts)
+                in_game = InGame(screen, adapter)
                 level_timer = pygame.time.get_ticks()
                 continue
 
@@ -217,6 +181,7 @@ class GamePlay:
                 self.check_mode_super_time(pygame.time.get_ticks() - start_time_super, pacman, ghosts)
 
             # ######################### animate the ghosts  ##################
+            ghosts_poses = []
             for i, ghost in enumerate(ghosts):
                 ghosts_poses.append(ghost.move.next_frame_x_y(ghost, dt))
 

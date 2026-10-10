@@ -8,7 +8,7 @@ class GameData:
         self.points_per_pacgum = 10
         self.points_per_superpacgum = 30
         self.points_per_ghost = 100
-        self.level_time = 140
+        self.level_time = 90
         self.current_score = 0
         self.cheat_mode = False
 
