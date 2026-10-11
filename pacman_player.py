@@ -1,9 +1,10 @@
 from moves import Move
 from parse_config import GameData
+from typing import Tuple, Any
 
 
 class PacMan:
-    def __init__(self, start_pos, old_pacman=None):
+    def __init__(self, start_pos: Tuple) -> None:
         self.speed = 470
         self.start_pos = start_pos
         self.current_frame = start_pos
@@ -15,9 +16,9 @@ class PacMan:
         self.super = False
         self.mortal = True
         self.data_of_game = GameData()
-        self.time_after_respawning = None
+        self.time_after_respawning: None | float = None
 
-    def restart_move(self, pacman):
+    def restart_move(self, pacman: "PacMan") -> None:
         pacman.move = Move(pacman.start_pos,
                            pacman.start_pos,
                            float(pacman.start_pos[0]),
@@ -26,11 +27,11 @@ class PacMan:
 
         pacman.current_frame = pacman.start_pos
 
-    def reset_default_mode(self, pacman):
+    def reset_default_mode(self, pacman: "PacMan") -> None:
         pacman.super = False
         pacman.mortal = True
 
-    def new_level(self, start_pos):
+    def new_level(self, start_pos: Tuple) -> None:
         self.start_pos = start_pos
         self.restart_move(self)
         self.reset_default_mode(self)

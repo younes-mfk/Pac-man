@@ -2,15 +2,17 @@ from ghosts import Ghost
 import pygame
 from moves import Move
 from paths import PathResolver
+from typing import List, Tuple, Dict
 
 
 class GhostsMaker:
     image = pygame.image.load(PathResolver.resource_path("ghosts_images/ghost.png"))
 
-    def create_ghosts(self, spawn_corners: int, maze, player_position,
-                      speed, grad_to_window):
+    def create_ghosts(self, spawn_corners: List, maze: List,
+                      player_position: Tuple,
+                      speed: List, grad_to_window: Dict) -> List:
 
-        ghosts = []
+        ghosts: List = []
 
         for i, pos in enumerate(spawn_corners):
             if i % 2 == 0:
@@ -30,7 +32,8 @@ class GhostsMaker:
         return ghosts
 
     @classmethod
-    def restart_ghost(cls, ghost, grad_to_window, pos_player):
+    def restart_ghost(cls, ghost: Ghost, grad_to_window: Dict,
+                      pos_player: Tuple) -> Ghost:
 
         ghost = Ghost(ghost.spawn_point,
                       GhostsMaker.image, "normal", ghost.maze,

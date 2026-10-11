@@ -10,17 +10,15 @@ from pacman_player import PacMan
 # from parse_config import GameData
 from cell import Window
 from level_class import LevelFactory
+from typing import Tuple, List
 
 
 class Main():
     window = Window()
 
-    def set_up(self, screen, speeds=[100, 100, 140, 140], flag=False, hearts=3, current_score=0):
-        if flag is True:
-            maze_engine = MazeGenerator(size=(20, 20))
-
-        else:
-            maze_engine = MazeGenerator(size=(20, 20), seed=42)
+    def set_up(self, screen: pygame.Surface,
+               speeds: List = [100, 100, 140, 140]) -> Tuple:
+        maze_engine = MazeGenerator(size=(20, 20), seed=42)
         maze = maze_engine.maze
 
         ghoste_creater = GhostsMaker()
@@ -35,9 +33,9 @@ class Main():
                                               speeds,
                                               adapter.grad_to_window)
 
-        return adapter, pacman, ghosts, drawing, maze
+        return (adapter, pacman, ghosts, drawing, maze)
 
-    def main(self):
+    def main(self) -> None:
         screen = pygame.display.set_mode((self.window.width,
                                           self.window.height))
         pygame.display.set_caption("Pac-Man")

@@ -1,6 +1,6 @@
 from cell import CellDimention
 import random
-from typing import Tuple, List, Any
+from typing import Tuple, List, Any, Dict
 
 
 class Adapter:
@@ -8,8 +8,8 @@ class Adapter:
     """this class to make calculs dynamic and varie
         with the variation of maze and window dimentions you put"""
 
-    def __init__(self, maze: List[List[int]],
-                 window_dimention: Tuple[int] = (2600, 2000)) -> None:
+    def __init__(self, maze: List,
+                 window_dimention: Tuple = (2600, 2000)) -> None:
         """ Initialize the class adapter obj take maze and window bcs he relie
             on dimentions to do calculs
             Args:
@@ -18,7 +18,7 @@ class Adapter:
             """
         self.maze = maze
 
-        self.cell_dimontions = CellDimention
+        self.cell_dimontions: CellDimention = CellDimention()
 
         self.window_dimentions = window_dimention
 
@@ -52,18 +52,17 @@ class Adapter:
         (self.gums_positions, self.super_gums_positions,
          self.window_to_grad) = self.get_gums_positions(maze)
 
-        self.grad_to_window = {value: key
-                               for key, value in self.window_to_grad.items()}
+        self.grad_to_window = {value: key for key, value in self.window_to_grad.items()}
         self.spawn_corners = self.super_gums_positions.copy()
 
-    def calculat_point(self, start_drawing: Tuple[int], cell: CellDimention,
-                       x: int, y: int) -> Tuple[int | float]:
+    def calculat_point(self, start_drawing: Tuple, cell: CellDimention,
+                       x: int, y: int) -> Tuple:
 
         """ a simple function to make code clear that return the new position
          you want to calculate
             Args:
                 start_drawing: the point where we start drwaing the maze from
-                                left to right (x0, y0)
+                                left to right (x0, y0)`
                 cell: obj of Celldimention class, provide the dimentions of
                         the cell
                 x : the nbr of node we are in now in "x" axis(orizontal)
@@ -75,7 +74,7 @@ class Adapter:
         return ((start_drawing[0] + (cell.width * (x)) + cell.width // 2),
                 (start_drawing[1] + (cell.height * (y)) + cell.height // 2))
 
-    def get_gums_positions(self, maze: List[List[int]]) -> Tuple[Any]:
+    def get_gums_positions(self, maze: List) -> Tuple:
         """ getting the gum positions in the maze
             Args:
                 maze: the maze 2D matrice
@@ -86,9 +85,9 @@ class Adapter:
                                 to its place on the window
                 window_to_grad ====> (center of cell postion) to (grid[y][x])
         """
-        positions_super_gums = []
-        positions_gums = []
-        window_to_grad = {}
+        positions_super_gums: List = []
+        positions_gums: List = []
+        window_to_grad: Dict = {}
         for y in range(len(maze)):
             for x in range(len(maze[0])):
                 positions_gums.append(

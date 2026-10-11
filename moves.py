@@ -1,5 +1,6 @@
 import pygame
 from paths import PathResolver
+from typing import Tuple, Any
 
 
 class Move:
@@ -71,9 +72,11 @@ class Move:
         "": [pacman[11], pacman[15]]
     }
 
-    def __init__(self, current_pos, next_pos, current_frame_pos_x,
-                 current_frame_pos_y, frame):
+    def __init__(self, current_pos: Tuple, next_pos: Tuple,
+                 current_frame_pos_x: float,
+                 current_frame_pos_y: float, frame: Tuple) -> None:
 
+        self.image = Move.pacman[0]
         self.current_pos = current_pos
         self.target = next_pos
         self.current_frame_x = current_frame_pos_x
@@ -82,7 +85,7 @@ class Move:
         self.axis = ""
         self.frame = frame
 
-    def next_frame(self, current_z, target_z, speed, dt):
+    def next_frame(self, current_z: float, target_z: float, speed: int, dt: float) -> float | int:
         returned = current_z
 
         if current_z < target_z:
@@ -97,7 +100,7 @@ class Move:
 
         return returned
 
-    def next_frame_x_y(self, player, dt):
+    def next_frame_x_y(self, player: Any, dt: float) -> Tuple:
 
         player.move.current_frame_x = self.next_frame(
             player.move.current_frame_x,

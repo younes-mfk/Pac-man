@@ -2,17 +2,20 @@ from cell import Cell, CellDimention
 from adapter import Adapter
 import pygame
 import math
+from typing import List, Tuple
+from pacman_player import PacMan
+from ghosts import Ghost
 
 
 class Drawing:
     cell_dimentions = CellDimention()
 
-    def __init__(self, adapter: Adapter, screen):
+    def __init__(self, adapter: Adapter, screen: pygame.Surface) -> None:
         self.adapter = adapter
         self.screen = screen
 
     @classmethod
-    def get_walls(cls, number: int):
+    def get_walls(cls, number: int) -> Cell:
         cell = Cell()
         if number & 0B00000001:
             cell.upper_wall = 1
@@ -24,7 +27,7 @@ class Drawing:
             cell.left_wall = 1
         return cell
 
-    def draw_maze(self, maze: list):
+    def draw_maze(self, maze: List) -> None:
         x_start_orig, y_start_orig = self.adapter.start_drawing_point
         x_start, y_start = self.adapter.start_drawing_point
 
@@ -71,7 +74,7 @@ class Drawing:
             x_start = x_start_orig
             y_start += cell_height
 
-    def draw_gums(self, gum_poses):
+    def draw_gums(self, gum_poses: List) -> None:
         for i, j in gum_poses:
             x, y = self.adapter.window_to_grad[(i, j)]
             node = self.adapter.maze[y][x]
@@ -83,11 +86,12 @@ class Drawing:
             else:
                 pygame.draw.circle(self.screen, (255, 255, 255), (i, j), 3)
 
-    def draw_map_and_gums(self, maze, gum_poses):
+    def draw_map_and_gums(self, maze: List, gum_poses: List) -> None:
         self.draw_maze(maze)
         self.draw_gums(gum_poses)
 
-    def cheeck_colistion(self, current_pos, prev_pos, dr):
+    def cheeck_colistion(self, current_pos: Tuple, prev_pos: Tuple,
+                         dr: str) -> int:
         current_in_grad_ = self.adapter.window_to_grad.get(current_pos, None)
         old_grad_old = self.adapter.window_to_grad.get(prev_pos, None)
 
@@ -116,7 +120,7 @@ class Drawing:
 
         return 1
 
-    def draw_player(self, pacman):
+    def draw_player(self, pacman: PacMan) -> None:
 
         pos_player = pacman.current_frame
         image = pacman.move.image
@@ -134,7 +138,8 @@ class Drawing:
             else:
                 pacman.data_of_game.ate_gum()
 
-    def draw_ghost(self, ghost, player_pos, ghost_pos):
+    def draw_ghost(self, ghost: Ghost, player_pos: Tuple,
+                   ghost_pos: Tuple) -> None:
 
         self.screen.blit(ghost.image, (ghost_pos[0] - 20, ghost_pos[1] - 20))
 
@@ -148,12 +153,12 @@ class Drawing:
         ghost.move.current_pos = ghost_pos
         ghost.move.target = self.adapter.grad_to_window[ghost.current_coords]
 
-    def collusion(self, pacman, ghost, threshold=40):
+    def collusion(self, pacman: Tuple, ghost: Tuple, spaces: int = 40) -> bool:
         dx = pacman[0] - ghost[0]
         dy = pacman[1] - ghost[1]
-        return math.sqrt(dx * dx + dy * dy) < threshold
+        return math.sqrt(dx * dx + dy * dy) < spaces
 
-    def update_pacman_move(self, pacman, open_mouth):
+    def update_pacman_move(self, pacman: PacMan, open_mouth: int) -> None:
         if pacman.move.direction == "r":
 
             new = (pacman.move.current_pos[0] + self.cell_dimentions.width,
