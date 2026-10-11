@@ -1,5 +1,6 @@
 
 from collections import deque
+from moves import Move
 import random
 from typing import Set, Tuple, Any
 import pygame
@@ -21,7 +22,8 @@ class Ghost:
         self.edible = False
         self.visited_cells: Set = set()
         self.speed = speed
-        self.move = None
+        self.move: Move
+        self.respawning_time = 0
 
     def check_wall(self, direction: str, starting_cell: int,
                    next_cell: int) -> int:

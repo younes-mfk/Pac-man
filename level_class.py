@@ -29,7 +29,7 @@ class LevelFactory:
         return [speed + self.added_speed * (number - 1) for
                 speed in self.speeds]
 
-    def create(self, number, seed):
+    def create(self, number: int, seed: int) -> Level:
         maze = MazeGenerator(size=(20, 20), seed=seed).maze
         adapter = Adapter(maze)
         drawing = Drawing(adapter, self.screen)

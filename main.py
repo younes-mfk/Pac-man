@@ -16,8 +16,8 @@ from typing import Tuple, List
 class Main():
     window = Window()
 
-    def set_up(self, screen, speeds=[100, 100, 140, 140], flag=False,
-               hearts=3, current_score=0):
+    def set_up(self, screen: pygame.Surface,
+               speeds: List = [100, 100, 140, 140], flag: bool = False) -> Tuple:
         if flag is True:
             maze_engine = MazeGenerator(size=(20, 20))
 
@@ -54,7 +54,7 @@ class Main():
         victory = Victory(screen, database)
 
         run = True
-        state = "menu"
+        state: str | None = "menu"
 
         while run:
 
