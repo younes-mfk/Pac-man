@@ -1,19 +1,19 @@
 [project]
 name = "paco-alcater"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-authors = [
-    { name = "amine", email = "tchiouenamine@gmail.com" }
-]
-requires-python = ">=3.12"
+description = "Pac-Man arcade game"
+requires-python = ">=3.10, < 3.14"
+
 dependencies = [
+    "flake8>=7.4.1",
+    "mazegenerator",
+    "mypy>=2.4.0",
     "pygame>=2.6.1",
+    "pyinstaller>=6.22.3",
 ]
 
-[project.scripts]
-paco-alcater = "paco_alcater:main"
+[tool.uv]
+package = false
 
-[build-system]
-requires = ["uv_build>=0.12.13,<0.13.0"]
-build-backend = "uv_build"
+[tool.uv.sources]
+mazegenerator = { path = "mazegenerator-00001/mazegenerator-2.1.0-py3-none-any.whl" }

@@ -1,6 +1,7 @@
 import pygame
 from UI import Pausemenu, InGame
 from ghost_maker import GhostsMaker
+from paths import PathResolver
 
 
 diction_direction = {
@@ -19,14 +20,16 @@ class GamePlay:
         pacman.super = True
         for ghost in ghosts:
             ghost.edible = True
-            ghost.image = pygame.image.load("ghosts_images/ghost_yellow.png")
+            ghost.image = pygame.image.load(
+                PathResolver.resource_path("ghosts_images/ghost_yellow.png"))
 
     def check_mode_super_time(self, passed_time_super, pacman, ghosts):
         if passed_time_super / 1000 >= 5:
             pacman.super = False
 
             for ghost in ghosts:
-                ghost.image = pygame.image.load("ghosts_images/ghost.png")
+                ghost.image = pygame.image.load(
+                    PathResolver.resource_path("ghosts_images/ghost.png"))
                 ghost.edible = False
 
     def check_pacman_is_alive(self, passed_time_game, pacman):

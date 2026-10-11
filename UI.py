@@ -1,3 +1,5 @@
+
+from paths import PathResolver
 import pygame
 pygame.init()
 
@@ -32,10 +34,10 @@ class UILayout:
     @staticmethod
     def validate_score(score):
         score_str = str(score)
-        if len(score_str) < 8:
+        if len(score_str) < 7:
             displayed_score = score_str
         else:
-            displayed_score = score_str[:7] + "..."
+            displayed_score = score_str[:6] + "..."
         return displayed_score
 
 
@@ -112,8 +114,12 @@ class GameOver:
 
     def __init__(self, window, database) -> None:
         self.window = window
-        self.menu_img = pygame.image.load("menu_images/game_over.png")
-        self.err_img = pygame.image.load("menu_images/err_message.png")
+        self.menu_img = pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/game_over.png"))
+        self.err_img = pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/err_message.png"))
         self.font = pygame.font.Font(None, 60)
         self.database = database
 
@@ -168,8 +174,10 @@ class Victory:
 
     def __init__(self, window, database) -> None:
         self.window = window
-        self.menu_img = pygame.image.load("menu_images/victory_menu.png")
-        self.err_img = pygame.image.load("menu_images/err_message.png")
+        self.menu_img = pygame.image.load(
+            PathResolver.resource_path("menu_images/victory_menu.png"))
+        self.err_img = pygame.image.load(
+            PathResolver.resource_path("menu_images/err_message.png"))
         self.font = pygame.font.Font(None, 60)
         self.database = database
 
@@ -224,27 +232,47 @@ class Menu:
 
     def __init__(self, window, database) -> None:
         self.window = window
-        self.menu_img = pygame.image.load("menu_images/menu.png")
-        self.images = [pygame.image.load("menu_images/startgame.png"),
-                       pygame.image.load("menu_images/high_scores.png"),
-                       pygame.image.load("menu_images/instruction.png"),
-                       pygame.image.load("menu_images/exit.png")]
+        self.menu_img = pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/menu.png"))
+        self.images = [pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/startgame.png")),
+                       pygame.image.load(
+                        PathResolver.resource_path(
+                            "menu_images/high_scores.png")),
+                       pygame.image.load(
+                        PathResolver.resource_path(
+                            "menu_images/instruction.png")),
+                       pygame.image.load(
+                        PathResolver.resource_path(
+                            "menu_images/exit.png"))]
         self.selected_images = [
-            pygame.image.load("menu_images/selected_startgame.png"),
-            pygame.image.load("menu_images/selected_high_scores.png"),
-            pygame.image.load("menu_images/selected_instructions.png"),
-            pygame.image.load("menu_images/selected_exit.png")]
+            pygame.image.
+            load(PathResolver.resource_path(
+                "menu_images/selected_startgame.png")),
+            pygame.image.
+            load(PathResolver.resource_path(
+                "menu_images/selected_high_scores.png")),
+            pygame.image.
+            load(PathResolver.resource_path(
+                "menu_images/selected_instructions.png")),
+            pygame.image.
+            load(PathResolver.resource_path(
+                "menu_images/selected_exit.png"))]
 
         self.instructions = Instructions(
                                         window,
                                         pygame.image.load(
-                                            "menu_images/"
-                                            "instructions_menu.png"))
+                                            PathResolver.resource_path(
+                                                "menu_images/"
+                                                "instructions_menu.png")))
         self.score_board = Scoreboard(
                                         window,
                                         pygame.image.load(
-                                            "menu_images/"
-                                            "score_board.png"))
+                                            PathResolver.resource_path(
+                                                "menu_images/"
+                                                "score_board.png")))
         self.database = database
 
     def run(self):
@@ -296,12 +324,22 @@ class Pausemenu:
 
     def __init__(self, window) -> None:
         self.window = window
-        self.menu_img = pygame.image.load("menu_images/pause_menu.png")
-        self.images = [pygame.image.load("menu_images/resume_game.png"),
-                       pygame.image.load("menu_images/return_menu.png")]
+        self.menu_img = pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/pause_menu.png"))
+        self.images = [pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/resume_game.png")),
+                       pygame.image.load(
+                        PathResolver.resource_path(
+                            "menu_images/return_menu.png"))]
         self.selected_images = [
-                    pygame.image.load("menu_images/selected_resume_game.png"),
-                    pygame.image.load("menu_images/selected_return_menu.png")]
+                    pygame.image.load(
+                        PathResolver.resource_path(
+                            "menu_images/selected_resume_game.png")),
+                    pygame.image.load(
+                        PathResolver.resource_path(
+                            "menu_images/selected_return_menu.png"))]
 
     def run(self):
         menu_x, menu_y = UILayout.get_menu_position()
@@ -352,8 +390,12 @@ class InGame:
         self.window = window
         self.adapter = adapter
         self.font = pygame.font.Font(None, 70)
-        self.menu_img = pygame.image.load("menu_images/in_game_menu2.png")
-        self.live_img = pygame.image.load("menu_images/lives.png")
+        self.menu_img = pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/in_game_menu2.png"))
+        self.live_img = pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/lives.png"))
 
     def run(self, data, timer):
         time_now = data.level_time - (pygame.time.get_ticks() - timer) // 1000

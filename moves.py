@@ -1,26 +1,58 @@
 import pygame
+from paths import PathResolver
 
 
 class Move:
-    pacman = [pygame.image.load("images/pacman_player_right_open.png"),
-              pygame.image.load("images/pacman_player_left_open.png"),
-              pygame.image.load("images/pacman_player_down_open.png"),
-              pygame.image.load("images/pacman_player_up_open.png"),
+    pacman = [pygame.image.load(
+        PathResolver.resource_path("images/pacman_player_right_open.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_player_left_open.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_player_down_open.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_player_up_open.png")),
 
-              pygame.image.load("images/pacman_closed_right_close.png"),
-              pygame.image.load("images/pacman_closed_left_close.png"),
-              pygame.image.load("images/pacman_closed_down_close.png"),
-              pygame.image.load("images/pacman_closed_up_close.png"),
+              pygame.image.load(
+                  PathResolver.resource_path(
+                      "images/pacman_closed_right_close.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_closed_left_close.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_closed_down_close.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_closed_up_close.png")),
 
-              pygame.image.load("images/pacman_open_right_transparent.png"),
-              pygame.image.load("images/pacman_open_left_transparent.png"),
-              pygame.image.load("images/pacman_open_down_transparent.png"),
-              pygame.image.load("images/pacman_open_up_transparent.png"),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_open_right_transparent.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_open_left_transparent.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_open_down_transparent.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_open_up_transparent.png")),
 
-              pygame.image.load("images/pacman_closed_right_transparent.png"),
-              pygame.image.load("images/pacman_closed_left_transparent.png"),
-              pygame.image.load("images/pacman_closed_down_transparent.png"),
-              pygame.image.load("images/pacman_closed_up_transparent.png")
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_closed_right_transparent.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_closed_left_transparent.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_closed_down_transparent.png")),
+              pygame.image.load(
+                PathResolver.resource_path(
+                    "images/pacman_closed_up_transparent.png"))
               ]
 
     images = {
