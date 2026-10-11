@@ -195,7 +195,9 @@ class Drawing:
                 pacman.move.axis = "y"
 
         if pacman.mortal is False:
-            pacman.move.image = pacman.move.respawn_images[pacman.move.direction][open_mouth]
+            img = pacman.move.respawn_images[pacman.move.direction][open_mouth]
+            pacman.move.image = img
 
         else:
-            pacman.move.image = pacman.move.images[pacman.move.direction][open_mouth]
+            img = pacman.move.images[pacman.move.direction][open_mouth]
+            pacman.move.image = img
