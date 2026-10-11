@@ -6,7 +6,8 @@ from typing import List, Tuple, Dict
 
 
 class GhostsMaker:
-    image = pygame.image.load(PathResolver.resource_path("ghosts_images/ghost.png"))
+    image = pygame.image.load(
+        PathResolver.resource_path("ghosts_images/ghost.png"))
 
     def create_ghosts(self, spawn_corners: List, maze: List,
                       player_position: Tuple,

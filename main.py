@@ -16,9 +16,13 @@ from typing import Tuple, List
 class Main():
     window = Window()
 
-    def set_up(self, screen: pygame.Surface,
-               speeds: List = [100, 100, 140, 140]) -> Tuple:
-        maze_engine = MazeGenerator(size=(20, 20), seed=42)
+    def set_up(self, screen, speeds=[100, 100, 140, 140], flag=False,
+               hearts=3, current_score=0):
+        if flag is True:
+            maze_engine = MazeGenerator(size=(20, 20))
+
+        else:
+            maze_engine = MazeGenerator(size=(20, 20), seed=42)
         maze = maze_engine.maze
 
         ghoste_creater = GhostsMaker()

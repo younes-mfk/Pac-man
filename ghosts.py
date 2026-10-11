@@ -1,11 +1,15 @@
 
 from collections import deque
 import random
+from typing import Set, Tuple, Any
+import pygame
 
 
 class Ghost:
-    def __init__(self, spawn_point, image, type, maze, player_pos,
-                 speed) -> None:
+    def __init__(self, spawn_point: Tuple, image: pygame.surface.Surface,
+                 type: str, maze: list[list],
+                 player_pos: Tuple,
+                 speed: int) -> None:
 
         self.spawn_point = spawn_point
         self.image = image
@@ -15,11 +19,12 @@ class Ghost:
         self.maze = maze
         self.player_pos = player_pos
         self.edible = False
-        self.visited_cells = set()
+        self.visited_cells: Set = set()
         self.speed = speed
         self.move = None
 
-    def check_wall(self, direction, starting_cell, next_cell):
+    def check_wall(self, direction: str, starting_cell: int,
+                   next_cell: int) -> int:
         from_cell = starting_cell
         to_cell = next_cell
         if direction == "right":
@@ -36,7 +41,7 @@ class Ghost:
                 return 0
         return 1
 
-    def get_valid_neighbors(self, x, y):
+    def get_valid_neighbors(self, x: int, y: int) -> list:
         neighbors = []
 
         # what changed:
@@ -69,7 +74,8 @@ class Ghost:
 
         return neighbors
 
-    def bfs(self, starting_point, target_point):
+    def bfs(self, starting_point: Tuple,
+            target_point: Tuple) -> int | float:
         goal_x, goal_y = target_point
         queue = deque([starting_point])
         visited = [starting_point]
@@ -95,7 +101,7 @@ class Ghost:
 
         return float('inf')
 
-    def next_cell(self, starting_point, goal_point):
+    def next_cell(self, starting_point: Tuple, goal_point: Tuple) -> Any:
         neighbors = self.get_valid_neighbors(starting_point[0],
                                              starting_point[1])
         unvisited_neighbors = [neighbor for neighbor in neighbors

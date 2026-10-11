@@ -1,5 +1,9 @@
 
 from paths import PathResolver
+from adapter import Adapter
+from db import DataBase
+from typing import Tuple
+from parse_config import GameData
 import pygame
 pygame.init()
 
@@ -14,7 +18,7 @@ MENU_HEIGHT = 1350
 class UILayout:
 
     @staticmethod
-    def draw_border(window):
+    def draw_border(window: pygame.surface.Surface) -> None:
         pygame.draw.rect(
             window,
             (0, 100, 255),
@@ -28,11 +32,11 @@ class UILayout:
         )
 
     @staticmethod
-    def get_menu_position():
+    def get_menu_position() -> Tuple:
         return ((2600 - 900) // 2, (2000 - 1350) // 2)
 
     @staticmethod
-    def validate_score(score):
+    def validate_score(score: int) -> str:
         score_str = str(score)
         if len(score_str) < 7:
             displayed_score = score_str
@@ -43,11 +47,12 @@ class UILayout:
 
 class Instructions:
 
-    def __init__(self, window, menu_img) -> None:
+    def __init__(self, window: pygame.surface.Surface,
+                 menu_img: pygame.surface.Surface) -> None:
         self.window = window
         self.menu_img = menu_img
 
-    def run(self):
+    def run(self) -> None:
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -68,12 +73,13 @@ class Instructions:
 
 class Scoreboard:
 
-    def __init__(self, window, baord_img) -> None:
+    def __init__(self, window: pygame.surface.Surface,
+                 baord_img: pygame.surface.Surface) -> None:
         self.window = window
         self.board_img = baord_img
         self.font = pygame.font.Font(None, 60)
 
-    def run(self, database):
+    def run(self, database: DataBase) -> None:
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -112,7 +118,8 @@ class Scoreboard:
 
 class GameOver:
 
-    def __init__(self, window, database) -> None:
+    def __init__(self, window: pygame.surface.Surface,
+                 database: DataBase) -> None:
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path(
@@ -123,7 +130,7 @@ class GameOver:
         self.font = pygame.font.Font(None, 60)
         self.database = database
 
-    def run(self, data):
+    def run(self, data: GameData) -> str | None:
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -145,8 +152,8 @@ class GameOver:
                             return "menu"
                     if event.key == pygame.K_BACKSPACE:
                         string = string[:-1]
-                    if len(string) <= 10 and (event.unicode.isalnum() or
-                                              event.unicode == " "):
+                    if len(string) < 10 and (event.unicode.isalnum() or
+                                             event.unicode == " "):
                         string += event.unicode
 
             text = self.font.render(
@@ -168,11 +175,13 @@ class GameOver:
 
             pygame.display.flip()
             pygame.time.delay(100)
+        return None
 
 
 class Victory:
 
-    def __init__(self, window, database) -> None:
+    def __init__(self, window: pygame.surface.Surface,
+                 database: DataBase) -> None:
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path("menu_images/victory_menu.png"))
@@ -181,7 +190,7 @@ class Victory:
         self.font = pygame.font.Font(None, 60)
         self.database = database
 
-    def run(self, data):
+    def run(self, data: GameData) -> str | None:
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -203,8 +212,8 @@ class Victory:
                             return "menu"
                     if event.key == pygame.K_BACKSPACE:
                         string = string[:-1]
-                    if len(string) <= 10 and (event.unicode.isalnum() or
-                                              event.unicode == " "):
+                    if len(string) < 10 and (event.unicode.isalnum() or
+                                             event.unicode == " "):
                         string += event.unicode
 
             text = self.font.render(
@@ -226,11 +235,13 @@ class Victory:
 
             pygame.display.flip()
             pygame.time.delay(100)
+        return None
 
 
 class Menu:
 
-    def __init__(self, window, database) -> None:
+    def __init__(self, window: pygame.surface.Surface,
+                 database: DataBase) -> None:
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path(
@@ -273,9 +284,9 @@ class Menu:
                                             PathResolver.resource_path(
                                                 "menu_images/"
                                                 "score_board.png")))
-        self.database = database
+        self.database: DataBase = database
 
-    def run(self):
+    def run(self) -> str | None:
         menu_x, menu_y = UILayout.get_menu_position()
         BUTTON_WIDTH = 550
         buttons_x = menu_x + (menu_x - BUTTON_WIDTH) // 2
@@ -318,11 +329,12 @@ class Menu:
 
             pygame.display.flip()
             pygame.time.delay(10)
+        return None
 
 
 class Pausemenu:
 
-    def __init__(self, window) -> None:
+    def __init__(self, window: pygame.surface.Surface) -> None:
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path(
@@ -341,7 +353,7 @@ class Pausemenu:
                         PathResolver.resource_path(
                             "menu_images/selected_return_menu.png"))]
 
-    def run(self):
+    def run(self) -> str | None:
         menu_x, menu_y = UILayout.get_menu_position()
 
         BUTTON_WIDTH = 550
@@ -382,11 +394,12 @@ class Pausemenu:
 
             pygame.display.flip()
             pygame.time.delay(10)
+        return None
 
 
 class InGame:
 
-    def __init__(self, window, adapter) -> None:
+    def __init__(self, window: pygame.surface.Surface, adapter: Adapter) -> None:
         self.window = window
         self.adapter = adapter
         self.font = pygame.font.Font(None, 70)
@@ -397,7 +410,7 @@ class InGame:
             PathResolver.resource_path(
                 "menu_images/lives.png"))
 
-    def run(self, data, timer):
+    def run(self, data: GameData, timer: int) -> None:
         time_now = data.level_time - (pygame.time.get_ticks() - timer) // 1000
         lives = data.hearts
         x, y = self.adapter.start_drawing_point
@@ -423,10 +436,10 @@ class InGame:
             self.window.blit(self.live_img, (x - 350, y + 700))
             self.window.blit(text, (x - 250, y + 710))
         else:
-            temp = 0
+            a = 0
             while lives:
-                self.window.blit(self.live_img, (x - 350 + temp, y + 700))
-                temp += 100
+                self.window.blit(self.live_img, (x - 350 + a, y + 700))
+                a += 100
                 lives -= 1
 
         text = self.font.render(str(data.level), True, (255, 255, 255))
