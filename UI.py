@@ -410,6 +410,9 @@ class InGame:
         self.live_img = pygame.image.load(
             PathResolver.resource_path(
                 "menu_images/lives.png"))
+        self.top_bar = pygame.image.load(
+            PathResolver.resource_path(
+                "menu_images/top_bar.png"))
 
     def run(self, data: GameData, timer: int) -> None:
         time_now = data.level_time - (pygame.time.get_ticks() - timer) // 1000
@@ -417,6 +420,7 @@ class InGame:
         x, y = self.adapter.start_drawing_point
 
         self.window.blit(self.menu_img, (x - 410, y))
+        self.window.blit(self.top_bar, (x - 410, y - 100))
 
         score_str = str(data.current_score)
 
@@ -427,31 +431,31 @@ class InGame:
 
         text = self.font.render(displayed_score,
                                 True, (255, 255, 255))
-        self.window.blit(text, (x - 350, y + 300))
+        self.window.blit(text, (x - 350, y + 250))
 
         if lives > 3:
             temp = str(lives)
             if len(temp) > 4:
                 temp = temp[:4] + "..."
             text = self.font.render(f"X {temp}", True, (255, 255, 255))
-            self.window.blit(self.live_img, (x - 350, y + 700))
-            self.window.blit(text, (x - 250, y + 710))
+            self.window.blit(self.live_img, (x - 350, y + 590))
+            self.window.blit(text, (x - 250, y + 600))
         else:
             a = 0
             while lives:
-                self.window.blit(self.live_img, (x - 350 + a, y + 700))
+                self.window.blit(self.live_img, (x - 350 + a, y + 590))
                 a += 100
                 lives -= 1
 
         text = self.font.render(str(data.level), True, (255, 255, 255))
-        self.window.blit(text, (x - 230, y + 1080))
+        self.window.blit(text, (x - 230, y + 900))
 
         text = self.font.render(str(time_now), True, (255, 255, 255))
-        self.window.blit(text, (x - 240, y + 1400))
+        self.window.blit(text, (x - 240, y + 1200))
 
         if data.cheat_mode is True:
-            text = self.font.render("Cheat Mode: ON", True, (255, 255, 255))
-            self.window.blit(text, (x - 410, y - 80))
+            text = self.font.render("ON", True, (255, 255, 255))
+            self.window.blit(text, (x - 250, y + 1470))
         if data.cheat_mode is False:
-            text = self.font.render("Cheat Mode: OFF", True, (255, 255, 255))
-            self.window.blit(text, (x - 410, y - 80))
+            text = self.font.render("OFF", True, (255, 255, 255))
+            self.window.blit(text, (x - 250, y + 1470))
