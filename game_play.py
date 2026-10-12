@@ -19,10 +19,27 @@ diction_direction = {
 
 class GamePlay:
 
+    """manage gameplay logic and game modes"""
+
     def __init__(self, level_factory: LevelFactory) -> None:
+
+        """Initialize the gameplay manager
+
+        Args:
+            level_factory: obj resposible to creating game levels
+        """
+
         self.level_factory = level_factory
 
     def start_super_mode(self, pacman: PacMan, ghosts: List) -> None:
+
+        """Activate Super Mode for Pac-Man and make ghosts edible
+
+        Args:
+            pacman: The Pac-Man instance
+            ghosts: List of ghosts objs
+        """
+
         pacman.super = True
         for ghost in ghosts:
             ghost.edible = True
@@ -31,6 +48,14 @@ class GamePlay:
 
     def check_mode_super_time(self, passed_time_super: float, pacman: PacMan,
                               ghosts: List) -> None:
+        """Deactivate Super Mode after five seconds
+
+        Args:
+            passed_time_super: Time passed since Super Mode started
+                                in milliseconds
+            pacman: The PacMan obj
+            ghosts: list of ghosts
+        """
         if passed_time_super / 1000 >= 5:
             pacman.super = False
 
@@ -41,6 +66,15 @@ class GamePlay:
 
     def check_pacman_is_alive(self, passed_time_game: float,
                               pacman: PacMan) -> str | None:
+        """Check whether PacMan has lost all his lives
+
+        Args:
+            passed_time_game: Time since the game started
+            pacman: The PacMan instance
+
+        Returns:
+            str: "game over" if Pac-Man has no remaining lives else None
+        """
         if pacman.data_of_game.hearts == 0:
             return "game over"
 
@@ -52,6 +86,13 @@ class GamePlay:
     def respawning_died_ghosts_after_3s(self, waiting_ghosts: List,
                                         ghosts: List,
                                         force: bool = False) -> None:
+        """Respawn dead ghosts after three seconds or immediately if forced
+
+        Args:
+            waiting_ghosts: List of ghosts waiting to respawn
+            ghosts: List of active ghosts
+            force: If True, respawn all waiting ghosts immediately
+        """
         if force:
             for ghost in (waiting_ghosts[:]):
                 ghosts.append(ghost)
@@ -65,6 +106,16 @@ class GamePlay:
                     waiting_ghosts.remove(ghost)
 
     def level_up(self, pacman: PacMan, waiting_ghosts: List) -> Tuple:
+        """Advance to the next level and reset waiting ghosts
+
+        Args:
+            pacman: The Pacman instance containing game progress
+            waiting_ghosts: List of ghosts waiting to respawn
+
+        Returns:
+            tuple: The new level's maze, adapter, drawing object, and ghosts
+        """
+
         pacman.data_of_game.level += 1
         level = self.level_factory.create(pacman.data_of_game.level, 0)
         pacman.new_level(level.adapter.player_position)
@@ -72,10 +123,31 @@ class GamePlay:
         return (level.maze, level.adapter, level.drawing, level.ghosts)
 
     def level_completed(self, adapter: Adapter) -> bool:
+        """Check whether the current level has been completed
+
+        Args:
+            adapter: Adapter containing the remaining gum positions
+
+        Returns:
+            bool: True if no gums remain, otherwise False
+        """
+
         return not len(adapter.gums_positions)
 
     def check_game_stat(self, pacman: PacMan, adapter: Adapter,
                         time_passed: float) -> None | str:
+        """
+        Checks whether Pac-Man is dead or the current level is completed
+
+        Args:
+            pacman: The Pacman obj
+            adapter: Adapter obj
+            time_passed: Elapsed game time
+
+        Returns:
+            str or None: "game over" if Pac-Man is dead, "level up"
+                if the level is completed, or None otherwise.
+        """
         state = self.check_pacman_is_alive(time_passed, pacman)
         if state:
             return state
@@ -87,6 +159,16 @@ class GamePlay:
 
     def ghost_is_die(self, pacman: PacMan, ghost: Ghost,
                      adapter: Adapter) -> Ghost:
+        """Reset a defeated ghost and register its defeat
+
+        Args:
+            pacman: The Pacman obj
+            ghost: The ghost that was eated
+            adapter: Adapter obj
+
+        Returns:
+            Ghost: The restarted ghost with its respawn timestamp
+        """
         ghost = GhostsMaker.restart_ghost(ghost, adapter.grad_to_window,
                                           pacman.current_frame)
         ghost.respawning_time = pygame.time.get_ticks()
@@ -95,6 +177,13 @@ class GamePlay:
         return ghost
 
     def pacman_is_die(self, pacman: PacMan) -> None:
+        """Handle Pac-Man's death
+        Decreases the remaining lives, resets movement, and temporarily
+        makes Pac-Man immortal.
+
+        Args:
+            pacman: The PacMan obj
+        """
         pacman.data_of_game.hearts -= 1
         pacman.restart_move(pacman)
         pacman.mortal = False
@@ -102,15 +191,37 @@ class GamePlay:
 
     def died_or_win(self, adapter: Adapter, pacman: PacMan,
                     time_down_of_level: float) -> None | str:
+        """Check whether the game is over or the level is completed
+
+        Args:
+            adapter: Adapter
+            pacman: The PacMan obj
+            time_down_of_level: time passed for the level
+
+        Returns:
+            str or None: The current game state, or None if the game
+                should continue
+        """
         return self.check_game_stat(pacman, adapter, time_down_of_level)
 
     def remove_waiting_ghosts_from_ghosts_list(self, waiting_ghosts: List,
                                                ghosts: List) -> None:
+        """Remove waiting ghosts from the active ghosts list
+
+        Args:
+            waiting_ghosts: List of ghosts waiting to respawn
+            ghosts: List of active ghosts
+        """
         for ghost in waiting_ghosts:
             if ghost in ghosts:
                 ghosts.remove(ghost)
 
     def remove_imortale_mode_after_2s(self, pacman: PacMan) -> None:
+        """Restore Pac-Man's mortal mode after two seconds
+
+        Args:
+            pacman: The PacMan
+        """
         if pacman.time_after_respawning:
             passed_time = (pygame.time.get_ticks() -
                            pacman.time_after_respawning)
@@ -118,6 +229,15 @@ class GamePlay:
                 pacman.mortal = True
 
     def you_win(self, pacman: PacMan) -> bool | None:
+        """Check whether Pac-Man has completed the final level.
+
+        Args:
+            pacman: The PacMan obj
+
+        Returns:
+            bool or None: True if the final level is reached,
+                otherwise none
+        """
         if pacman.data_of_game.level == 10:
             print("YOU WIN")
             return True
@@ -127,6 +247,17 @@ class GamePlay:
     def run_the_gam(self, drawing: Drawing, maze: List, adapter: Adapter,
                     ghosts: List,
                     screen: pygame.Surface, pacman: PacMan) -> Any:
+        """Run the main game loop and manage gameplay interactions
+
+        Args:
+            drawing: Object responsible for drawing the game elements
+            maze: The current level's maze
+            adapter: Adapter providing coordinate conversions
+            ghosts: list of active ghosts
+            screen: pygame surface used to display the game
+            pacman: The Pacman instance
+        """
+
         pause_menu = Pausemenu(screen)
         in_game = InGame(screen, adapter)
         run = True
