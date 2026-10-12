@@ -17,7 +17,7 @@ class Main():
 
     def set_up(self, screen: pygame.Surface,
                speeds: List = [100, 100, 140, 140]) -> Tuple:
-        maze_engine = MazeGenerator(size=(5, 5), seed=42)
+        maze_engine = MazeGenerator(size=(20, 20), seed=42)
         maze = maze_engine.maze
 
         ghoste_creater = GhostsMaker()

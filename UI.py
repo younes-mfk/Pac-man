@@ -448,3 +448,10 @@ class InGame:
 
         text = self.font.render(str(time_now), True, (255, 255, 255))
         self.window.blit(text, (x - 240, y + 1400))
+
+        if data.cheat_mode is True:
+            text = self.font.render("Cheat Mode: ON", True, (255, 255, 255))
+            self.window.blit(text, (x - 410, y - 80))
+        if data.cheat_mode is False:
+            text = self.font.render("Cheat Mode: OFF", True, (255, 255, 255))
+            self.window.blit(text, (x - 410, y - 80))

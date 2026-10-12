@@ -175,6 +175,14 @@ class GamePlay:
                             pacman.data_of_game.cheat_mode)
                         continue
 
+                    if (event.key == pygame.K_x and
+                       pacman.data_of_game.cheat_mode is True):
+                        maze, adapter, drawing, ghosts = self.level_up(
+                            pacman, waiting_ghosts)
+                        in_game = InGame(screen, adapter)
+                        level_timer = pygame.time.get_ticks()
+                        continue
+
                     if event.key == pygame.K_q:
                         return "exit"
                     elif event.key in [pygame.K_DOWN, pygame.K_UP,

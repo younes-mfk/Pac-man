@@ -31,7 +31,7 @@ class LevelFactory:
                 speed in self.speeds]
 
     def create(self, number: int, seed: int) -> Level:
-        maze = MazeGenerator(size=(5, 5), seed=seed).maze
+        maze = MazeGenerator(size=(20, 20), seed=seed).maze
         adapter = Adapter(maze)
         drawing = Drawing(adapter, self.screen)
         ghosts = self.ghosts_maker.create_ghosts(adapter.spawn_corners,
