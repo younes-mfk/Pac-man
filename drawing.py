@@ -8,14 +8,29 @@ from ghosts import Ghost
 
 
 class Drawing:
+    """ The class responsible to draw elements of the game """
+
     cell_dimentions = CellDimention()
 
     def __init__(self, adapter: Adapter, screen: pygame.Surface) -> None:
+        """ Initialize the Drawing class
+        Args:
+            adapter: the adapter obj
+            screen: the sreen obj to draw in it
+        """
+
         self.adapter = adapter
         self.screen = screen
 
     @classmethod
     def get_walls(cls, number: int) -> Cell:
+        """ Transforme the value of node to walls representation
+        Args:
+            number: the value of node
+        Return:
+            cell: Cell obj that contains the walls representation
+        """
+
         cell = Cell()
         if number & 0B00000001:
             cell.upper_wall = 1
@@ -28,6 +43,11 @@ class Drawing:
         return cell
 
     def draw_maze(self, maze: List) -> None:
+        """  draw the maze
+        Args:
+            maze: 2D array representation of the maze
+        """
+
         x_start_orig, y_start_orig = self.adapter.start_drawing_point
         x_start, y_start = self.adapter.start_drawing_point
 
@@ -75,6 +95,10 @@ class Drawing:
             y_start += cell_height
 
     def draw_gums(self, gum_poses: List) -> None:
+        """ Draw the gums in the maze
+        Args:
+            gum_poses: the list of gums positions
+        """
         for i, j in gum_poses:
             x, y = self.adapter.window_to_grad[(i, j)]
             node = self.adapter.maze[y][x]

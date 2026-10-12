@@ -14,7 +14,7 @@ class Adapter:
             on dimentions to do calculs
             Args:
                 maze: the maze 2D matrice
-                window: the domentions of window
+                window_dimention: the domentions of window
             """
         self.maze = maze
 

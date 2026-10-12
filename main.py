@@ -13,10 +13,26 @@ from typing import Tuple, List
 
 
 class Main():
+
+    """the main class contains the root function of the program """
+
     window = Window()
 
     def set_up(self, screen: pygame.Surface,
                speeds: List = [100, 100, 140, 140]) -> Tuple:
+
+        """ set up the elements of the game
+        Args:
+            screen: the screen obj
+            speeds: list of speeds of ghosts
+        Return:
+            adapter: the adapter obj provide the dimentions to draw
+            pacman: pacman ob
+            ghosts: list of ghosts objs
+            drawing: obj for draw game elements
+            maze: the 2D array obj
+        """
+
         maze_engine = MazeGenerator(size=(20, 20), seed=42)
         maze = maze_engine.maze
 
@@ -35,6 +51,9 @@ class Main():
         return (adapter, pacman, ghosts, drawing, maze)
 
     def main(self) -> None:
+
+        """ The main function where evrything start"""
+
         screen = pygame.display.set_mode((self.window.width,
                                           self.window.height))
         pygame.display.set_caption("Pac-Man")
