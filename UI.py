@@ -1,3 +1,5 @@
+"""Provide the game menus, end screens, layout, and HUD rendering."""
+
 
 from paths import PathResolver
 from adapter import Adapter
@@ -16,9 +18,18 @@ MENU_HEIGHT = 1350
 
 
 class UILayout:
+    """Provide shared menu positioning, borders, and score formatting."""
 
     @staticmethod
     def draw_border(window: pygame.surface.Surface) -> None:
+        """Draw a blue border around the game window.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+
+        Returns:
+            None.
+        """
         pygame.draw.rect(
             window,
             (0, 100, 255),
@@ -33,10 +44,27 @@ class UILayout:
 
     @staticmethod
     def get_menu_position() -> Tuple:
+        """Compute the top-left position that centers a menu on screen.
+
+        Returns:
+            Tuple: The (x, y) coordinates at which to blit a menu image
+                so that it is centered in the window.
+        """
         return ((2600 - 900) // 2, (2000 - 1350) // 2)
 
     @staticmethod
-    def validate_score(score: int) -> str:
+    def validate_value(score: int) -> str:
+        """Format a number so that it fits inside a menu field.
+
+        Values with fewer than seven digits are returned unchanged.
+        Longer values are cut to six digits followed by an ellipsis.
+
+        Args:
+            score (int): The value (score, level, time, etc.) to format.
+
+        Returns:
+            str: The value as a string, truncated with "..." if too long.
+        """
         score_str = str(score)
         if len(score_str) < 7:
             displayed_score = score_str
@@ -46,13 +74,29 @@ class UILayout:
 
 
 class Instructions:
+    """Display the instructions screen until the player leaves it."""
 
     def __init__(self, window: pygame.surface.Surface,
                  menu_img: pygame.surface.Surface) -> None:
+        """Initialize the instructions screen.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+            menu_img (pygame.surface.Surface): Image of the instructions
+                menu to display.
+
+        Returns:
+            None.
+        """
         self.window = window
         self.menu_img = menu_img
 
     def run(self) -> None:
+        """Show the instructions menu until ESC is pressed.
+
+        Returns:
+            None.
+        """
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -72,14 +116,34 @@ class Instructions:
 
 
 class Scoreboard:
+    """Display the high scores screen until the player leaves it."""
 
     def __init__(self, window: pygame.surface.Surface,
                  baord_img: pygame.surface.Surface) -> None:
+        """Initialize the scoreboard screen.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+            baord_img (pygame.surface.Surface): Background image of the
+                score board.
+
+        Returns:
+            None.
+        """
         self.window = window
         self.board_img = baord_img
         self.font = pygame.font.Font(None, 60)
 
     def run(self, database: DataBase) -> None:
+        """Show the ten best scores until ESC is pressed.
+
+        Args:
+            database (DataBase): Database from which the sorted scores
+                are read.
+
+        Returns:
+            None.
+        """
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -102,7 +166,7 @@ class Scoreboard:
                         True,
                         (255, 255, 0)
                     )
-                valid_score = UILayout.validate_score(score['score'])
+                valid_score = UILayout.validate_value(score['score'])
                 score = self.font.render(
                         valid_score,
                         True,
@@ -117,9 +181,19 @@ class Scoreboard:
 
 
 class GameOver:
+    """Display the game over screen and record the player's score."""
 
     def __init__(self, window: pygame.surface.Surface,
                  database: DataBase) -> None:
+        """Initialize the game over screen and load its images.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+            database (DataBase): Database in which the score is saved.
+
+        Returns:
+            None.
+        """
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path(
@@ -131,6 +205,19 @@ class GameOver:
         self.database = database
 
     def run(self, data: GameData) -> str | None:
+        """Ask the player for a name and save the final score.
+
+        The name accepts up to ten alphanumeric characters or spaces.
+        Pressing ENTER with an empty name shows an error message;
+        otherwise the score is saved and the screen closes.
+
+        Args:
+            data (GameData): Game data holding the current score.
+
+        Returns:
+            str | None: "menu" once the score has been saved, or None if
+                the loop exits without saving.
+        """
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -162,7 +249,7 @@ class GameOver:
                 (255, 255, 0)
             )
             score = self.font.render(
-                UILayout.validate_score(data.current_score),
+                UILayout.validate_value(data.current_score),
                 True,
                 (255, 255, 0)
             )
@@ -179,9 +266,19 @@ class GameOver:
 
 
 class Victory:
+    """Display the victory screen and record the player's score."""
 
     def __init__(self, window: pygame.surface.Surface,
                  database: DataBase) -> None:
+        """Initialize the victory screen and load its images.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+            database (DataBase): Database in which the score is saved.
+
+        Returns:
+            None.
+        """
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path("menu_images/victory_menu.png"))
@@ -191,6 +288,19 @@ class Victory:
         self.database = database
 
     def run(self, data: GameData) -> str | None:
+        """Ask the player for a name and save the winning score.
+
+        The name accepts up to ten alphanumeric characters or spaces.
+        Pressing ENTER with an empty name shows an error message;
+        otherwise the score is saved and the screen closes.
+
+        Args:
+            data (GameData): Game data holding the current score.
+
+        Returns:
+            str | None: "menu" once the score has been saved, or None if
+                the loop exits without saving.
+        """
         menu_x, menu_y = UILayout.get_menu_position()
 
         UILayout.draw_border(self.window)
@@ -222,7 +332,7 @@ class Victory:
                 (255, 255, 0)
             )
             score = self.font.render(
-                UILayout.validate_score(data.current_score),
+                UILayout.validate_value(data.current_score),
                 True,
                 (255, 255, 0)
             )
@@ -239,9 +349,19 @@ class Victory:
 
 
 class Menu:
+    """Display the main menu and handle navigation between its options."""
 
     def __init__(self, window: pygame.surface.Surface,
                  database: DataBase) -> None:
+        """Initialize the main menu, its buttons, and its sub-screens.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+            database (DataBase): Database used by the scoreboard screen.
+
+        Returns:
+            None.
+        """
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path(
@@ -287,6 +407,16 @@ class Menu:
         self.database: DataBase = database
 
     def run(self) -> str | None:
+        """Run the main menu loop.
+
+        Use the UP and DOWN keys to change the selected button and
+        ENTER to activate it.
+
+        Returns:
+            str | None: "gameplay" if the player starts the game,
+                "exit" if the player quits, or None if the loop ends
+                otherwise.
+        """
         menu_x, menu_y = UILayout.get_menu_position()
         BUTTON_WIDTH = 550
         buttons_x = menu_x + (menu_x - BUTTON_WIDTH) // 2
@@ -333,8 +463,17 @@ class Menu:
 
 
 class Pausemenu:
+    """Display the pause menu during gameplay."""
 
     def __init__(self, window: pygame.surface.Surface) -> None:
+        """Initialize the pause menu and load its images.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+
+        Returns:
+            None.
+        """
         self.window = window
         self.menu_img = pygame.image.load(
             PathResolver.resource_path(
@@ -354,6 +493,15 @@ class Pausemenu:
                             "menu_images/selected_return_menu.png"))]
 
     def run(self) -> str | None:
+        """Run the pause menu loop.
+
+        Use the UP and DOWN keys to change the selected button and
+        ENTER to activate it.
+
+        Returns:
+            str | None: "gameplay" to resume the game, "menu" to return
+                to the main menu, or None if the loop ends otherwise.
+        """
         menu_x, menu_y = UILayout.get_menu_position()
 
         BUTTON_WIDTH = 550
@@ -398,9 +546,20 @@ class Pausemenu:
 
 
 class InGame:
+    """Render the in-game HUD (score, lives, level, time, cheat mode)."""
 
     def __init__(self, window: pygame.surface.Surface,
                  adapter: Adapter) -> None:
+        """Initialize the HUD and load its images.
+
+        Args:
+            window (pygame.surface.Surface): Surface on which to draw.
+            adapter (Adapter): Adapter providing the drawing start point
+                of the maze, used to position the HUD.
+
+        Returns:
+            None.
+        """
         self.window = window
         self.adapter = adapter
         self.font = pygame.font.Font(None, 70)
@@ -415,6 +574,21 @@ class InGame:
                 "menu_images/top_bar.png"))
 
     def run(self, data: GameData, timer: int) -> None:
+        """Draw the HUD for the current frame.
+
+        Shows the score, remaining lives (as icons, or as a count when
+        above three), the current level, the remaining time, and
+        whether cheat mode is on.
+
+        Args:
+            data (GameData): Game data holding the score, lives, level,
+                level time, and cheat mode state.
+            timer (int): Tick value, in milliseconds, recorded when the
+                level started; used to compute the remaining time.
+
+        Returns:
+            None.
+        """
         time_now = data.level_time - (pygame.time.get_ticks() - timer) // 1000
         lives = data.hearts
         x, y = self.adapter.start_drawing_point
@@ -447,11 +621,15 @@ class InGame:
                 a += 100
                 lives -= 1
 
-        text = self.font.render(str(data.level), True, (255, 255, 255))
-        self.window.blit(text, (x - 230, y + 900))
+        current_level = UILayout.validate_value(data.level)
 
-        text = self.font.render(str(time_now), True, (255, 255, 255))
-        self.window.blit(text, (x - 240, y + 1200))
+        text = self.font.render(current_level, True, (255, 255, 255))
+        self.window.blit(text, (x - 350, y + 900))
+
+        current_time = UILayout.validate_value(time_now)
+
+        text = self.font.render(current_time, True, (255, 255, 255))
+        self.window.blit(text, (x - 350, y + 1200))
 
         if data.cheat_mode is True:
             text = self.font.render("ON", True, (255, 255, 255))
