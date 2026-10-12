@@ -38,8 +38,8 @@ class DataBase:
             if not name.strip() or len(name) > 10:
                 continue
 
-            if not all(char.isascii() and
-                       (char.isalnum()) for char in name.strip()):
+            if not all((char == ' ' or char.isalnum())
+                       for char in name.strip()):
                 continue
 
             if score < 0:

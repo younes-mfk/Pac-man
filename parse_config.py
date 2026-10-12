@@ -6,7 +6,7 @@ class GameData:
 
     def parser(self, file: str = "config.json") -> Any:
         # need try except
-        config = json.load(open("config.json"))
+        config = json.load(open(file))
         return config
 
     def __init__(self) -> None:
