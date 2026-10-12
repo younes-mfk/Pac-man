@@ -1,6 +1,6 @@
 from cell import CellDimention
 import random
-from typing import Tuple, List, Any, Dict
+from typing import Tuple, List, Dict
 
 
 class Adapter:
@@ -52,7 +52,8 @@ class Adapter:
         (self.gums_positions, self.super_gums_positions,
          self.window_to_grad) = self.get_gums_positions(maze)
 
-        self.grad_to_window = {value: key for key, value in self.window_to_grad.items()}
+        self.grad_to_window = {value: key for key, value in
+                               self.window_to_grad.items()}
         self.spawn_corners = self.super_gums_positions.copy()
 
     def calculat_point(self, start_drawing: Tuple, cell: CellDimention,

@@ -85,7 +85,8 @@ class Move:
         self.axis = ""
         self.frame = frame
 
-    def next_frame(self, current_z: float, target_z: float, speed: int, dt: float) -> float | int:
+    def next_frame(self, current_z: float, target_z: float, speed: int,
+                   dt: float) -> float | int:
         returned = current_z
 
         if current_z < target_z:

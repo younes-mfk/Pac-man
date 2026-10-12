@@ -399,7 +399,8 @@ class Pausemenu:
 
 class InGame:
 
-    def __init__(self, window: pygame.surface.Surface, adapter: Adapter) -> None:
+    def __init__(self, window: pygame.surface.Surface,
+                 adapter: Adapter) -> None:
         self.window = window
         self.adapter = adapter
         self.font = pygame.font.Font(None, 70)

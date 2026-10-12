@@ -29,7 +29,8 @@ class GamePlay:
             ghost.image = pygame.image.load(
                 PathResolver.resource_path("ghosts_images/ghost_yellow.png"))
 
-    def check_mode_super_time(self, passed_time_super: float, pacman: PacMan, ghosts: List) -> None:
+    def check_mode_super_time(self, passed_time_super: float, pacman: PacMan,
+                              ghosts: List) -> None:
         if passed_time_super / 1000 >= 5:
             pacman.super = False
 
@@ -48,7 +49,8 @@ class GamePlay:
 
         return None
 
-    def respawning_died_ghosts_after_3s(self, waiting_ghosts: List, ghosts: List,
+    def respawning_died_ghosts_after_3s(self, waiting_ghosts: List,
+                                        ghosts: List,
                                         force: bool = False) -> None:
         if force:
             for ghost in (waiting_ghosts[:]):
@@ -122,7 +124,8 @@ class GamePlay:
         else:
             return None
 
-    def run_the_gam(self, drawing: Drawing, maze: List, adapter: Adapter, ghosts: List,
+    def run_the_gam(self, drawing: Drawing, maze: List, adapter: Adapter,
+                    ghosts: List,
                     screen: pygame.Surface, pacman: PacMan) -> Any:
         pause_menu = Pausemenu(screen)
         in_game = InGame(screen, adapter)
@@ -168,7 +171,8 @@ class GamePlay:
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_f:
-                        pacman.data_of_game.cheat_mode = not (pacman.data_of_game.cheat_mode)
+                        pacman.data_of_game.cheat_mode = not (
+                            pacman.data_of_game.cheat_mode)
                         continue
 
                     if event.key == pygame.K_q:
@@ -229,7 +233,8 @@ class GamePlay:
                                                       ghosts[i], adapter)
                         waiting_ghosts.append(ghosts[i])
 
-                    elif pacman.data_of_game.cheat_mode is False and not (pacman.super and ghosts[i].edible):
+                    elif (pacman.data_of_game.cheat_mode is False and
+                            not (pacman.super and ghosts[i].edible)):
                         self.pacman_is_die(pacman)
 
                 ghosts_poses = []

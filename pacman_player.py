@@ -1,6 +1,6 @@
 from moves import Move
 from parse_config import GameData
-from typing import Tuple, Any
+from typing import Tuple
 
 
 class PacMan:
