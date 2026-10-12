@@ -7,7 +7,6 @@ from drawing import Drawing
 from ghost_maker import GhostsMaker
 from game_play import GamePlay
 from pacman_player import PacMan
-# from parse_config import GameData
 from cell import Window
 from level_class import LevelFactory
 from typing import Tuple, List
@@ -17,12 +16,8 @@ class Main():
     window = Window()
 
     def set_up(self, screen: pygame.Surface,
-               speeds: List = [100, 100, 140, 140], flag: bool = False) -> Tuple:
-        if flag is True:
-            maze_engine = MazeGenerator(size=(20, 20))
-
-        else:
-            maze_engine = MazeGenerator(size=(20, 20), seed=42)
+               speeds: List = [100, 100, 140, 140]) -> Tuple:
+        maze_engine = MazeGenerator(size=(5, 5), seed=42)
         maze = maze_engine.maze
 
         ghoste_creater = GhostsMaker()

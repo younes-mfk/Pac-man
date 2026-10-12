@@ -140,12 +140,7 @@ class GamePlay:
             # ################## you in competetive mode ###############
             time_in_level = pygame.time.get_ticks() - level_timer
 
-            if pacman.data_of_game.cheat_mode is False:
-                state = self.died_or_win(adapter, pacman, time_in_level)
-            elif time_in_level / 1000 > 10:
-                state = "level up"
-            else:
-                state = None
+            state = self.died_or_win(adapter, pacman, time_in_level)
 
             if state == "game over":
                 return state
@@ -172,6 +167,10 @@ class GamePlay:
                     return "exit"
 
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_f:
+                        pacman.data_of_game.cheat_mode = not (pacman.data_of_game.cheat_mode)
+                        continue
+
                     if event.key == pygame.K_q:
                         return "exit"
                     elif event.key in [pygame.K_DOWN, pygame.K_UP,
@@ -217,22 +216,21 @@ class GamePlay:
                                        pacman.current_frame, None),
                                    ghost_position)
 
-                if pacman.data_of_game.cheat_mode is False:
-                    if drawing.collusion(pacman.current_frame,
-                                         ghosts[i].move.frame):
+                if drawing.collusion(pacman.current_frame,
+                                     ghosts[i].move.frame):
 
-                        if pacman.time_after_respawning:
-                            if (pygame.time.get_ticks() -
-                               pacman.time_after_respawning) / 1000 < 2:
-                                continue
+                    if pacman.time_after_respawning:
+                        if (pygame.time.get_ticks() -
+                           pacman.time_after_respawning) / 1000 <= 2:
+                            continue
 
-                        if pacman.super and ghosts[i].edible:
-                            ghosts[i] = self.ghost_is_die(pacman,
-                                                          ghosts[i], adapter)
-                            waiting_ghosts.append(ghosts[i])
+                    if pacman.super and ghosts[i].edible:
+                        ghosts[i] = self.ghost_is_die(pacman,
+                                                      ghosts[i], adapter)
+                        waiting_ghosts.append(ghosts[i])
 
-                        else:
-                            self.pacman_is_die(pacman)
+                    elif pacman.data_of_game.cheat_mode is False and not (pacman.super and ghosts[i].edible):
+                        self.pacman_is_die(pacman)
 
                 ghosts_poses = []
 

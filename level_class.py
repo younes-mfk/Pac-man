@@ -1,9 +1,10 @@
 from mazegenerator.mazegenerator import MazeGenerator
 from adapter import Adapter
 from drawing import Drawing
-from typing import List, Tuple
+from typing import List
 from ghost_maker import GhostsMaker
 import pygame
+
 
 class Level:
     def __init__(self, maze: List, adapter: Adapter, drawing: Drawing,
@@ -30,7 +31,7 @@ class LevelFactory:
                 speed in self.speeds]
 
     def create(self, number: int, seed: int) -> Level:
-        maze = MazeGenerator(size=(20, 20), seed=seed).maze
+        maze = MazeGenerator(size=(5, 5), seed=seed).maze
         adapter = Adapter(maze)
         drawing = Drawing(adapter, self.screen)
         ghosts = self.ghosts_maker.create_ghosts(adapter.spawn_corners,
