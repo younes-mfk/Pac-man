@@ -17,7 +17,7 @@ clean:
 	@rm -rf .mypy_cache
 
 package:
-	uv run pyinstaller --name Pacman --add-data "images:images" --add-data "menu_images:menu_images" --add-data "ghosts_images:ghosts_images" main.py
+	uv run pyinstaller Pacman.spec
 
 lint:
 	uv run flake8 . --exclude=.venv

@@ -120,5 +120,5 @@ No source evidence was supplied for interpersonal conflicts; none are claimed he
 - **Reproduce a dated commit overview:**
 
   ```bash
-  git log --all --date=short --pretty=format:'%h | %ad | %an | %s'
+  git log
   ```
