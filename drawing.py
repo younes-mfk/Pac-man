@@ -111,11 +111,29 @@ class Drawing:
                 pygame.draw.circle(self.screen, (255, 255, 255), (i, j), 3)
 
     def draw_map_and_gums(self, maze: List, gum_poses: List) -> None:
+        """Draw the maze and the gums
+
+        Args:
+            maze: The maze to draw.
+            gum_poses: The positions of the gums to draw
+        """
+
         self.draw_maze(maze)
         self.draw_gums(gum_poses)
 
     def cheeck_colistion(self, current_pos: Tuple, prev_pos: Tuple,
                          dr: str) -> int:
+        """Check whether movement between two positions is allowed
+
+        Args:
+            current_pos: The position the player wants to move to.
+            prev_pos: The previous position of the player.
+            dr: The movement direction ('r', 'l', 'u', or 'd').
+
+        Returns:
+            1 if movement is allowed, or 0 if a wall blocks movement
+        """
+
         current_in_grad_ = self.adapter.window_to_grad.get(current_pos, None)
         old_grad_old = self.adapter.window_to_grad.get(prev_pos, None)
 
@@ -145,6 +163,11 @@ class Drawing:
         return 1
 
     def draw_player(self, pacman: PacMan) -> None:
+        """Draw pacman and handle gum collection
+
+        Args:
+            pacman: The Pac-Man instance to draw and update.
+        """
 
         pos_player = pacman.current_frame
         image = pacman.move.image
@@ -164,6 +187,13 @@ class Drawing:
 
     def draw_ghost(self, ghost: Ghost, player_pos: Tuple,
                    ghost_pos: Tuple) -> None:
+        """Draw a ghost and update its movement information
+
+        Args:
+            ghost: The ghost obj to draw and update
+            player_pos: The player's current position
+            ghost_pos: The ghost's current drawing position
+        """
 
         self.screen.blit(ghost.image, (ghost_pos[0] - 20, ghost_pos[1] - 20))
 
@@ -178,11 +208,30 @@ class Drawing:
         ghost.move.target = self.adapter.grad_to_window[ghost.current_coords]
 
     def collusion(self, pacman: Tuple, ghost: Tuple, spaces: int = 40) -> bool:
+        """Check if pacman and a ghost are close enough to collide
+
+        Args:
+            pacman: pacman position
+            ghost: The ghost position
+            spaces: The distance threshold for a collision
+
+        Returns:
+            true if the distance between the positions is less than
+            40 pixel, otherwise False
+        """
+
         dx = pacman[0] - ghost[0]
         dy = pacman[1] - ghost[1]
         return math.sqrt(dx * dx + dy * dy) < spaces
 
     def update_pacman_move(self, pacman: PacMan, open_mouth: int) -> None:
+        """Update pacman's movement and animation
+
+        Args:
+            pacman: The Pacman obj
+            open_mouth: The animation frame index used to select the image
+        """
+
         if pacman.move.direction == "r":
 
             new = (pacman.move.current_pos[0] + self.cell_dimentions.width,

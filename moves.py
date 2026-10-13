@@ -4,6 +4,8 @@ from typing import Tuple, Any
 
 
 class Move:
+    """Manage player movement, animation images, and frame positions"""
+
     pacman = [pygame.image.load(
         PathResolver.resource_path("images/pacman_player_right_open.png")),
               pygame.image.load(
@@ -75,6 +77,15 @@ class Move:
     def __init__(self, current_pos: Tuple, next_pos: Tuple,
                  current_frame_pos_x: float,
                  current_frame_pos_y: float, frame: Tuple) -> None:
+        """Initialize movement state and animation
+
+        Args:
+            current_pos: The current grid or window position
+            next_pos: The target position for the next movement
+            current_frame_pos_x: The initial x's frame coordinate
+            current_frame_pos_y: The initial y's frame coordinate
+            frame: The position represented by the frame
+        """
 
         self.image = Move.pacman[0]
         self.current_pos = current_pos
@@ -87,6 +98,21 @@ class Move:
 
     def next_frame(self, current_z: float, target_z: float, speed: int,
                    dt: float) -> float | int:
+        """Calculate the next coordinate during movement
+
+        Moves the current coordinate toward the target without go above
+        or under it
+
+        Args:
+            current_z: The current coordinate
+            target_z: The destination coordinate
+            speed: The movement speed
+            dt: The passed time since the previous frame
+
+        Returns:
+            The updated coordinate of next from frame
+        """
+
         returned = current_z
 
         if current_z < target_z:
@@ -102,6 +128,18 @@ class Move:
         return returned
 
     def next_frame_x_y(self, player: Any, dt: float) -> Tuple:
+        """Update the player's frame coordinates
+
+        Calculates the next x and y coordinates, rounds
+        them to pixel positions, and stores the resulting position
+
+        Args:
+            player: The player object
+            dt: The time since the previous frame
+
+        Returns:
+            A tuple containing the updated x and y pixel coordinates
+        """
 
         player.move.current_frame_x = self.next_frame(
             player.move.current_frame_x,

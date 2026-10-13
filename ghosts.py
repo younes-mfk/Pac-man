@@ -10,26 +10,8 @@ import pygame
 class Ghost:
     """Represent a ghost that moves through the maze toward a goal.
 
-    The ghost uses breadth-first search (BFS) to choose its next cell.
-    Its behavior depends on its type and on whether it is edible.
-
-    Attributes:
-        spawn_point (Tuple): (x, y) cell where the ghost spawns.
-        image (pygame.surface.Surface): Image used to draw the ghost.
-        current_coords (Tuple): Current coordinates of the ghost.
-        previous_cell (Tuple): Cell the ghost occupied before its
-            latest move, used to avoid turning back.
-        type (str): Ghost type; "normal" ghosts chase the target, other
-            types move randomly.
-        maze (list[list]): Maze grid where each cell is an integer
-            whose bits encode its walls.
-        player_pos (Tuple): Position of the player.
-        edible (bool): Whether the ghost can currently be eaten, in
-            which case it flees instead of chasing.
-        visited_cells (Set): Cells already chosen while fleeing.
-        speed (int): Movement speed of the ghost.
-        move (Move): Movement handler of the ghost.
-        respawning_time (int): Time associated with the ghost's respawn.
+    The ghost uses breadth-first search (BFS) to choose its next cell
+    Its behavior depends on its type and on whether it is edible
     """
 
     def __init__(self, spawn_point: Tuple, image: pygame.surface.Surface,

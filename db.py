@@ -5,17 +5,14 @@ from typing import List, Any, Dict
 
 
 class DataBase:
-    """Manage the persistent high scores stored in a JSON file.
-
-    Attributes:
-        file (str): Path of the JSON file holding the scores.
-    """
+    """Manage the persistent high scores stored in a JSON file"""
 
     def __init__(self) -> None:
         """Initialize the database with the default scores file.
 
-        Returns:
-            None.
+        Args:
+            file (str): Path of the JSON file holding the scores.
+
         """
         self.file = "scores.json"
 
@@ -104,7 +101,7 @@ class DataBase:
         entries already in the file are discarded when saving.
 
         Args:
-            score (Dict): The score to add, with the keys "name" (str)
+            score: The score to add, with the keys "name" (str)
                 and "score" (int).
 
         Returns:
