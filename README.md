@@ -38,6 +38,23 @@ The config file based on the next keys that you should provide through i json fi
 
 # Highscore
 
+The game implements a persistent highscore system using a local JSON file (`scores.json`). This allows player scores to be preserved between game sessions without requiring an external database or an internet connection.
+
+When a player loses the game or completes all levels, the Game Over or Victory screen displays their final score and prompts them to enter a name before saving it.
+
+The highscore system is managed through the `DataBase` class, which handles loading, saving, and sorting scores. The scoreboard displays the top 10 scores in descending order.
+
+The system follows these validation rules:
+
+- Player names must contain at most 10 characters, using alphanumeric characters and spaces only.
+- Scores must be non-negative integers.
+- Missing or corrupted JSON files must not cause the game to crash.
+- Invalid records are ignored while valid records are preserved whenever possible.
+
+**Why this approach?**
+
+JSON was chosen because it is lightweight, human-readable, and directly supported by Python through the built-in `json` module. Since this is a local arcade game with a small number of highscore entries, a more complex database system was unnecessary.
+
 # Maze Generation
 to extract mazegenerator-2.1.0-py3-none-any.whl
 
@@ -79,4 +96,38 @@ the implementation based on this main elements:
 # General Software Architecture
 https://www.tldraw.com/f/_qoGUTOY1yO6m9fBaGKOA?d=v-2857.-1843.10698.6699.page
 
+# Packaging
+
+The game is packaged using **PyInstaller**, which bundles the Python interpreter, required libraries, game modules, and graphical assets into a standalone application.
+
+This allows players to launch the game without manually installing Python, Pygame, or the MazeGenerator package.
+
+The packaging process includes the required assets from the `menu_images`, `ghosts_images`, and `images` directories.
+
+To ensure compatibility between normal Python execution and the packaged application, a `PathResolver` utility resolves resource paths depending on the execution environment.
+
+The PyInstaller configuration is stored in `Pacman.spec` at the repository root, allowing the application to be rebuilt using:
+
+```bash
+uv run pyinstaller --clean --noconfirm Pacman.spec
+```
+
+The resulting application is generated inside the `dist/` directory.
+
+**Why PyInstaller?**
+
+PyInstaller was chosen because it supports Python and Pygame applications, automatically collects imported Python dependencies, and provides reproducible builds through its specification file.
+
 # Project Management
+
+The project was developed collaboratively by two team members using **Git, GitHub, and GitHub Projects**.
+
+We adopted a Kanban-based workflow to organize development tasks, assign responsibilities, and track progress through different stages, including Backlog, Ready, In Progress, In Review, and Done.
+
+GitHub Issues were used to describe individual features and development tasks, while Git commits provided a record of implementation progress, bug fixes, and contributions from each team member.
+
+The work was divided across several areas, including maze rendering, player movement, ghost behavior, game logic, user interface development, highscores, and packaging.
+
+A dedicated directory contains additional information about team organization, development progress, technical decisions, challenges, and supporting evidence.
+
+**Detailed documentation:** [Project Management](project_management/README.md)
