@@ -17,8 +17,9 @@ We organized development using:
 - **Git / GitHub commits:** history of implementations, fixes, integration, and changes.
 - **Project source repository:** implementation, Makefile, packaging configuration, and other project deliverables.
 
-**Project board URL:** _[Add the actual GitHub Projects URL before submission]_  
-**Repository URL:** _[Add the repository URL if evaluators do not already have it]_
+**Project board URL:** [Project board](https://github.com/users/younes-mfk/projects/1)
+
+**Repository URL:** [Repo](https://github.com/younes-mfk/Pac-man)
 
 ### Kanban evidence
 
@@ -114,7 +115,7 @@ No source evidence was supplied for interpersonal conflicts; none are claimed he
 ## 8. Evidence lookup and maintenance
 
 - **Kanban screenshot:** [`screenshots/github_projects_board_2026-10-13.png`](screenshots/github_projects_board_2026-10-13.png)
-- **GitHub Project:** _[Add link]_; issue numbers referenced above correspond to the screenshot.
+- **GitHub Project:** [https://github.com/users/younes-mfk/projects/1/] issue numbers referenced above correspond to the screenshot.
 - **Git commits:** use the short commit IDs above in the repository's commit history or `git show <hash>`.
 - **Reproduce a dated commit overview:**
 
