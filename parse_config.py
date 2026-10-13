@@ -1,29 +1,25 @@
-import json
-from typing import Any
+from typing import Dict
 
 
 class GameData:
     """ Tracking the game stats """
 
-    def parser(self, file: str = "config.json") -> Any:
-        """ Parse the provided file"""
+    def __init__(self, parsed_config: Dict) -> None:
+        """ Initialize the start stat data game
+         Args:
+            parsed_config: the parsed dict from config file
+        """
 
-        # need try except
-        config = json.load(open(file))
-        return config
-
-    def __init__(self) -> None:
-        """ Initialize the start stat data game """
-
-        self.config = self.parser()
-        self.hearts = self.config["hearts"]
+        self.config = parsed_config
+        self.hearts = self.config.get("hearts", 3)
         self.level = 1
-        self.points_per_pacgum = self.config["points_per_pacgum"]
-        self.points_per_superpacgum = self.config["points_per_superpacgum"]
-        self.points_per_ghost = self.config["points_per_ghost"]
-        self.level_time = self.config["level_time"]
+        self.points_per_pacgum = self.config.get("points_per_pacgum", 10)
+        self.points_per_superpacgum = self.config.get(
+                                        "points_per_superpacgum", 10)
+        self.points_per_ghost = self.config.get("points_per_ghost", 10)
+        self.level_time = self.config.get("level_time", 90)
         self.current_score = 0
-        self.cheat_mode = self.config["cheat_mode"]
+        self.cheat_mode = self.config.get("cheat_mode", False)
 
     def ate_gum(self) -> None:
         """ add the normal gum's points to the score"""

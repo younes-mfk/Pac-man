@@ -7,7 +7,7 @@ import pygame
 
 
 class Level:
-    """ the class to restart everything related to the maze changing through 
+    """ the class to restart everything related to the maze changing through
         the levels
     """
 

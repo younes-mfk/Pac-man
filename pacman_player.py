@@ -1,12 +1,12 @@
 from moves import Move
 from parse_config import GameData
-from typing import Tuple
+from typing import Tuple, Dict
 
 
 class PacMan:
     """Represent the Pacman player and controle its state"""
 
-    def __init__(self, start_pos: Tuple) -> None:
+    def __init__(self, start_pos: Tuple, parsed_config: Dict) -> None:
         """Initialize Pacman at the starting position and more infos
 
         Args:
@@ -22,7 +22,7 @@ class PacMan:
                          start_pos)
         self.super = False
         self.mortal = True
-        self.data_of_game = GameData()
+        self.data_of_game = GameData(parsed_config)
         self.time_after_respawning: None | float = None
 
     def restart_move(self, pacman: "PacMan") -> None:
