@@ -1,7 +1,7 @@
 {
     "hearts": 3,
     "level_time": 90,
-    "cheat_mode": true,
+    "cheat_mode": false,
     "points_per_pacgum": 10,
     "points_per_superpacgum": 30,
     "points_per_ghost": 100
