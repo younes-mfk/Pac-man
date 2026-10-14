@@ -30,7 +30,7 @@ class Level:
 class LevelFactory:
     """ the class that reproduce a random maze and faster ghosts"""
 
-    speeds = [100, 100, 140, 140]
+    speeds = [90, 100, 90, 140]
     added_speed = 35
 
     def __init__(self, screen: pygame.Surface, ghosts_maker: GhostsMaker,

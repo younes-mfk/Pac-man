@@ -10,9 +10,6 @@ class DataBase:
     def __init__(self) -> None:
         """Initialize the database with the default scores file.
 
-        Args:
-            file (str): Path of the JSON file holding the scores.
-
         """
         self.file = "scores.json"
 

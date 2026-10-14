@@ -47,7 +47,7 @@ class Main():
         try:
             config = json.loads(clean_json)
         except (json.JSONDecodeError):
-            print("invalide json config file")
+            print("invalide json config file, loading the default...")
             config = {}
 
         for key in Main.main_keys:

@@ -13,27 +13,31 @@ The project ships with a `Makefile` that wraps the common tasks:
 
 | Command | What it does |
 |---|---|
-| `make install` | Installs the project's Python dependencies. |
+| `make install` | Installs the project's Python dependencies |
 | `make run` |  Execute the main script of the project|
-| `make debug` | Runs the simulation under Python's built-in debugger (`pdb`). |
-| `make lint` | Runs `flake8` and `mypy` with the required flags. |
-| `make lint-strict` | Runs `flake8` and `mypy --strict`. |
-| `make clean` | Removes `__pycache__` and `.mypy_cache`. |
+| `make debug` | Runs the simulation under Python's built-in debugger (`pdb`) |
+| `make lint` | Runs `flake8` and `mypy` with the required flags |
+| `make lint-strict` | Runs `flake8` and `mypy --strict` |
+| `make clean` | Removes `__pycache__` and `.mypy_cache` |
+| `make package` | Create the executable package |
 
 # Resources
+- The full guide to pygame: https://www.pygame.org/docs/
+- this old pygame playlist was really usefull: https://youtu.be/i6xMBig-pP4?si=JpctMflKpaGkenvl 
+### AI usage:
+
+- the AI help us making the structure more dynamic and more organized through making the code more optimized and suguest some classes that suport re-usability instead of the re-creation
 
 # Configuration
 The config file based on the next keys that you should provide through i json file and a backup to default values when missed values or forgot to add thos keys, and ignore any other key not used in our structure
   | key | used for what |
 |---|---|
 | `heart` | the total lives you have during the game |
-| `current_score` |  the score you collect during the game from eating gums, ghosts...|
 | `points_per_gum` | the value added to your score after eating normal gum |
 | `points_per_super_gum` | the value added to your score after eating super gum |
 | `points_per_ghost` | the value added to your score after eating a ghost |
 | `cheat_mode` | a boolean to set when activate or deactivate the cheat mode |
 | `livel_time` | the remaining time for this level to complete it  |
-| `level` | the level you in right now |
 
 
 # Highscore
@@ -56,7 +60,10 @@ The system follows these validation rules:
 JSON was chosen because it is lightweight, human-readable, and directly supported by Python through the built-in `json` module. Since this is a local arcade game with a small number of highscore entries, a more complex database system was unnecessary.
 
 # Maze Generation
-to extract mazegenerator-2.1.0-py3-none-any.whl
+to extract mazegenerator-00001.zip
+
+`unzip mazegenerator-00001.zip`
+
 
 To extract the contents of mazegenerator-2.1.0-py3-none-any.whl, you can use the unzip command, as a Wheel file is essentially a ZIP archive 
 
