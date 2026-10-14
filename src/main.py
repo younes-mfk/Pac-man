@@ -49,10 +49,11 @@ class Main():
         except (json.JSONDecodeError):
             print("invalide json config file, loading the default...")
             config = {}
+            return config
 
         for key in Main.main_keys:
             if key not in config.keys():
-                print(f"the key {key} is missing")
+                print(f"the key {key} is missing, loading the default...")
                 continue
 
             if key == "cheat_mode" and config[key] not in (False, True):
@@ -112,6 +113,7 @@ class Main():
     def main(self) -> None:
         """ The main function where evrything start"""
 
+        print("\n")
         if len(sys.argv) != 2:
             print("you program should take the config file only as arguments")
             return

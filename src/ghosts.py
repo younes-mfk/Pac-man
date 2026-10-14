@@ -83,7 +83,7 @@ class Ghost:
     def get_valid_neighbors(self, x: int, y: int) -> list:
         """Find the cells reachable in one step from a given cell.
 
-        Only the four orthogonal neighbors inside the maze bounds are
+        Only the four neighbors inside the maze bounds are
         considered, and those separated by a wall are excluded.
 
         Args:
