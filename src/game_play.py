@@ -132,7 +132,12 @@ class GamePlay:
             bool: True if no gums remain, otherwise False
         """
 
-        return not len(adapter.gums_positions)
+        gums_copy = adapter.gums_positions.copy()
+        gums_without_supergums = [adapter.window_to_grad[x] for x in gums_copy]
+        for x in adapter.super_gums_positions:
+            gums_without_supergums.remove(x)
+
+        return not len(gums_without_supergums)
 
     def check_game_stat(self, pacman: PacMan, adapter: Adapter,
                         time_passed: float) -> None | str:
@@ -238,7 +243,7 @@ class GamePlay:
             bool or None: True if the final level is reached,
                 otherwise none
         """
-        if pacman.data_of_game.level == 10:
+        if pacman.data_of_game.level == 11:
             print("YOU WIN")
             return True
         else:
