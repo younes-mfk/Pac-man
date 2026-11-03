@@ -8,7 +8,7 @@ from pacman_player import PacMan
 from adapter import Adapter
 from ghosts import Ghost
 from drawing import Drawing
-
+import time
 
 diction_direction = {
         pygame.K_RIGHT: "r",
@@ -266,9 +266,10 @@ class GamePlay:
         pause_menu = Pausemenu(screen)
         in_game = InGame(screen, adapter)
         run = True
-        clock = pygame.time.Clock()
+        # clock = pygame.time.Clock()
         level_timer = pygame.time.get_ticks()
         waiting_ghosts: List = []
+        last_time = time.perf_counter_ns()
 
         while run:
             self.remove_waiting_ghosts_from_ghosts_list(waiting_ghosts, ghosts)
@@ -293,8 +294,13 @@ class GamePlay:
                 continue
 
             open_mouth = (pygame.time.get_ticks() // 200) % 2
-            r = clock.tick(100)
-            dt = r / 1000
+
+            # r = clock.tick(100)  milli -> sec ===> /1000
+
+            current = time.perf_counter_ns()
+            r = int(current - last_time)
+            last_time = current
+            dt = r / 1_000_000_000
 
             # ########################## draw the basics #####################
             drawing.draw_map_and_gums(maze, adapter.gums_positions)
