@@ -10,37 +10,14 @@ import pygame
 pygame.init()
 
 
-border_margin = 50
-border_width = 12
-
-menu_width = 900
-menu_hight = 1350
-
-
 class UILayout:
     """Provide shared menu positioning, borders, and score formatting."""
 
-    @staticmethod
-    def draw_border(window: pygame.surface.Surface) -> None:
-        """Draw a blue border around the game window.
-
-        Args:
-            window (pygame.surface.Surface): Surface on which to draw.
-
-        Returns:
-            None.
-        """
-        pygame.draw.rect(
-            window,
-            (0, 100, 255),
-            (
-                border_margin,
-                border_margin,
-                2600 - border_margin * 2,
-                2000 - border_margin * 2
-            ),
-            border_width
-        )
+    characters = {"dot": pygame.image.load(
+            PathResolver.resource_path("chars/dot.png"))}
+    for char in "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        characters[char] = pygame.image.load(
+            PathResolver.resource_path(f"chars/{char}.png"))
 
     @staticmethod
     def get_menu_position() -> Tuple:
@@ -72,6 +49,22 @@ class UILayout:
             displayed_score = score_str[:6] + "..."
         return displayed_score
 
+    @staticmethod
+    def draw_text(window, text, x, y):
+        for c in text:
+            if c == " ":
+                x += 20
+                continue
+            if c != '.':
+                c = c.upper()
+                img = UILayout.characters[c]
+                window.blit(img, (x, y))
+                x += 33
+            else:
+                img = UILayout.characters["dot"]
+                window.blit(img, (x, y))
+                x += 10
+
 
 class Instructions:
     """Display the instructions screen until the player leaves it."""
@@ -99,17 +92,16 @@ class Instructions:
         """
         menu_x, menu_y = UILayout.get_menu_position()
 
-        UILayout.draw_border(self.window)
-
         in_menu = True
         while in_menu:
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.window.fill((0, 0, 0))
                         return
 
-            self.window.blit(self.menu_img, (menu_x, menu_y))
+            self.window.blit(self.menu_img, (menu_x - 100, menu_y))
 
             pygame.display.flip()
             pygame.time.delay(100)
@@ -132,7 +124,6 @@ class Scoreboard:
         """
         self.window = window
         self.board_img = baord_img
-        self.font = pygame.font.Font(None, 60)
 
     def run(self, database: DataBase) -> None:
         """Show the ten best scores until ESC is pressed.
@@ -146,34 +137,28 @@ class Scoreboard:
         """
         menu_x, menu_y = UILayout.get_menu_position()
 
-        UILayout.draw_border(self.window)
         in_menu = True
         scores = database.sorted_scores()
-        name_x = 310
-        score_x = 580
+        name_x = 350
+        score_x = 800
         while in_menu:
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.window.fill((0, 0, 0))
                         return
 
             self.window.blit(self.board_img, (menu_x, menu_y))
-            temp = 430
+            temp = 400
             for score in scores[:10]:
-                name = self.font.render(
-                        f"{score['name']}",
-                        True,
-                        (255, 255, 0)
-                    )
                 valid_score = UILayout.validate_value(score['score'])
-                score = self.font.render(
-                        valid_score,
-                        True,
-                        (255, 255, 0)
-                    )
-                self.window.blit(name, (menu_x + name_x, menu_y + temp))
-                self.window.blit(score, (menu_x + score_x, menu_y + temp))
+
+                UILayout.draw_text(self.window, score['name'],
+                                   menu_x + name_x, menu_y + temp)
+                UILayout.draw_text(self.window, valid_score, menu_x + score_x,
+                                   menu_y + temp)
+
                 temp += 60
 
             pygame.display.flip()
@@ -201,7 +186,6 @@ class GameOver:
         self.err_img = pygame.image.load(
             PathResolver.resource_path(
                 "menu_images/err_message.png"))
-        self.font = pygame.font.Font(None, 60)
         self.database = database
 
     def run(self, data: GameData) -> str | None:
@@ -219,8 +203,6 @@ class GameOver:
                 the loop exits without saving.
         """
         menu_x, menu_y = UILayout.get_menu_position()
-
-        UILayout.draw_border(self.window)
         in_menu = True
         err = False
         string = ""
@@ -229,9 +211,8 @@ class GameOver:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        if not string.strip():
+                        if not string:
                             err = True
-                            string = ""
                         else:
                             self.database.save_score(
                                 {"name": string,
@@ -243,20 +224,11 @@ class GameOver:
                                              event.unicode == " "):
                         string += event.unicode
 
-            text = self.font.render(
-                string,
-                True,
-                (255, 255, 0)
-            )
-            score = self.font.render(
-                UILayout.validate_value(data.current_score),
-                True,
-                (255, 255, 0)
-            )
+            score = UILayout.validate_value(data.current_score)
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
-            self.window.blit(text, (menu_x + 290, menu_y + 760))
-            self.window.blit(score, (menu_x + 400, menu_y + 500))
+            UILayout.draw_text(self.window, string, menu_x + 270, menu_y + 760)
+            UILayout.draw_text(self.window, score, menu_x + 350, menu_y + 500)
             if err:
                 self.window.blit(self.err_img, (menu_x + 140, menu_y + 940))
 
@@ -284,7 +256,6 @@ class Victory:
             PathResolver.resource_path("menu_images/victory_menu.png"))
         self.err_img = pygame.image.load(
             PathResolver.resource_path("menu_images/err_message.png"))
-        self.font = pygame.font.Font(None, 60)
         self.database = database
 
     def run(self, data: GameData) -> str | None:
@@ -303,7 +274,6 @@ class Victory:
         """
         menu_x, menu_y = UILayout.get_menu_position()
 
-        UILayout.draw_border(self.window)
         in_menu = True
         err = False
         string = ""
@@ -312,9 +282,8 @@ class Victory:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        if not string.strip():
+                        if not string:
                             err = True
-                            string = ""
                         else:
                             self.database.save_score({"name": string,
                                                       "score":
@@ -326,20 +295,11 @@ class Victory:
                                              event.unicode == " "):
                         string += event.unicode
 
-            text = self.font.render(
-                string,
-                True,
-                (255, 255, 0)
-            )
-            score = self.font.render(
-                UILayout.validate_value(data.current_score),
-                True,
-                (255, 255, 0)
-            )
+            score = UILayout.validate_value(data.current_score)
 
             self.window.blit(self.menu_img, (menu_x, menu_y))
-            self.window.blit(text, (menu_x + 290, menu_y + 840))
-            self.window.blit(score, (menu_x + 410, menu_y + 610))
+            UILayout.draw_text(self.window, string, menu_x + 275, menu_y + 840)
+            UILayout.draw_text(self.window, score, menu_x + 350, menu_y + 610)
             if err:
                 self.window.blit(self.err_img, (menu_x + 140, menu_y + 980))
 
@@ -421,7 +381,6 @@ class Menu:
         BUTTON_WIDTH = 550
         buttons_x = menu_x + (menu_x - BUTTON_WIDTH) // 2
 
-        UILayout.draw_border(self.window)
         buttons_y = [
                     menu_y + 390,
                     menu_y + 550,
@@ -511,8 +470,6 @@ class Pausemenu:
                     menu_y + 550,
                     menu_y + 710]
 
-        UILayout.draw_border(self.window)
-
         in_menu = True
         selected = 0
         while in_menu:
@@ -562,7 +519,6 @@ class InGame:
         """
         self.window = window
         self.adapter = adapter
-        self.font = pygame.font.Font(None, 70)
         self.menu_img = pygame.image.load(
             PathResolver.resource_path(
                 "menu_images/in_game_menu2.png"))
@@ -596,24 +552,16 @@ class InGame:
         self.window.blit(self.menu_img, (x - 410, y))
         self.window.blit(self.top_bar, (x - 410, y - 100))
 
-        score_str = str(data.current_score)
+        displayed_score = UILayout.validate_value(data.current_score)
 
-        if len(score_str) < 10:
-            displayed_score = score_str
-        else:
-            displayed_score = score_str[:9] + "..."
-
-        text = self.font.render(displayed_score,
-                                True, (255, 255, 255))
-        self.window.blit(text, (x - 350, y + 250))
+        UILayout.draw_text(self.window, displayed_score, x - 350, y + 250)
 
         if lives > 3:
             temp = str(lives)
             if len(temp) > 4:
                 temp = temp[:4] + "..."
-            text = self.font.render(f"X {temp}", True, (255, 255, 255))
             self.window.blit(self.live_img, (x - 350, y + 590))
-            self.window.blit(text, (x - 250, y + 600))
+            UILayout.draw_text(self.window, f"X{temp}", x - 270, y + 610)
         else:
             a = 0
             while lives:
@@ -623,17 +571,13 @@ class InGame:
 
         current_level = UILayout.validate_value(data.level)
 
-        text = self.font.render(current_level, True, (255, 255, 255))
-        self.window.blit(text, (x - 350, y + 900))
+        UILayout.draw_text(self.window, current_level, x - 350, y + 900)
 
         current_time = UILayout.validate_value(time_now)
 
-        text = self.font.render(current_time, True, (255, 255, 255))
-        self.window.blit(text, (x - 350, y + 1200))
+        UILayout.draw_text(self.window, current_time, x - 350, y + 1200)
 
         if data.cheat_mode is True:
-            text = self.font.render("ON", True, (255, 255, 255))
-            self.window.blit(text, (x - 250, y + 1470))
+            UILayout.draw_text(self.window, "ON", x - 250, y + 1470)
         if data.cheat_mode is False:
-            text = self.font.render("OFF", True, (255, 255, 255))
-            self.window.blit(text, (x - 250, y + 1470))
+            UILayout.draw_text(self.window, "OFF", x - 250, y + 1470)

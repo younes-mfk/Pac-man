@@ -5,6 +5,7 @@ import math
 from typing import List, Tuple
 from pacman_player import PacMan
 from ghosts import Ghost
+from paths import PathResolver
 
 
 class Drawing:
@@ -21,6 +22,12 @@ class Drawing:
 
         self.adapter = adapter
         self.screen = screen
+        self.upper_line = pygame.image.load(
+            PathResolver.resource_path(
+                "images/upper_wall.png"))
+        self.left_line = pygame.image.load(
+            PathResolver.resource_path(
+                "images/left_wall.png"))
 
     @classmethod
     def get_walls(cls, number: int) -> Cell:
@@ -60,34 +67,28 @@ class Drawing:
                 cell = Drawing.get_walls(node)
 
                 if node == 15:
-                    pygame.draw.rect(self.screen, (255, 255, 255), (x_start,
-                                     y_start,
-                                     self.adapter.cell_dimontions.width,
-                                     self.adapter.cell_dimontions.height))
+                    self.screen.blit(self.upper_line, (x_start, y_start))
+                    self.screen.blit(self.left_line, (x_start, y_start))
+                    self.screen.blit(self.left_line,
+                                     (x_start + cell_width, y_start))
+                    self.screen.blit(self.upper_line,
+                                     (x_start, y_start + cell_height))
 
                 if cell.upper_wall:
-                    pygame.draw.line(self.screen, (0, 0, 255),
-                                     (x_start, y_start),
-                                     (x_start + cell_width, y_start), 8)
+                    self.screen.blit(self.upper_line, (x_start, y_start))
 
                 if cell.left_wall:
-                    pygame.draw.line(self.screen, (0, 0, 255),
-                                     (x_start, y_start),
-                                     (x_start, y_start + cell_height), 8)
+                    self.screen.blit(self.left_line, (x_start, y_start))
 
                 if x == len(list_a):
                     if cell.right_wall:
-                        pygame.draw.line(self.screen, (0, 0, 255),
-                                         (x_start + cell_width, y_start),
-                                         (x_start + cell_width, y_start +
-                                          cell_height), 8)
+                        self.screen.blit(self.left_line,
+                                         (x_start + cell_width, y_start))
 
                 if y == len(maze):
                     if cell.lower_wall:
-                        pygame.draw.line(self.screen, (0, 0, 255),
-                                         (x_start, y_start + cell_height),
-                                         (x_start + cell_width, y_start +
-                                          cell_height), 8)
+                        self.screen.blit(self.upper_line,
+                                         (x_start, y_start + cell_height))
 
                 x_start += cell_width
 

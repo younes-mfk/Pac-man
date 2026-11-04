@@ -74,11 +74,11 @@ class DataBase:
             if not isinstance(score, int) or isinstance(score, bool):
                 continue
 
-            if not name.strip() or len(name) > 10:
+            if not name or len(name) > 10:
                 continue
 
             if not all((char == ' ' or char.isalnum())
-                       for char in name.strip()):
+                       for char in name):
                 continue
 
             if score < 0:
