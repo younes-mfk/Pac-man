@@ -52,6 +52,21 @@ class UILayout:
 
     @staticmethod
     def draw_text(window: pygame.Surface, text: str, x: int, y: int) -> None:
+        """Draw text using preloaded character images.
+
+        Each character is rendered as an image at the given position.
+        Spaces and dots use different horizontal spacing, and letters
+        are converted to uppercase.
+
+        Args:
+            window (pygame.Surface): Surface on which to draw the text.
+            text (str): Text to render.
+            x (int): Starting horizontal position.
+            y (int): Starting vertical position.
+
+        Returns:
+            None.
+        """
         for c in text:
             if c == " ":
                 x += 20

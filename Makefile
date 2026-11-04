@@ -18,8 +18,8 @@ clean:
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
 	@rm -rf .mypy_cache
 
-# package:
-# 	uv run pyinstaller --add-data "src/images:images" --add-data "src/ghosts_images:ghosts_images" --add-data "src/menu_images:menu_images" --onefile src/main.py
+package:
+	uv run pyinstaller --add-data "src/images:images" --add-data "src/ghosts_images:ghosts_images" --add-data "src/menu_images:menu_images" --add-data "src/chars:chars"  --onefile src/main.py
 
 lint:
 	uv run flake8 src
