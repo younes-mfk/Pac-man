@@ -7,6 +7,7 @@ from db import DataBase
 from typing import Tuple
 from parse_config import GameData
 import pygame
+from time import sleep
 pygame.init()
 
 
@@ -50,7 +51,7 @@ class UILayout:
         return displayed_score
 
     @staticmethod
-    def draw_text(window, text, x, y):
+    def draw_text(window: pygame.Surface, text: str, x: int, y: int) -> None:
         for c in text:
             if c == " ":
                 x += 20
@@ -104,7 +105,7 @@ class Instructions:
             self.window.blit(self.menu_img, (menu_x - 100, menu_y))
 
             pygame.display.flip()
-            pygame.time.delay(100)
+            sleep(0.015)
 
 
 class Scoreboard:
@@ -162,7 +163,7 @@ class Scoreboard:
                 temp += 60
 
             pygame.display.flip()
-            pygame.time.delay(100)
+            sleep(0.015)
 
 
 class GameOver:
@@ -233,7 +234,7 @@ class GameOver:
                 self.window.blit(self.err_img, (menu_x + 140, menu_y + 940))
 
             pygame.display.flip()
-            pygame.time.delay(100)
+            sleep(0.015)
         return None
 
 
@@ -304,7 +305,7 @@ class Victory:
                 self.window.blit(self.err_img, (menu_x + 140, menu_y + 980))
 
             pygame.display.flip()
-            pygame.time.delay(100)
+            sleep(0.015)
         return None
 
 
@@ -417,7 +418,8 @@ class Menu:
                 self.window.blit(image, (buttons_x, y))
 
             pygame.display.flip()
-            pygame.time.delay(10)
+            sleep(0.015)
+
         return None
 
 
@@ -498,7 +500,7 @@ class Pausemenu:
                 self.window.blit(image, (buttons_x, y))
 
             pygame.display.flip()
-            pygame.time.delay(10)
+            sleep(0.015)
         return None
 
 
