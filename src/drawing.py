@@ -28,6 +28,10 @@ class Drawing:
         self.left_line = pygame.image.load(
             PathResolver.resource_path(
                 "images/left_wall.png"))
+        self.gum_image = pygame.image.load(PathResolver.resource_path(
+                                            "images/pacgum.png"))
+        self.super_gum_image = pygame.image.load(PathResolver.resource_path(
+                                            "images/super_pacgum.png"))
 
     @classmethod
     def get_walls(cls, number: int) -> Cell:
@@ -102,14 +106,25 @@ class Drawing:
         """
         for i, j in gum_poses:
             x, y = self.adapter.window_to_grad[(i, j)]
-            node = self.adapter.maze[y][x]
-            if node == 15:
-                pass
-
-            elif (x, y) in self.adapter.super_gums_positions:
-                pygame.draw.circle(self.screen, (255, 255, 45), (i, j), 7)
+            if self.adapter.maze[y][x] == 15:
+                continue
+            if (x, y) in self.adapter.super_gums_positions:
+                image = self.super_gum_image
             else:
-                pygame.draw.circle(self.screen, (255, 255, 255), (i, j), 3)
+                image = self.gum_image
+            self.screen.blit(image, (round(i - image.get_width() / 2),
+                                     round(j - image.get_height() / 2)))
+
+        # for i, j in gum_poses:
+        #     x, y = self.adapter.window_to_grad[(i, j)]
+        #     node = self.adapter.maze[y][x]
+        #     if node == 15:
+        #         pass
+
+        #     elif (x, y) in self.adapter.super_gums_positions:
+        #         pygame.draw.circle(self.screen, (255, 255, 45), (i, j), 7)
+        #     else:
+        #         pygame.draw.circle(self.screen, (255, 255, 255), (i, j), 3)
 
     def draw_map_and_gums(self, maze: List, gum_poses: List) -> None:
         """Draw the maze and the gums
