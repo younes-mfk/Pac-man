@@ -109,14 +109,14 @@ The game is packaged using **PyInstaller**, which bundles the Python interpreter
 
 This allows players to launch the game without manually installing Python, Pygame, or the MazeGenerator package.
 
-The packaging process includes the required assets from the `menu_images`, `ghosts_images`, and `images` directories.
+The packaging process includes the required assets from the `menu_images`, `ghosts_images`, `chars` and `images` directories.
 
 To ensure compatibility between normal Python execution and the packaged application, a `PathResolver` utility resolves resource paths depending on the execution environment.
 
 The PyInstaller configuration is stored in `Pacman.spec` at the repository root, allowing the application to be rebuilt using:
 
 ```bash
-uv run pyinstaller --clean --noconfirm Pacman.spec
+uv run pyinstaller Pacman.spec
 ```
 
 The resulting application is generated inside the `dist/` directory.

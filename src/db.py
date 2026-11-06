@@ -115,7 +115,7 @@ class DataBase:
             with open(self.file, 'w') as file:
                 json.dump(scores, file, indent=4)
         except Exception:
-            raise ValueError("file mkhewer")
+            raise ValueError("invalid file")
 
     def sorted_scores(self) -> List:
         """Get the valid scores ordered from highest to lowest.

@@ -173,8 +173,8 @@ class Main():
 
 
 if __name__ == "__main__":
-    # try:
-    main = Main()
-    main.main()
-    # except Exception as err:
-    #     print(f"erro: {err}")
+    try:
+        main = Main()
+        main.main()
+    except Exception as err:
+        print(f"erro: {err}")
