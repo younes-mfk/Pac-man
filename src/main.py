@@ -1,4 +1,11 @@
-from mazegenerator.mazegenerator import MazeGenerator
+import sys
+
+try:
+    from mazegenerator.mazegenerator import MazeGenerator
+except (ModuleNotFoundError, ImportError):
+    print("module not found")
+    sys.exit(1)
+
 from UI import Menu, GameOver, Victory
 from db import DataBase
 import pygame
